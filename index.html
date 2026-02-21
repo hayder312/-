@@ -46,9 +46,9 @@
         /* القائمة - تتحرك باللمس للجوال */
         .main-nav {
             display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 8px;
-            scrollbar-width: none;
+            scrollbar-width: none; /* Hide scrollbar for Firefox */
         }
-        .main-nav::-webkit-scrollbar { display: none; }
+        .main-nav::-webkit-scrollbar { display: none; } /* Hide scrollbar for Chrome/Safari */
         
         .nav-link {
             background: var(--card-bg); padding: 10px 18px; border-radius: 12px;
@@ -74,9 +74,9 @@
         .stat-item h3 { font-size: 11px; color: #888; margin-bottom: 4px; }
         .stat-item .val { font-size: 15px; font-weight: 900; }
 
-        /* الجداول */
+        /* الجداول - أهم جزء للجوال */
         .table-wrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        table { width: 100%; border-collapse: collapse; min-width: 650px; }
+        table { width: 100%; border-collapse: collapse; min-width: 650px; } 
         th { padding: 12px 10px; color: var(--neon-blue); border-bottom: 2px solid #333; text-align: right; font-size: 12px; }
         td { padding: 12px 10px; border-bottom: 1px solid #222; font-size: 13px; }
         
@@ -97,7 +97,7 @@
         }
         .search-container i { position: absolute; right: 15px; top: 15px; color: var(--neon-blue); }
 
-        /* المودال */
+        /* المودال - متجاوب */
         .modal {
             display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95);
             z-index: 2000; justify-content: center; align-items: center; padding: 15px;
@@ -110,13 +110,13 @@
         .input-group label { display: block; margin-bottom: 4px; color: var(--neon-blue); font-size: 12px; font-weight: bold; }
         .input-group input {
             width: 100%; padding: 10px; background: #000; border: 1px solid #333;
-            border-radius: 8px; color: white; font-size: 16px;
+            border-radius: 8px; color: white; font-size: 16px; 
         }
 
         .section { display: none; }
         .section.active { display: block; }
 
-        /* شاشة القفل */
+        /* ستايل شاشة القفل */
         #lockScreen {
             position: fixed; inset: 0; background: #05070a; z-index: 9999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -255,7 +255,7 @@
             <div class="input-group"><label>سعر الجملة</label><input id="iWholesale" type="number"></div>
             <div class="input-group"><label>سعر البيع</label><input id="iRetail" type="number"></div>
         </div>
-        <div class="input-group"><label>رابط الصورة</label><input id="iImg" type="text" placeholder="https://..."></div>
+        <div class="input-group"><label>رابط الصورة (من النت)</label><input id="iImg" type="text" placeholder="https://..."></div>
         <div class="input-group"><label>ملاحظات</label><input id="iParts" type="text"></div>
         <button class="btn btn-primary" style="width:100%; margin-top:10px" onclick="app.addInv()">إضافة المادة</button>
         <button class="btn btn-danger" style="width:100%; margin-top:10px" onclick="ui.close()">إغلاق</button>
@@ -269,46 +269,46 @@
         <button class="btn btn-danger" style="width:100%; margin-top:10px" onclick="ui.close()">إغلاق</button>
     </div></div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    <script>
+        // --- كود الحماية ---
+        if(!localStorage.getItem('MOHANAD_PASS')) {
+            localStorage.setItem('MOHANAD_PASS', '1234');
+        }
 
-        // --- إعدادات فايربيس الخاصة بك ---
-        const firebaseConfig = {
-            apiKey: "AIzaSy...", // استبدلها
-            authDomain: "your-app.firebaseapp.com",
-            projectId: "your-app-id", // استبدلها
-            storageBucket: "your-app.appspot.com",
-            messagingSenderId: "...",
-            appId: "..."
-        };
-
-        const firebaseApp = initializeApp(firebaseConfig);
-        const dbCloud = getFirestore(firebaseApp);
-        const docRef = doc(dbCloud, "mohanad_gallery", "main_data");
-
-        // --- الحماية (Password) ---
-        window.checkPass = function() {
+        function checkPass() {
             const input = document.getElementById('lockInput').value;
-            const correct = localStorage.getItem('MOHANAD_PASS') || '1234';
+            const correct = localStorage.getItem('MOHANAD_PASS');
+            const msg = document.getElementById('lockMsg');
+
             if(input === correct) {
                 document.getElementById('lockScreen').style.display = 'none';
             } else {
-                document.getElementById('lockMsg').innerText = "كلمة المرور خاطئة ❌";
+                msg.innerText = "كلمة المرور خاطئة ❌";
                 document.getElementById('lockInput').value = '';
             }
-        };
+        }
+        document.getElementById('lockInput').addEventListener("keypress", function(event) {
+            if (event.key === "Enter") checkPass();
+        });
 
-        // --- الوقت ---
+
+        // --- الوقت والتاريخ ---
         function updateClock() {
             const now = new Date();
-            document.getElementById('time-display').textContent = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }).toUpperCase();
-            document.getElementById('date-display').textContent = `${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()}`;
+            const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+            const timeStr = now.toLocaleTimeString('en-GB', timeOptions); 
+            
+            const d = String(now.getDate()).padStart(2, '0');
+            const m = String(now.getMonth() + 1).padStart(2, '0');
+            const y = now.getFullYear();
+            
+            document.getElementById('time-display').textContent = timeStr.toUpperCase();
+            document.getElementById('date-display').textContent = `${d}/${m}/${y}`;
         }
-        setInterval(updateClock, 1000); updateClock();
+        setInterval(updateClock, 1000);
+        updateClock();
 
-        // --- واجهة المستخدم ---
-        window.ui = {
+        const ui = {
             tab: (id, btn) => {
                 document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
                 document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
@@ -316,51 +316,50 @@
                 btn.classList.add('active');
             },
             modal: (id) => document.getElementById(id).style.display = 'flex',
-            close: () => document.querySelectorAll('.modal').forEach(m => m.style.display = 'none')
+            close: () => {
+                document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
+                app.clear(['oldPass', 'newPass']); 
+            }
         };
 
-        // --- المنطق الرئيسي والمزامنة ---
-        window.app = {
-            db: { cust: [], inv: [], market: [], arch: [] },
+        const app = {
+            db: JSON.parse(localStorage.getItem('MOHANAD_FINAL_MOBILE')) || { cust: [], inv: [], market: [], arch: [] },
 
-            // المزامنة: حفظ للسحاب
-            async save() {
-                try {
-                    await setDoc(docRef, this.db);
-                } catch (e) {
-                    console.error("Sync Error:", e);
-                    localStorage.setItem('MOHANAD_BACKUP', JSON.stringify(this.db));
-                }
+            // سيتم استبدال هذه الدالة لاحقاً في سكريبت Firebase لتقوم بالمزامنة السحابية بجانب المحلية
+            save() { 
+                localStorage.setItem('MOHANAD_FINAL_MOBILE', JSON.stringify(this.db)); 
+                this.render(); 
             },
 
             addCust() {
                 const price = Number(document.getElementById('cPrice').value);
                 const name = document.getElementById('cName').value;
-                if(!name || !price) return alert("اكمل البيانات");
+                if(!name || !price) return alert("دخل الاسم والسعر!");
                 this.db.cust.push({
                     id: Date.now(),
                     book: document.getElementById('cBook').value || '-',
                     name: name,
                     item: document.getElementById('cItem').value || 'بضاعة',
-                    total: price, paid: 0,
+                    total: price, paid: 0, 
                     monthly: Number(document.getElementById('cMonthly').value) || 0
                 });
                 ui.close(); this.save();
-                ['cBook','cName','cItem','cPrice','cMonthly'].forEach(id => document.getElementById(id).value = '');
+                this.clear(['cBook','cName','cItem','cPrice','cMonthly']);
             },
 
             addInv() {
                 const name = document.getElementById('iName').value;
                 if(!name) return;
                 this.db.inv.push({
-                    id: Date.now(), name: name,
+                    id: Date.now(),
+                    name: name,
                     wholesale: Number(document.getElementById('iWholesale').value) || 0,
                     retail: Number(document.getElementById('iRetail').value) || 0,
                     img: document.getElementById('iImg').value || 'https://cdn-icons-png.flaticon.com/512/1250/1250615.png',
                     parts: document.getElementById('iParts').value || '-'
                 });
                 ui.close(); this.save();
-                ['iName','iWholesale','iRetail','iImg','iParts'].forEach(id => document.getElementById(id).value = '');
+                this.clear(['iName','iWholesale','iRetail','iImg','iParts']);
             },
 
             addMarket() {
@@ -369,26 +368,35 @@
                 if(n) { this.db.market.push({id:Date.now(), name:n, amount:a}); this.save(); }
             },
 
+            changePass() {
+                const oldP = document.getElementById('oldPass').value;
+                const newP = document.getElementById('newPass').value;
+                const current = localStorage.getItem('MOHANAD_PASS');
+
+                if(oldP !== current) {
+                    alert("كلمة المرور القديمة خاطئة! ❌");
+                    return;
+                }
+                if(!newP || newP.length < 4) {
+                    alert("كلمة المرور الجديدة ضعيفة (أقل شي 4 أرقام)!");
+                    return;
+                }
+                localStorage.setItem('MOHANAD_PASS', newP);
+                alert("تم تغيير الرمز بنجاح ✅");
+                ui.close();
+            },
+
             pay(id) {
                 const amount = Number(prompt("دخل المبلغ الواصل حالياً:"));
                 if(!amount) return;
                 const c = this.db.cust.find(x => x.id === id);
                 c.paid += amount;
-                if(c.paid >= c.total) {
-                    this.db.arch.push(c);
-                    this.db.cust = this.db.cust.filter(x=>x.id!==id);
+                if(c.paid >= c.total) { 
+                    alert("تم اكتمال التسديد ✅");
+                    this.db.arch.push(c); 
+                    this.db.cust = this.db.cust.filter(x=>x.id!==id); 
                 }
                 this.save();
-            },
-
-            delMarket(id) { this.db.market = this.db.market.filter(x=>x.id!==id); this.save(); },
-
-            changePass() {
-                const oldP = document.getElementById('oldPass').value;
-                const newP = document.getElementById('newPass').value;
-                if(oldP !== (localStorage.getItem('MOHANAD_PASS') || '1234')) return alert("القديم خطأ");
-                localStorage.setItem('MOHANAD_PASS', newP);
-                alert("تم التغيير ✅"); ui.close();
             },
 
             render() {
@@ -419,7 +427,8 @@
                     invS += i.wholesale;
                     if(i.name.toLowerCase().includes(iq)) {
                         it.innerHTML += `<tr>
-                            <td><img src="${i.img}" class="item-img"></td><td>${i.name}</td>
+                            <td><img src="${i.img}" class="item-img"></td>
+                            <td>${i.name}</td>
                             <td>${i.wholesale.toLocaleString()}</td>
                             <td style="color:var(--neon-green)">${i.retail.toLocaleString()}</td>
                             <td style="font-size:11px">${i.parts}</td>
@@ -437,23 +446,72 @@
                 document.getElementById('sMarket').innerText = mSum.toLocaleString() + " د.ع";
 
                 document.getElementById('archTable').innerHTML = this.db.arch.map(a => `
-                    <tr><td>${a.name}</td><td>${a.book}</td><td style="color:var(--neon-green)">مسدد ✅</td></tr>
+                    <tr><td>${a.name}</td><td>${a.book}</td><td style="color:var(--neon-green)">مسدد بالكامل ✅</td></tr>
                 `).join('');
             },
 
+            delInv(id) { if(confirm("حذف المادة؟")) {this.db.inv = this.db.inv.filter(x=>x.id!==id); this.save();} },
+            delMarket(id) { this.db.market = this.db.market.filter(x=>x.id!==id); this.save(); },
+            clear(ids) { ids.forEach(id => document.getElementById(id).value = ''); },
             exportData() {
                 const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.db));
-                const a = document.createElement('a'); a.href = dataStr; a.download = "mohanad_backup.json"; a.click();
+                const a = document.createElement('a'); a.href = dataStr; a.download = "backup_mohanad.json"; a.click();
             }
         };
 
-        // المزامنة اللحظية: الاستماع للتغييرات في السحاب
-        onSnapshot(docRef, (snapshot) => {
-            if (snapshot.exists()) {
-                window.app.db = snapshot.data();
-                window.app.render();
-            }
+        app.render();
+    </script>
+    
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+      import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+      // إعدادات مشروعك الحقيقية
+      const firebaseConfig = {
+        apiKey: "AIzaSyB1e-lTs-hXrKq7uAkhTj_azp8CdmrwO8w",
+        authDomain: "gggg-44b14.firebaseapp.com",
+        projectId: "gggg-44b14",
+        storageBucket: "gggg-44b14.firebasestorage.app",
+        messagingSenderId: "674591791834",
+        appId: "1:674591791834:web:a37a39d5b133a227f5a3e3",
+        measurementId: "G-YM9B6NR117"
+      };
+
+      // تشغيل فايربيس
+      const firebaseApp = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(firebaseApp);
+      const db = getFirestore(firebaseApp);
+
+      // المستند الذي سيتم فيه حفظ ومزامنة البيانات (يمكنك تغيير الاسم "shared" لاحقاً)
+      const myDoc = doc(db, "syncData", "shared");
+
+      // 1. الاستماع للتغييرات السحابية (المزامنة الفورية من أجهزة أخرى)
+      onSnapshot(myDoc, (snapshot) => {
+        if (snapshot.exists()) {
+          const remoteData = snapshot.data();
+          console.log("تم جلب البيانات من السحابة بنجاح!");
+          
+          // تحديث البيانات محلياً وإعادة رسم الواجهة
+          app.db = remoteData;
+          localStorage.setItem('MOHANAD_FINAL_MOBILE', JSON.stringify(remoteData));
+          app.render();
+        }
+      });
+
+      // 2. ربط دالة الحفظ الخاصة بالتطبيق (app.save) لترفع البيانات للسحابة مع كل عملية
+      app.save = function() {
+        // الحفظ محلياً
+        localStorage.setItem('MOHANAD_FINAL_MOBILE', JSON.stringify(this.db));
+        this.render();
+        
+        // الرفع على فايربيس
+        setDoc(myDoc, this.db).then(() => {
+            console.log("تم حفظ النسخة الاحتياطية سحابياً ✅");
+        }).catch(error => {
+            console.error("خطأ في الاتصال بالسحابة: ", error);
         });
+      };
     </script>
 </body>
 </html>
