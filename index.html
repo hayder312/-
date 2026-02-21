@@ -459,5 +459,34 @@
 
         app.render();
     </script>
+    <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  // هنا تضع الكود الذي نسخته من Firebase Console
+  const firebaseConfig = {
+    apiKey: "AIzaSy...", 
+    authDomain: "your-app.firebaseapp.com",
+    projectId: "your-app-id",
+    storageBucket: "your-app.appspot.com",
+    messagingSenderId: "123456789",
+    appId: "1:123456789:web:abcdef"
+  };
+
+  // تشغيل فايربيس
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // كود المزامنة (مثال بسيط لمزامنة نص)
+  const myDoc = doc(db, "syncData", "shared");
+
+  // الاستماع للتغييرات من الأجهزة الأخرى
+  onSnapshot(myDoc, (snapshot) => {
+    if (snapshot.exists()) {
+      console.log("البيانات تحديثت في كل الأجهزة:", snapshot.data());
+      // هنا تضع الكود الذي يغير الواجهة عندك
+    }
+  });
+</script>
 </body>
 </html>
