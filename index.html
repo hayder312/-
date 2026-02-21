@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>معرض مهند الملكي 💎 Mobile Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --main-bg: #05070a;
+            --card-bg: rgba(22, 27, 34, 0.95);
+            --neon-blue: #00d2ff;
+            --neon-green: #00ff88;
+            --neon-red: #ff4757;
+            --gold: #ffc107;
+            --text: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            background: url('https://images.unsplash.com/photo-1614850523296-d8c1af93d400?q=80&w=2070&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--text);
+            min-height: 100vh;
+            font-size: 14px;
+        }
+
+        .overlay { background: rgba(5, 7, 10, 0.88); min-height: 100vh; padding: 10px; }
+
+        /* الهيدر - متجاوب */
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--card-bg); padding: 12px 15px; border-radius: 15px;
+            border: 1px solid rgba(0, 210, 255, 0.3); margin-bottom: 15px; backdrop-filter: blur(10px);
+        }
+        .logo h1 { font-size: 18px; font-weight: 900; color: var(--neon-blue); display: flex; align-items: center; gap: 8px; }
+
+        /* الساعة المطلوبة (أرقام إنكليزية 100%) */
+        .digital-clock { text-align: right; line-height: 1.2; }
+        #time-display { font-family: sans-serif; font-size: 18px; color: var(--neon-blue); font-weight: 800; display: block; }
+        #date-display { font-family: sans-serif; font-size: 12px; color: #aaa; font-weight: bold; }
+
+        /* القائمة - تتحرك باللمس للجوال */
+        .main-nav {
+            display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 8px;
+            scrollbar-width: none; /* Hide scrollbar for Firefox */
+        }
+        .main-nav::-webkit-scrollbar { display: none; } /* Hide scrollbar for Chrome/Safari */
+        
+        .nav-link {
+            background: var(--card-bg); padding: 10px 18px; border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1); cursor: pointer; font-weight: bold;
+            display: flex; align-items: center; gap: 6px; white-space: nowrap; transition: 0.3s;
+        }
+        .nav-link.active { background: var(--neon-blue); color: #000; border-color: var(--neon-blue); box-shadow: 0 0 10px rgba(0,210,255,0.5); }
+
+        /* الكروت والحاويات */
+        .content-card {
+            background: var(--card-bg); border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);
+            padding: 15px; backdrop-filter: blur(15px); overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px; margin-bottom: 15px;
+        }
+        .stat-item {
+            background: rgba(0,0,0,0.5); padding: 12px; border-radius: 15px;
+            text-align: center; border-bottom: 2px solid var(--neon-blue);
+        }
+        .stat-item h3 { font-size: 11px; color: #888; margin-bottom: 4px; }
+        .stat-item .val { font-size: 15px; font-weight: 900; }
+
+        /* الجداول - أهم جزء للجوال */
+        .table-wrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        table { width: 100%; border-collapse: collapse; min-width: 650px; } /* يضمن عدم صغر الجدول أكثر من اللازم */
+        th { padding: 12px 10px; color: var(--neon-blue); border-bottom: 2px solid #333; text-align: right; font-size: 12px; }
+        td { padding: 12px 10px; border-bottom: 1px solid #222; font-size: 13px; }
+        
+        .item-img { width: 45px; height: 45px; border-radius: 8px; object-fit: cover; border: 1px solid #333; }
+
+        .btn {
+            padding: 10px 15px; border-radius: 10px; border: none; cursor: pointer;
+            font-weight: bold; display: inline-flex; align-items: center; gap: 6px; font-size: 13px;
+        }
+        .btn-primary { background: var(--neon-blue); color: #000; }
+        .btn-danger { background: rgba(255, 71, 87, 0.2); color: var(--neon-red); border: 1px solid var(--neon-red); }
+
+        /* البحث */
+        .search-container { position: relative; margin-bottom: 15px; }
+        .search-container input {
+            width: 100%; padding: 12px 40px 12px 15px; background: rgba(0,0,0,0.5);
+            border: 1px solid #333; border-radius: 12px; color: white; outline: none; font-size: 14px;
+        }
+        .search-container i { position: absolute; right: 15px; top: 15px; color: var(--neon-blue); }
+
+        /* المودال - متجاوب */
+        .modal {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95);
+            z-index: 2000; justify-content: center; align-items: center; padding: 15px;
+        }
+        .modal-content {
+            background: #161b22; width: 100%; max-width: 450px; padding: 20px;
+            border-radius: 20px; border: 1px solid var(--neon-blue); max-height: 90vh; overflow-y: auto;
+        }
+        .input-group { margin-bottom: 12px; }
+        .input-group label { display: block; margin-bottom: 4px; color: var(--neon-blue); font-size: 12px; font-weight: bold; }
+        .input-group input {
+            width: 100%; padding: 10px; background: #000; border: 1px solid #333;
+            border-radius: 8px; color: white; font-size: 16px; /* 16px prevents iOS zoom on focus */
+        }
+
+        .section { display: none; }
+        .section.active { display: block; }
+
+        /* ستايل شاشة القفل */
+        #lockScreen {
+            position: fixed; inset: 0; background: #05070a; z-index: 9999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            padding: 20px;
+        }
+        #lockScreen i { font-size: 50px; color: var(--neon-blue); margin-bottom: 20px; }
+        #lockScreen h2 { margin-bottom: 20px; color: white; }
+        #lockInput { 
+            padding: 15px; font-size: 20px; text-align: center; letter-spacing: 5px; 
+            border-radius: 15px; border: 2px solid var(--neon-blue); background: #161b22; color: var(--neon-blue);
+            width: 200px; outline: none;
+        }
+        #lockMsg { margin-top: 10px; color: var(--neon-red); font-weight: bold; min-height: 20px; }
+
+        /* إخفاء بعض الأعمدة غير الضرورية جداً في الشاشات الصغيرة جداً */
+        @media (max-width: 480px) {
+            header { padding: 10px; }
+            .logo h1 { font-size: 16px; }
+            #time-display { font-size: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="lockScreen">
+        <i class="fas fa-fingerprint"></i>
+        <h2>نظام الحماية</h2>
+        <input type="password" id="lockInput" placeholder="****" maxlength="4" pattern="\d*">
+        <div id="lockMsg"></div>
+        <button class="btn btn-primary" style="margin-top:15px; width:200px; justify-content: center;" onclick="checkPass()">دخول</button>
+    </div>
+
+    <div class="overlay">
+        <header>
+            <div class="logo">
+                <i class="fas fa-crown"></i>
+                <h1>معرض مهند</h1>
+            </div>
+            <div class="digital-clock">
+                <div id="time-display">12:00:00 AM</div>
+                <div id="date-display">16/02/2026</div>
+            </div>
+        </header>
+
+        <nav class="main-nav">
+            <div class="nav-link active" onclick="ui.tab('custSec', this)"><i class="fas fa-user-tag"></i> الزبائن</div>
+            <div class="nav-link" onclick="ui.tab('invSec', this)"><i class="fas fa-store"></i> المخزن</div>
+            <div class="nav-link" onclick="ui.tab('marketSec', this)"><i class="fas fa-truck"></i> الشركات</div>
+            <div class="nav-link" onclick="ui.tab('statsSec', this)"><i class="fas fa-wallet"></i> المالية</div>
+            <div class="nav-link" onclick="ui.tab('archSec', this)"><i class="fas fa-check-circle"></i> الأرشيف</div>
+        </nav>
+
+        <main>
+            <div id="custSec" class="section active">
+                <div class="stats-grid">
+                    <div class="stat-item"><h3>ديون عند الناس</h3><div id="d1" class="val" style="color:var(--neon-red)">0</div></div>
+                    <div class="stat-item"><h3>إجمالي الواصل</h3><div id="d2" class="val" style="color:var(--neon-green)">0</div></div>
+                </div>
+                <button class="btn btn-primary" style="width:100%; margin-bottom:15px; justify-content:center;" onclick="ui.modal('modalAddCust')"><i class="fas fa-plus-circle"></i> إضافة قسط جديد</button>
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="custSearch" placeholder="ابحث باسم الزبون أو رقم الدفتر..." oninput="app.render()">
+                </div>
+                <div class="content-card">
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr><th>دفتر</th><th>الزبون</th><th>المادة</th><th>المتبقي</th><th>القسط</th><th>الأشهر</th><th>إدارة</th></tr>
+                            </thead>
+                            <tbody id="custTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="invSec" class="section">
+                <button class="btn btn-primary" style="width:100%; margin-bottom:15px; justify-content:center;" onclick="ui.modal('modalAddInv')"><i class="fas fa-plus-square"></i> إضافة بضاعة جديدة</button>
+                <div class="content-card">
+                    <div class="search-container">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="invSearch" placeholder="ابحث في المخزن..." oninput="app.render()">
+                    </div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr><th>صورة</th><th>المادة</th><th>جملة</th><th>بيع</th><th>ملاحظات</th></tr>
+                            </thead>
+                            <tbody id="invTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="statsSec" class="section">
+                <div class="content-card" style="text-align: center;">
+                    <h2 style="color:var(--neon-blue); margin-bottom: 20px;">التقرير المالي العام</h2>
+                    <div class="stats-grid">
+                        <div class="stat-item"><h3>رأس مال المخزن</h3><div id="sInv" class="val">0</div></div>
+                        <div class="stat-item"><h3>ديون الشركات</h3><div id="sMarket" class="val" style="color:var(--neon-red)">0</div></div>
+                    </div>
+                    <button class="btn btn-primary" style="width:100%; justify-content:center; margin-bottom:10px;" onclick="app.exportData()"><i class="fas fa-file-download"></i> تصدير نسخة احتياطية</button>
+                    <button class="btn btn-primary" style="width:100%; justify-content:center; background:var(--gold); color:#000;" onclick="ui.modal('modalChangePass')"><i class="fas fa-key"></i> تغيير كلمة المرور</button>
+                </div>
+            </div>
+
+            <div id="marketSec" class="section">
+                <button class="btn btn-primary" style="width:100%; margin-bottom:15px; justify-content:center;" onclick="app.addMarket()"><i class="fas fa-building"></i> إضافة دين شركة جديد</button>
+                <div class="content-card"><div class="table-wrapper"><table id="marketTable"></table></div></div>
+            </div>
+
+            <div id="archSec" class="section">
+                <div class="content-card">
+                    <h2 style="font-size:16px; margin-bottom:10px; color:var(--neon-green)">قائمة المكتملين ✅</h2>
+                    <div class="table-wrapper"><table><tbody id="archTable"></tbody></table></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="modalAddCust" class="modal"><div class="modal-content">
+        <h2 style="color:var(--neon-blue); margin-bottom:15px; font-size:18px;">تسجيل بيع قسط</h2>
+        <div class="input-group"><label>رقم الدفتر</label><input id="cBook" type="text" placeholder="مثلاً: 105"></div>
+        <div class="input-group"><label>اسم الزبون الكامل</label><input id="cName" type="text"></div>
+        <div class="input-group"><label>المادة المباعة</label><input id="cItem" type="text"></div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px">
+            <div class="input-group"><label>السعر الكلي</label><input id="cPrice" type="number"></div>
+            <div class="input-group"><label>القسط الشهري</label><input id="cMonthly" type="number"></div>
+        </div>
+        <button class="btn btn-primary" style="width:100%; margin-top:10px" onclick="app.addCust()">حفظ العملية</button>
+        <button class="btn btn-danger" style="width:100%; margin-top:10px" onclick="ui.close()">إغلاق</button>
+    </div></div>
+
+    <div id="modalAddInv" class="modal"><div class="modal-content">
+        <h2 style="color:var(--neon-blue); margin-bottom:15px; font-size:18px;">إضافة مادة للمخزن</h2>
+        <div class="input-group"><label>اسم المادة</label><input id="iName" type="text"></div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px">
+            <div class="input-group"><label>سعر الجملة</label><input id="iWholesale" type="number"></div>
+            <div class="input-group"><label>سعر البيع</label><input id="iRetail" type="number"></div>
+        </div>
+        <div class="input-group"><label>رابط الصورة (من النت)</label><input id="iImg" type="text" placeholder="https://..."></div>
+        <div class="input-group"><label>ملاحظات</label><input id="iParts" type="text"></div>
+        <button class="btn btn-primary" style="width:100%; margin-top:10px" onclick="app.addInv()">إضافة المادة</button>
+        <button class="btn btn-danger" style="width:100%; margin-top:10px" onclick="ui.close()">إغلاق</button>
+    </div></div>
+
+    <div id="modalChangePass" class="modal"><div class="modal-content">
+        <h2 style="color:var(--gold); margin-bottom:15px; font-size:18px;">تغيير كلمة المرور</h2>
+        <div class="input-group"><label>كلمة المرور الحالية</label><input id="oldPass" type="password"></div>
+        <div class="input-group"><label>كلمة المرور الجديدة</label><input id="newPass" type="password"></div>
+        <button class="btn btn-primary" style="width:100%; margin-top:10px" onclick="app.changePass()">حفظ التغيير</button>
+        <button class="btn btn-danger" style="width:100%; margin-top:10px" onclick="ui.close()">إغلاق</button>
+    </div></div>
+
+    <script>
+        // --- كود الحماية ---
+        if(!localStorage.getItem('MOHANAD_PASS')) {
+            localStorage.setItem('MOHANAD_PASS', '1234');
+        }
+
+        function checkPass() {
+            const input = document.getElementById('lockInput').value;
+            const correct = localStorage.getItem('MOHANAD_PASS');
+            const msg = document.getElementById('lockMsg');
+
+            if(input === correct) {
+                document.getElementById('lockScreen').style.display = 'none';
+            } else {
+                msg.innerText = "كلمة المرور خاطئة ❌";
+                document.getElementById('lockInput').value = '';
+            }
+        }
+        document.getElementById('lockInput').addEventListener("keypress", function(event) {
+            if (event.key === "Enter") checkPass();
+        });
+
+
+        // --- الوقت والتاريخ ---
+        function updateClock() {
+            const now = new Date();
+            const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+            const timeStr = now.toLocaleTimeString('en-GB', timeOptions); 
+            
+            const d = String(now.getDate()).padStart(2, '0');
+            const m = String(now.getMonth() + 1).padStart(2, '0');
+            const y = now.getFullYear();
+            
+            document.getElementById('time-display').textContent = timeStr.toUpperCase();
+            document.getElementById('date-display').textContent = `${d}/${m}/${y}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        const ui = {
+            tab: (id, btn) => {
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
+                document.getElementById(id).classList.add('active');
+                btn.classList.add('active');
+            },
+            modal: (id) => document.getElementById(id).style.display = 'flex',
+            close: () => {
+                document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
+                app.clear(['oldPass', 'newPass']); // تنظيف حقول الرمز عند الإغلاق
+            }
+        };
+
+        const app = {
+            db: JSON.parse(localStorage.getItem('MOHANAD_FINAL_MOBILE')) || { cust: [], inv: [], market: [], arch: [] },
+
+            save() { localStorage.setItem('MOHANAD_FINAL_MOBILE', JSON.stringify(this.db)); this.render(); },
+
+            addCust() {
+                const price = Number(document.getElementById('cPrice').value);
+                const name = document.getElementById('cName').value;
+                if(!name || !price) return alert("دخل الاسم والسعر!");
+                this.db.cust.push({
+                    id: Date.now(),
+                    book: document.getElementById('cBook').value || '-',
+                    name: name,
+                    item: document.getElementById('cItem').value || 'بضاعة',
+                    total: price, paid: 0, 
+                    monthly: Number(document.getElementById('cMonthly').value) || 0
+                });
+                ui.close(); this.save();
+                this.clear(['cBook','cName','cItem','cPrice','cMonthly']);
+            },
+
+            addInv() {
+                const name = document.getElementById('iName').value;
+                if(!name) return;
+                this.db.inv.push({
+                    id: Date.now(),
+                    name: name,
+                    wholesale: Number(document.getElementById('iWholesale').value) || 0,
+                    retail: Number(document.getElementById('iRetail').value) || 0,
+                    img: document.getElementById('iImg').value || 'https://cdn-icons-png.flaticon.com/512/1250/1250615.png',
+                    parts: document.getElementById('iParts').value || '-'
+                });
+                ui.close(); this.save();
+                this.clear(['iName','iWholesale','iRetail','iImg','iParts']);
+            },
+
+            addMarket() {
+                const n = prompt("اسم الشركة:");
+                const a = Number(prompt("المبلغ المطلوب منهم:"));
+                if(n) { this.db.market.push({id:Date.now(), name:n, amount:a}); this.save(); }
+            },
+
+            // دالة تغيير الرمز (جديد)
+            changePass() {
+                const oldP = document.getElementById('oldPass').value;
+                const newP = document.getElementById('newPass').value;
+                const current = localStorage.getItem('MOHANAD_PASS');
+
+                if(oldP !== current) {
+                    alert("كلمة المرور القديمة خاطئة! ❌");
+                    return;
+                }
+                if(!newP || newP.length < 4) {
+                    alert("كلمة المرور الجديدة ضعيفة (أقل شي 4 أرقام)!");
+                    return;
+                }
+                localStorage.setItem('MOHANAD_PASS', newP);
+                alert("تم تغيير الرمز بنجاح ✅");
+                ui.close();
+            },
+
+            pay(id) {
+                const amount = Number(prompt("دخل المبلغ الواصل حالياً:"));
+                if(!amount) return;
+                const c = this.db.cust.find(x => x.id === id);
+                c.paid += amount;
+                if(c.paid >= c.total) { 
+                    alert("تم اكتمال التسديد ✅");
+                    this.db.arch.push(c); 
+                    this.db.cust = this.db.cust.filter(x=>x.id!==id); 
+                }
+                this.save();
+            },
+
+            render() {
+                const cq = document.getElementById('custSearch').value.toLowerCase();
+                const ct = document.getElementById('custTable'); ct.innerHTML = '';
+                let d1=0, d2=0;
+                this.db.cust.forEach(c => {
+                    const rem = c.total - c.paid;
+                    d1 += rem; d2 += c.paid;
+                    if(c.name.toLowerCase().includes(cq) || c.book.includes(cq)) {
+                        ct.innerHTML += `<tr>
+                            <td style="color:var(--neon-blue)">${c.book}</td>
+                            <td><b>${c.name}</b></td><td>${c.item}</td>
+                            <td style="color:var(--neon-red)">${rem.toLocaleString()}</td>
+                            <td style="color:var(--gold)">${c.monthly.toLocaleString()}</td>
+                            <td>${c.monthly > 0 ? Math.ceil(rem/c.monthly) : '-'}</td>
+                            <td><button class="btn btn-primary" onclick="app.pay(${c.id})">واصل</button></td>
+                        </tr>`;
+                    }
+                });
+                document.getElementById('d1').innerText = d1.toLocaleString() + " د.ع";
+                document.getElementById('d2').innerText = d2.toLocaleString() + " د.ع";
+
+                const iq = document.getElementById('invSearch').value.toLowerCase();
+                const it = document.getElementById('invTable'); it.innerHTML = '';
+                let invS = 0;
+                this.db.inv.forEach(i => {
+                    invS += i.wholesale;
+                    if(i.name.toLowerCase().includes(iq)) {
+                        it.innerHTML += `<tr>
+                            <td><img src="${i.img}" class="item-img"></td>
+                            <td>${i.name}</td>
+                            <td>${i.wholesale.toLocaleString()}</td>
+                            <td style="color:var(--neon-green)">${i.retail.toLocaleString()}</td>
+                            <td style="font-size:11px">${i.parts}</td>
+                        </tr>`;
+                    }
+                });
+                document.getElementById('sInv').innerText = invS.toLocaleString() + " د.ع";
+
+                let mSum = 0;
+                document.getElementById('marketTable').innerHTML = this.db.market.map(m => {
+                    mSum += m.amount;
+                    return `<tr><td>${m.name}</td><td style="color:var(--neon-red)">${m.amount.toLocaleString()}</td>
+                    <td><button class="btn btn-danger" onclick="app.delMarket(${m.id})">حذف</button></td></tr>`;
+                }).join('');
+                document.getElementById('sMarket').innerText = mSum.toLocaleString() + " د.ع";
+
+                document.getElementById('archTable').innerHTML = this.db.arch.map(a => `
+                    <tr><td>${a.name}</td><td>${a.book}</td><td style="color:var(--neon-green)">مسدد بالكامل ✅</td></tr>
+                `).join('');
+            },
+
+            delInv(id) { if(confirm("حذف المادة؟")) {this.db.inv = this.db.inv.filter(x=>x.id!==id); this.save();} },
+            delMarket(id) { this.db.market = this.db.market.filter(x=>x.id!==id); this.save(); },
+            clear(ids) { ids.forEach(id => document.getElementById(id).value = ''); },
+            exportData() {
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.db));
+                const a = document.createElement('a'); a.href = dataStr; a.download = "backup_mohanad.json"; a.click();
+            }
+        };
+
+        app.render();
+    </script>
+</body>
+</html>
