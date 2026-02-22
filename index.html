@@ -4,514 +4,959 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>معرض مهند</title>
-    <link rel="apple-touch-icon" href="logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    
     <style>
-        :root {
-            --main-bg: #05070a;
-            --card-bg: rgba(22, 27, 34, 0.95);
-            --neon-blue: #00d2ff;
+        /* المتغيرات الخاصة بالتصميم الملكي النيون المأخوذة من النسخة المصغرة */
+        :root { 
+            --main-bg: #05070a; 
+            --card-bg: rgba(22, 27, 34, 0.95); 
+            --neon-blue: #00d2ff; 
             --neon-green: #00ff88;
             --neon-red: #ff4757;
             --gold: #ffc107;
-            --text: #ffffff;
+            --text: #ffffff; 
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        body {
-            background: url('https://images.unsplash.com/photo-1614850523296-d8c1af93d400?q=80&w=2070&auto=format&fit=crop') no-repeat center center fixed;
-            background-size: cover;
-            color: var(--text);
+        * { -webkit-tap-highlight-color: transparent; }
+
+        body { 
+            font-family: 'Cairo', sans-serif !important; 
+            /* إضافة الخلفية من النسخة المصغرة */
+            background: url('https://images.unsplash.com/photo-1614850523296-d8c1af93d400?q=80&w=2070&auto=format&fit=crop') no-repeat center center fixed !important;
+            background-size: cover !important;
+            color: var(--text) !important; 
             min-height: 100vh;
-            font-size: 14px;
         }
 
-        .overlay { background: rgba(5, 7, 10, 0.88); min-height: 100vh; padding: 10px; }
-
-        /* الهيدر - متجاوب */
-        header {
-            display: flex; justify-content: space-between; align-items: center;
-            background: var(--card-bg); padding: 12px 15px; border-radius: 15px;
-            border: 1px solid rgba(0, 210, 255, 0.3); margin-bottom: 15px; backdrop-filter: blur(10px);
+        .overlay-bg {
+            background: rgba(5, 7, 10, 0.88);
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
         }
-        .logo h1 { font-size: 18px; font-weight: 900; color: var(--neon-blue); display: flex; align-items: center; gap: 8px; }
 
-        /* الساعة المطلوبة (أرقام إنكليزية 100%) */
-        .digital-clock { text-align: right; line-height: 1.2; }
+        /* إخفاء خلفيات Tailwind الفاتحة وتحويلها للداكنة (Glassmorphism) */
+        .bg-white, .bg-slate-50, .bg-slate-100, .bg-blue-50, .bg-emerald-50, .bg-rose-50, .glass-card, .bg-slate-200\/50, .bg-slate-900 {
+            background-color: var(--card-bg) !important;
+            border-color: rgba(0, 210, 255, 0.3) !important;
+            color: var(--text) !important;
+            backdrop-filter: blur(15px);
+        }
+
+        /* توحيد ألوان النصوص */
+        .text-slate-800, .text-slate-700, .text-slate-600 { color: var(--text) !important; }
+        .text-slate-500 { color: #aaa !important; }
+        .text-blue-500, .text-blue-600, .text-blue-700, .text-blue-800 { color: var(--neon-blue) !important; }
+        .text-emerald-500, .text-emerald-600 { color: var(--neon-green) !important; }
+        .text-rose-600, .text-rose-500, .text-red-500 { color: var(--neon-red) !important; }
+        
+        h1, h2, h3, h4 { font-weight: 900 !important; }
+
+        /* حقول الإدخال */
+        input, textarea, select {
+            background: rgba(0,0,0,0.5) !important;
+            color: white !important;
+            border: 1px solid #333 !important;
+            outline: none !important;
+            border-radius: 12px !important;
+        }
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--neon-blue) !important;
+            box-shadow: 0 0 8px rgba(0, 210, 255, 0.3) !important;
+        }
+
+        /* الأزرار الرئيسية */
+        button.bg-blue-600, button.bg-emerald-500, button.bg-slate-800, button.bg-gradient-to-r, button.bg-amber-500 {
+            background: var(--neon-blue) !important;
+            color: #000 !important;
+            border: none !important;
+            box-shadow: 0 4px 15px rgba(0, 210, 255, 0.2) !important;
+            font-weight: bold !important;
+        }
+        
+        /* أزرار الحذف والإلغاء */
+        button.bg-red-500, button.text-red-500 {
+            background: rgba(255, 71, 87, 0.2) !important;
+            color: var(--neon-red) !important;
+            border: 1px solid var(--neon-red) !important;
+            box-shadow: none !important;
+        }
+
+        /* القائمة العلوية (المتحولة من الجانبية) */
+        .main-nav-container {
+            display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px;
+            scrollbar-width: none;
+        }
+        .main-nav-container::-webkit-scrollbar { display: none; }
+        
+        .sidebar-btn { 
+            background: var(--card-bg) !important; padding: 10px 18px !important; border-radius: 12px !important;
+            border: 1px solid rgba(255,255,255,0.1) !important; cursor: pointer; font-weight: bold;
+            display: flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; transition: 0.3s;
+            color: #fff !important; width: auto !important; flex: 0 0 auto;
+        }
+        .sidebar-btn.active { 
+            background: var(--neon-blue) !important; 
+            color: #000 !important; 
+            border-color: var(--neon-blue) !important; 
+            box-shadow: 0 0 10px rgba(0,210,255,0.5) !important;
+        }
+
+        /* الجداول */
+        .table-wrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        thead th {
+            color: var(--neon-blue) !important;
+            border-bottom: 2px solid #333 !important;
+            background: transparent !important;
+            white-space: nowrap;
+        }
+        tbody tr { border-bottom: 1px solid #222 !important; }
+        tbody tr:hover { background: rgba(0, 210, 255, 0.05) !important; }
+        td { color: var(--text) !important; white-space: nowrap; }
+
+        /* الساعة */
+        .digital-clock { text-align: left; line-height: 1.2; direction: ltr; }
         #time-display { font-family: sans-serif; font-size: 18px; color: var(--neon-blue); font-weight: 800; display: block; }
         #date-display { font-family: sans-serif; font-size: 12px; color: #aaa; font-weight: bold; }
 
-        /* القائمة - تتحرك باللمس للجوال */
-        .main-nav {
-            display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 8px;
-            scrollbar-width: none; /* Hide scrollbar for Firefox */
-        }
-        .main-nav::-webkit-scrollbar { display: none; } /* Hide scrollbar for Chrome/Safari */
+        /* تأثير التمرير العام */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 10px; }
+
+        /* النوافذ المنبثقة Modal */
+        .fixed.inset-0.bg-slate-900\/60, .bg-slate-900\/95 { background: rgba(0,0,0,0.95) !important; }
         
-        .nav-link {
-            background: var(--card-bg); padding: 10px 18px; border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.1); cursor: pointer; font-weight: bold;
-            display: flex; align-items: center; gap: 6px; white-space: nowrap; transition: 0.3s;
-        }
-        .nav-link.active { background: var(--neon-blue); color: #000; border-color: var(--neon-blue); box-shadow: 0 0 10px rgba(0,210,255,0.5); }
-
-        /* الكروت والحاويات */
-        .content-card {
-            background: var(--card-bg); border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);
-            padding: 15px; backdrop-filter: blur(15px); overflow: hidden;
-        }
-
-        .stats-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 10px; margin-bottom: 15px;
-        }
-        .stat-item {
-            background: rgba(0,0,0,0.5); padding: 12px; border-radius: 15px;
-            text-align: center; border-bottom: 2px solid var(--neon-blue);
-        }
-        .stat-item h3 { font-size: 11px; color: #888; margin-bottom: 4px; }
-        .stat-item .val { font-size: 15px; font-weight: 900; }
-
-        /* الجداول - أهم جزء للجوال */
-        .table-wrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        table { width: 100%; border-collapse: collapse; min-width: 650px; } 
-        th { padding: 12px 10px; color: var(--neon-blue); border-bottom: 2px solid #333; text-align: right; font-size: 12px; }
-        td { padding: 12px 10px; border-bottom: 1px solid #222; font-size: 13px; }
-        
-        .item-img { width: 45px; height: 45px; border-radius: 8px; object-fit: cover; border: 1px solid #333; }
-
-        .btn {
-            padding: 10px 15px; border-radius: 10px; border: none; cursor: pointer;
-            font-weight: bold; display: inline-flex; align-items: center; gap: 6px; font-size: 13px;
-        }
-        .btn-primary { background: var(--neon-blue); color: #000; }
-        .btn-danger { background: rgba(255, 71, 87, 0.2); color: var(--neon-red); border: 1px solid var(--neon-red); }
-
-        /* البحث */
-        .search-container { position: relative; margin-bottom: 15px; }
-        .search-container input {
-            width: 100%; padding: 12px 40px 12px 15px; background: rgba(0,0,0,0.5);
-            border: 1px solid #333; border-radius: 12px; color: white; outline: none; font-size: 14px;
-        }
-        .search-container i { position: absolute; right: 15px; top: 15px; color: var(--neon-blue); }
-
-        /* المودال - متجاوب */
-        .modal {
-            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95);
-            z-index: 2000; justify-content: center; align-items: center; padding: 15px;
-        }
-        .modal-content {
-            background: #161b22; width: 100%; max-width: 450px; padding: 20px;
-            border-radius: 20px; border: 1px solid var(--neon-blue); max-height: 90vh; overflow-y: auto;
-        }
-        .input-group { margin-bottom: 12px; }
-        .input-group label { display: block; margin-bottom: 4px; color: var(--neon-blue); font-size: 12px; font-weight: bold; }
-        .input-group input {
-            width: 100%; padding: 10px; background: #000; border: 1px solid #333;
-            border-radius: 8px; color: white; font-size: 16px; 
-        }
-
-        .section { display: none; }
-        .section.active { display: block; }
-
-        /* ستايل شاشة القفل */
-        #lockScreen {
-            position: fixed; inset: 0; background: #05070a; z-index: 9999;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            padding: 20px;
-        }
-        #lockScreen i { font-size: 50px; color: var(--neon-blue); margin-bottom: 20px; }
-        #lockScreen h2 { margin-bottom: 20px; color: white; }
-        #lockInput { 
-            padding: 15px; font-size: 20px; text-align: center; letter-spacing: 5px; 
-            border-radius: 15px; border: 2px solid var(--neon-blue); background: #161b22; color: var(--neon-blue);
-            width: 200px; outline: none;
-        }
-        #lockMsg { margin-top: 10px; color: var(--neon-red); font-weight: bold; min-height: 20px; }
-
-        @media (max-width: 480px) {
-            header { padding: 10px; }
-            .logo h1 { font-size: 16px; }
-            #time-display { font-size: 16px; }
+        /* التابات */
+        .tab-content { display: none; animation: fadeIn 0.4s ease-in-out; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
-<body>
+<body class="text-slate-800 relative">
 
-    <div id="lockScreen">
-        <i class="fas fa-fingerprint"></i>
-        <h2>نظام الحماية</h2>
-        <input type="password" id="lockInput" placeholder="****" maxlength="4" pattern="\d*">
-        <div id="lockMsg"></div>
-        <button class="btn btn-primary" style="margin-top:15px; width:200px; justify-content: center;" onclick="checkPass()">دخول</button>
-    </div>
+<div class="overlay-bg"></div>
 
-    <div class="overlay">
-        <header>
-            <div class="logo">
+<div id="authScreen" class="fixed inset-0 bg-slate-900/95 backdrop-blur-sm flex items-center justify-center z-[200]">
+    <div class="glass-card p-10 rounded-3xl w-[400px] border-t-4" style="border-color: var(--neon-blue);">
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full text-2xl shadow-inner mb-4" style="background: rgba(0,210,255,0.1); color: var(--neon-blue);">
                 <i class="fas fa-crown"></i>
-                <h1>معرض مهند</h1>
             </div>
-            <div class="digital-clock">
+            <h2 class="text-3xl font-extrabold" style="color: var(--neon-blue);">معرض مهند</h2>
+            <p class="text-slate-500 mt-2 text-sm">نظام الإدارة الشامل</p>
+        </div>
+        <input type="email" id="authEmail" placeholder="البريد الإلكتروني" class="w-full p-4 mb-4 border rounded-xl bg-slate-50/50 text-left" dir="ltr">
+        <input type="password" id="authPassword" placeholder="كلمة المرور" class="w-full p-4 mb-6 border rounded-xl bg-slate-50/50 text-left" dir="ltr">
+        <button onclick="window.login()" class="w-full bg-blue-600 text-white p-4 rounded-xl font-bold transition-all">تسجيل الدخول</button>
+        <button onclick="window.register()" class="w-full text-slate-500 mt-4 text-sm hover:text-blue-600 transition">إنشاء حساب جديد</button>
+    </div>
+</div>
+
+<div id="mainApp" class="hidden flex-col min-h-screen relative z-10 p-2 sm:p-4 max-w-7xl mx-auto">
+    
+    <header class="flex justify-between items-center p-3 sm:p-4 rounded-2xl mb-4" style="background: var(--card-bg); border: 1px solid rgba(0, 210, 255, 0.3); backdrop-filter: blur(10px);">
+        <div class="flex items-center gap-3">
+            <i class="fas fa-crown text-2xl" style="color: var(--neon-blue);"></i>
+            <h1 class="text-lg sm:text-xl font-extrabold" style="color: var(--neon-blue);">معرض مهند</h1>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="digital-clock hidden sm:block">
                 <div id="time-display">12:00:00 AM</div>
                 <div id="date-display">16/02/2026</div>
             </div>
-        </header>
-
-        <nav class="main-nav">
-            <div class="nav-link active" onclick="ui.tab('custSec', this)"><i class="fas fa-user-tag"></i> الزبائن</div>
-            <div class="nav-link" onclick="ui.tab('invSec', this)"><i class="fas fa-store"></i> المخزن</div>
-            <div class="nav-link" onclick="ui.tab('marketSec', this)"><i class="fas fa-truck"></i> الشركات</div>
-            <div class="nav-link" onclick="ui.tab('statsSec', this)"><i class="fas fa-wallet"></i> المالية</div>
-            <div class="nav-link" onclick="ui.tab('archSec', this)"><i class="fas fa-check-circle"></i> الأرشيف</div>
-        </nav>
-
-        <main>
-            <div id="custSec" class="section active">
-                <div class="stats-grid">
-                    <div class="stat-item"><h3>ديون عند الناس</h3><div id="d1" class="val" style="color:var(--neon-red)">0</div></div>
-                    <div class="stat-item"><h3>إجمالي الواصل</h3><div id="d2" class="val" style="color:var(--neon-green)">0</div></div>
-                </div>
-                <button class="btn btn-primary" style="width:100%; margin-bottom:15px; justify-content:center;" onclick="ui.modal('modalAddCust')"><i class="fas fa-plus-circle"></i> إضافة قسط جديد</button>
-                <div class="search-container">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="custSearch" placeholder="ابحث باسم الزبون أو رقم الدفتر..." oninput="app.render()">
-                </div>
-                <div class="content-card">
-                    <div class="table-wrapper">
-                        <table>
-                            <thead>
-                                <tr><th>دفتر</th><th>الزبون</th><th>المادة</th><th>المتبقي</th><th>القسط</th><th>الأشهر</th><th>إدارة</th></tr>
-                            </thead>
-                            <tbody id="custTable"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div id="invSec" class="section">
-                <button class="btn btn-primary" style="width:100%; margin-bottom:15px; justify-content:center;" onclick="ui.modal('modalAddInv')"><i class="fas fa-plus-square"></i> إضافة بضاعة جديدة</button>
-                <div class="content-card">
-                    <div class="search-container">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="invSearch" placeholder="ابحث في المخزن..." oninput="app.render()">
-                    </div>
-                    <div class="table-wrapper">
-                        <table>
-                            <thead>
-                                <tr><th>صورة</th><th>المادة</th><th>جملة</th><th>بيع</th><th>ملاحظات</th></tr>
-                            </thead>
-                            <tbody id="invTable"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div id="statsSec" class="section">
-                <div class="content-card" style="text-align: center;">
-                    <h2 style="color:var(--neon-blue); margin-bottom: 20px;">التقرير المالي العام</h2>
-                    <div class="stats-grid">
-                        <div class="stat-item"><h3>رأس مال المخزن</h3><div id="sInv" class="val">0</div></div>
-                        <div class="stat-item"><h3>ديون الشركات</h3><div id="sMarket" class="val" style="color:var(--neon-red)">0</div></div>
-                    </div>
-                    <button class="btn btn-primary" style="width:100%; justify-content:center; margin-bottom:10px;" onclick="app.exportData()"><i class="fas fa-file-download"></i> تصدير نسخة احتياطية</button>
-                    <button class="btn btn-primary" style="width:100%; justify-content:center; background:var(--gold); color:#000;" onclick="ui.modal('modalChangePass')"><i class="fas fa-key"></i> تغيير كلمة المرور</button>
-                </div>
-            </div>
-
-            <div id="marketSec" class="section">
-                <button class="btn btn-primary" style="width:100%; margin-bottom:15px; justify-content:center;" onclick="app.addMarket()"><i class="fas fa-building"></i> إضافة دين شركة جديد</button>
-                <div class="content-card"><div class="table-wrapper"><table id="marketTable"></table></div></div>
-            </div>
-
-            <div id="archSec" class="section">
-                <div class="content-card">
-                    <h2 style="font-size:16px; margin-bottom:10px; color:var(--neon-green)">قائمة المكتملين ✅</h2>
-                    <div class="table-wrapper"><table><tbody id="archTable"></tbody></table></div>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <div id="modalAddCust" class="modal"><div class="modal-content">
-        <h2 style="color:var(--neon-blue); margin-bottom:15px; font-size:18px;">تسجيل بيع قسط</h2>
-        <div class="input-group"><label>رقم الدفتر</label><input id="cBook" type="text" placeholder="مثلاً: 105"></div>
-        <div class="input-group"><label>اسم الزبون الكامل</label><input id="cName" type="text"></div>
-        <div class="input-group"><label>المادة المباعة</label><input id="cItem" type="text"></div>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px">
-            <div class="input-group"><label>السعر الكلي</label><input id="cPrice" type="number"></div>
-            <div class="input-group"><label>القسط الشهري</label><input id="cMonthly" type="number"></div>
+            <button onclick="window.logout()" class="text-red-500 bg-red-500/10 w-10 h-10 rounded-xl flex justify-center items-center hover:bg-red-500 hover:text-white transition">
+                <i class="fas fa-power-off"></i>
+            </button>
         </div>
-        <button class="btn btn-primary" style="width:100%; margin-top:10px" onclick="app.addCust()">حفظ العملية</button>
-        <button class="btn btn-danger" style="width:100%; margin-top:10px" onclick="ui.close()">إغلاق</button>
-    </div></div>
+    </header>
 
-    <div id="modalAddInv" class="modal"><div class="modal-content">
-        <h2 style="color:var(--neon-blue); margin-bottom:15px; font-size:18px;">إضافة مادة للمخزن</h2>
-        <div class="input-group"><label>اسم المادة</label><input id="iName" type="text"></div>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px">
-            <div class="input-group"><label>سعر الجملة</label><input id="iWholesale" type="number"></div>
-            <div class="input-group"><label>سعر البيع</label><input id="iRetail" type="number"></div>
-        </div>
-        <div class="input-group"><label>رابط الصورة (من النت)</label><input id="iImg" type="text" placeholder="https://..."></div>
-        <div class="input-group"><label>ملاحظات</label><input id="iParts" type="text"></div>
-        <button class="btn btn-primary" style="width:100%; margin-top:10px" onclick="app.addInv()">إضافة المادة</button>
-        <button class="btn btn-danger" style="width:100%; margin-top:10px" onclick="ui.close()">إغلاق</button>
-    </div></div>
+    <nav class="main-nav-container mb-4">
+        <button onclick="switchTab('customers')" class="sidebar-btn active"><i class="fas fa-users"></i> سجل الزبائن</button>
+        <button onclick="switchTab('inventory')" class="sidebar-btn"><i class="fas fa-boxes-stacked"></i> إدارة المخزن</button>
+        <button onclick="switchTab('companies')" class="sidebar-btn"><i class="fas fa-building"></i> الشركات</button>
+        <button onclick="switchTab('financial')" class="sidebar-btn"><i class="fas fa-chart-pie"></i> المالية</button>
+        <button onclick="switchTab('archive')" class="sidebar-btn"><i class="fas fa-box-archive"></i> أرشيف الديون</button>
+        <button onclick="switchTab('pos')" class="sidebar-btn"><i class="fas fa-cash-register"></i> البيع المباشر</button>
+    </nav>
 
-    <div id="modalChangePass" class="modal"><div class="modal-content">
-        <h2 style="color:var(--gold); margin-bottom:15px; font-size:18px;">تغيير كلمة المرور</h2>
-        <div class="input-group"><label>كلمة المرور الحالية</label><input id="oldPass" type="password"></div>
-        <div class="input-group"><label>كلمة المرور الجديدة</label><input id="newPass" type="password"></div>
-        <button class="btn btn-primary" style="width:100%; margin-top:10px" onclick="app.changePass()">حفظ التغيير</button>
-        <button class="btn btn-danger" style="width:100%; margin-top:10px" onclick="ui.close()">إغلاق</button>
-    </div></div>
-
-    <script>
-        // --- كود الحماية ---
-        if(!localStorage.getItem('MOHANAD_PASS')) {
-            localStorage.setItem('MOHANAD_PASS', '1234');
-        }
-
-        function checkPass() {
-            const input = document.getElementById('lockInput').value;
-            const correct = localStorage.getItem('MOHANAD_PASS');
-            const msg = document.getElementById('lockMsg');
-
-            if(input === correct) {
-                document.getElementById('lockScreen').style.display = 'none';
-            } else {
-                msg.innerText = "كلمة المرور خاطئة ❌";
-                document.getElementById('lockInput').value = '';
-            }
-        }
-        document.getElementById('lockInput').addEventListener("keypress", function(event) {
-            if (event.key === "Enter") checkPass();
-        });
-
-
-        // --- الوقت والتاريخ ---
-        function updateClock() {
-            const now = new Date();
-            const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
-            const timeStr = now.toLocaleTimeString('en-GB', timeOptions); 
-            
-            const d = String(now.getDate()).padStart(2, '0');
-            const m = String(now.getMonth() + 1).padStart(2, '0');
-            const y = now.getFullYear();
-            
-            document.getElementById('time-display').textContent = timeStr.toUpperCase();
-            document.getElementById('date-display').textContent = `${d}/${m}/${y}`;
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
-
-        const ui = {
-            tab: (id, btn) => {
-                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-                document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
-                document.getElementById(id).classList.add('active');
-                btn.classList.add('active');
-            },
-            modal: (id) => document.getElementById(id).style.display = 'flex',
-            close: () => {
-                document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
-                app.clear(['oldPass', 'newPass']); 
-            }
-        };
-
-        const app = {
-            db: JSON.parse(localStorage.getItem('MOHANAD_FINAL_MOBILE')) || { cust: [], inv: [], market: [], arch: [] },
-
-            // سيتم استبدال هذه الدالة لاحقاً في سكريبت Firebase لتقوم بالمزامنة السحابية بجانب المحلية
-            save() { 
-                localStorage.setItem('MOHANAD_FINAL_MOBILE', JSON.stringify(this.db)); 
-                this.render(); 
-            },
-
-            addCust() {
-                const price = Number(document.getElementById('cPrice').value);
-                const name = document.getElementById('cName').value;
-                if(!name || !price) return alert("دخل الاسم والسعر!");
-                this.db.cust.push({
-                    id: Date.now(),
-                    book: document.getElementById('cBook').value || '-',
-                    name: name,
-                    item: document.getElementById('cItem').value || 'بضاعة',
-                    total: price, paid: 0, 
-                    monthly: Number(document.getElementById('cMonthly').value) || 0
-                });
-                ui.close(); this.save();
-                this.clear(['cBook','cName','cItem','cPrice','cMonthly']);
-            },
-
-            addInv() {
-                const name = document.getElementById('iName').value;
-                if(!name) return;
-                this.db.inv.push({
-                    id: Date.now(),
-                    name: name,
-                    wholesale: Number(document.getElementById('iWholesale').value) || 0,
-                    retail: Number(document.getElementById('iRetail').value) || 0,
-                    img: document.getElementById('iImg').value || 'https://cdn-icons-png.flaticon.com/512/1250/1250615.png',
-                    parts: document.getElementById('iParts').value || '-'
-                });
-                ui.close(); this.save();
-                this.clear(['iName','iWholesale','iRetail','iImg','iParts']);
-            },
-
-            addMarket() {
-                const n = prompt("اسم الشركة:");
-                const a = Number(prompt("المبلغ المطلوب منهم:"));
-                if(n) { this.db.market.push({id:Date.now(), name:n, amount:a}); this.save(); }
-            },
-
-            changePass() {
-                const oldP = document.getElementById('oldPass').value;
-                const newP = document.getElementById('newPass').value;
-                const current = localStorage.getItem('MOHANAD_PASS');
-
-                if(oldP !== current) {
-                    alert("كلمة المرور القديمة خاطئة! ❌");
-                    return;
-                }
-                if(!newP || newP.length < 4) {
-                    alert("كلمة المرور الجديدة ضعيفة (أقل شي 4 أرقام)!");
-                    return;
-                }
-                localStorage.setItem('MOHANAD_PASS', newP);
-                alert("تم تغيير الرمز بنجاح ✅");
-                ui.close();
-            },
-
-            pay(id) {
-                const amount = Number(prompt("دخل المبلغ الواصل حالياً:"));
-                if(!amount) return;
-                const c = this.db.cust.find(x => x.id === id);
-                c.paid += amount;
-                if(c.paid >= c.total) { 
-                    alert("تم اكتمال التسديد ✅");
-                    this.db.arch.push(c); 
-                    this.db.cust = this.db.cust.filter(x=>x.id!==id); 
-                }
-                this.save();
-            },
-
-            render() {
-                const cq = document.getElementById('custSearch').value.toLowerCase();
-                const ct = document.getElementById('custTable'); ct.innerHTML = '';
-                let d1=0, d2=0;
-                this.db.cust.forEach(c => {
-                    const rem = c.total - c.paid;
-                    d1 += rem; d2 += c.paid;
-                    if(c.name.toLowerCase().includes(cq) || c.book.includes(cq)) {
-                        ct.innerHTML += `<tr>
-                            <td style="color:var(--neon-blue)">${c.book}</td>
-                            <td><b>${c.name}</b></td><td>${c.item}</td>
-                            <td style="color:var(--neon-red)">${rem.toLocaleString()}</td>
-                            <td style="color:var(--gold)">${c.monthly.toLocaleString()}</td>
-                            <td>${c.monthly > 0 ? Math.ceil(rem/c.monthly) : '-'}</td>
-                            <td><button class="btn btn-primary" onclick="app.pay(${c.id})">واصل</button></td>
-                        </tr>`;
-                    }
-                });
-                document.getElementById('d1').innerText = d1.toLocaleString() + " د.ع";
-                document.getElementById('d2').innerText = d2.toLocaleString() + " د.ع";
-
-                const iq = document.getElementById('invSearch').value.toLowerCase();
-                const it = document.getElementById('invTable'); it.innerHTML = '';
-                let invS = 0;
-                this.db.inv.forEach(i => {
-                    invS += i.wholesale;
-                    if(i.name.toLowerCase().includes(iq)) {
-                        it.innerHTML += `<tr>
-                            <td><img src="${i.img}" class="item-img"></td>
-                            <td>${i.name}</td>
-                            <td>${i.wholesale.toLocaleString()}</td>
-                            <td style="color:var(--neon-green)">${i.retail.toLocaleString()}</td>
-                            <td style="font-size:11px">${i.parts}</td>
-                        </tr>`;
-                    }
-                });
-                document.getElementById('sInv').innerText = invS.toLocaleString() + " د.ع";
-
-                let mSum = 0;
-                document.getElementById('marketTable').innerHTML = this.db.market.map(m => {
-                    mSum += m.amount;
-                    return `<tr><td>${m.name}</td><td style="color:var(--neon-red)">${m.amount.toLocaleString()}</td>
-                    <td><button class="btn btn-danger" onclick="app.delMarket(${m.id})">حذف</button></td></tr>`;
-                }).join('');
-                document.getElementById('sMarket').innerText = mSum.toLocaleString() + " د.ع";
-
-                document.getElementById('archTable').innerHTML = this.db.arch.map(a => `
-                    <tr><td>${a.name}</td><td>${a.book}</td><td style="color:var(--neon-green)">مسدد بالكامل ✅</td></tr>
-                `).join('');
-            },
-
-            delInv(id) { if(confirm("حذف المادة؟")) {this.db.inv = this.db.inv.filter(x=>x.id!==id); this.save();} },
-            delMarket(id) { this.db.market = this.db.market.filter(x=>x.id!==id); this.save(); },
-            clear(ids) { ids.forEach(id => document.getElementById(id).value = ''); },
-            exportData() {
-                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.db));
-                const a = document.createElement('a'); a.href = dataStr; a.download = "backup_mohanad.json"; a.click();
-            }
-        };
-
-        app.render();
-    </script>
-    
-    <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-      import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
-      import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-      // إعدادات مشروعك الحقيقية
-      const firebaseConfig = {
-        apiKey: "AIzaSyB1e-lTs-hXrKq7uAkhTj_azp8CdmrwO8w",
-        authDomain: "gggg-44b14.firebaseapp.com",
-        projectId: "gggg-44b14",
-        storageBucket: "gggg-44b14.firebasestorage.app",
-        messagingSenderId: "674591791834",
-        appId: "1:674591791834:web:a37a39d5b133a227f5a3e3",
-        measurementId: "G-YM9B6NR117"
-      };
-
-      // تشغيل فايربيس
-      const firebaseApp = initializeApp(firebaseConfig);
-      const analytics = getAnalytics(firebaseApp);
-      const db = getFirestore(firebaseApp);
-
-      // المستند الذي سيتم فيه حفظ ومزامنة البيانات (يمكنك تغيير الاسم "shared" لاحقاً)
-      const myDoc = doc(db, "syncData", "shared");
-
-      // 1. الاستماع للتغييرات السحابية (المزامنة الفورية من أجهزة أخرى)
-      onSnapshot(myDoc, (snapshot) => {
-        if (snapshot.exists()) {
-          const remoteData = snapshot.data();
-          console.log("تم جلب البيانات من السحابة بنجاح!");
-          
-          // تحديث البيانات محلياً وإعادة رسم الواجهة
-          app.db = remoteData;
-          localStorage.setItem('MOHANAD_FINAL_MOBILE', JSON.stringify(remoteData));
-          app.render();
-        }
-      });
-
-      // 2. ربط دالة الحفظ الخاصة بالتطبيق (app.save) لترفع البيانات للسحابة مع كل عملية
-      app.save = function() {
-        // الحفظ محلياً
-        localStorage.setItem('MOHANAD_FINAL_MOBILE', JSON.stringify(this.db));
-        this.render();
+    <main class="flex-1 overflow-y-auto">
         
-        // الرفع على فايربيس
-        setDoc(myDoc, this.db).then(() => {
-            console.log("تم حفظ النسخة الاحتياطية سحابياً ✅");
-        }).catch(error => {
-            console.error("خطأ في الاتصال بالسحابة: ", error);
+        <section id="customers" class="tab-content active">
+            <div class="glass-card p-4 rounded-2xl mb-4 flex flex-col sm:flex-row gap-3">
+                <button onclick="openCustomerModal()" class="bg-blue-600 text-white w-full sm:w-auto px-6 py-3 rounded-xl font-bold flex justify-center items-center gap-2">
+                    <i class="fas fa-plus-circle"></i> إضافة زبون
+                </button>
+                <div class="relative w-full">
+                    <i class="fas fa-search absolute right-3 top-3.5 text-slate-400"></i>
+                    <input type="text" id="custSearch" placeholder="بحث باسم الزبون..." class="pl-3 pr-10 py-3 w-full" onkeyup="renderCustomers()">
+                </div>
+            </div>
+            <div class="glass-card rounded-2xl p-2 sm:p-4">
+                <div class="table-wrapper">
+                    <table class="w-full text-right">
+                        <thead>
+                            <tr>
+                                <th>رقم الدفتر</th>
+                                <th>الزبون</th>
+                                <th>المادة المشتراة</th>
+                                <th>المتبقي (د.ع)</th>
+                                <th class="text-center">إجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="customersTable" class="divide-y divide-slate-100"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="inventory" class="tab-content">
+            <div class="glass-card p-4 rounded-2xl mb-4">
+                <div class="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-hide">
+                    <button onclick="filterInventory('مبايلات')" class="sub-tab active px-4 py-2 rounded-lg font-bold flex items-center gap-2 whitespace-nowrap" data-cat="مبايلات"><i class="fas fa-mobile-screen"></i> موبايلات</button>
+                    <button onclick="filterInventory('اكسسوارات')" class="sub-tab px-4 py-2 rounded-lg font-bold flex items-center gap-2 whitespace-nowrap" data-cat="اكسسوارات"><i class="fas fa-headphones"></i> اكسسوارات</button>
+                    <button onclick="filterInventory('أجهزة كهربائية')" class="sub-tab px-4 py-2 rounded-lg font-bold flex items-center gap-2 whitespace-nowrap" data-cat="أجهزة كهربائية"><i class="fas fa-tv"></i> كهربائية</button>
+                    <button onclick="filterInventory('أجهزة منزلية')" class="sub-tab px-4 py-2 rounded-lg font-bold flex items-center gap-2 whitespace-nowrap" data-cat="أجهزة منزلية"><i class="fas fa-fan"></i> منزلية</button>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <button onclick="openInventoryModal()" class="bg-emerald-500 text-white w-full sm:w-auto px-6 py-3 rounded-xl font-bold flex justify-center items-center gap-2">
+                        <i class="fas fa-plus-square"></i> إضافة بضاعة
+                    </button>
+                    <div class="relative w-full">
+                        <i class="fas fa-search absolute right-3 top-3.5 text-slate-400"></i>
+                        <input type="text" id="invSearch" placeholder="بحث في المخزن..." class="pl-3 pr-10 py-3 w-full" onkeyup="renderInventory()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-2xl p-2 sm:p-4">
+                <div class="table-wrapper">
+                    <table class="w-full text-right">
+                        <thead>
+                            <tr>
+                                <th>اسم المادة</th>
+                                <th class="text-center">الكمية</th>
+                                <th>الجملة</th>
+                                <th>الإجمالي</th>
+                                <th>البيع</th>
+                                <th>ملاحظات</th>
+                                <th class="text-center">تعديل/حذف</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventoryTable" class="divide-y divide-slate-100"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="companies" class="tab-content">
+            <div class="glass-card p-4 rounded-2xl mb-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <h2 class="text-xl font-bold text-white"><i class="fas fa-building text-slate-400 ml-2"></i> حسابات الشركات</h2>
+                <button onclick="openCompanyModal()" class="bg-slate-800 text-white px-6 py-3 rounded-xl font-bold w-full sm:w-auto"><i class="fas fa-plus-circle ml-2"></i> إضافة وصل دين</button>
+            </div>
+            <div class="glass-card rounded-2xl p-2 sm:p-4">
+                <div class="table-wrapper">
+                    <table class="w-full text-right">
+                        <thead>
+                            <tr>
+                                <th>الشركة الموردة</th>
+                                <th>تاريخ الوصل</th>
+                                <th>الدين الكلي</th>
+                                <th>الواصل لهم</th>
+                                <th>المتبقي بذمتنا</th>
+                            </tr>
+                        </thead>
+                        <tbody id="companiesTable" class="divide-y divide-slate-100"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="financial" class="tab-content">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                <div class="glass-card p-6 rounded-2xl text-center border-b-2" style="border-bottom-color: var(--neon-blue);">
+                    <h3 class="text-slate-400 font-bold mb-2 text-sm">إجمالي المخزن</h3>
+                    <p id="statInvTotal" class="text-2xl font-extrabold text-white">0 د.ع</p>
+                </div>
+                <div class="glass-card p-6 rounded-2xl text-center border-b-2" style="border-bottom-color: var(--neon-red);">
+                    <h3 class="text-slate-400 font-bold mb-2 text-sm">ديون علينا (شركات)</h3>
+                    <p id="statCompTotal" class="text-2xl font-extrabold text-white">0 د.ع</p>
+                </div>
+                <div class="glass-card p-6 rounded-2xl text-center border-b-2" style="border-bottom-color: var(--neon-green);">
+                    <h3 class="text-slate-400 font-bold mb-2 text-sm">ديون لنا (زبائن)</h3>
+                    <p id="statCustTotal" class="text-2xl font-extrabold text-white">0 د.ع</p>
+                </div>
+            </div>
+            <div class="text-center">
+                <button onclick="exportBackup()" class="bg-slate-800 text-white px-8 py-4 rounded-xl font-bold w-full sm:w-auto">
+                    <i class="fas fa-cloud-arrow-down ml-2"></i> تصدير نسخة احتياطية للبيانات
+                </button>
+            </div>
+        </section>
+
+        <section id="archive" class="tab-content">
+            <div class="glass-card p-4 rounded-2xl mb-4">
+                <h2 class="text-xl font-bold" style="color: var(--neon-green);"><i class="fas fa-check-circle ml-2"></i> أرشيف الديون المنتهية</h2>
+            </div>
+            <div class="glass-card rounded-2xl p-2 sm:p-4">
+                <div class="table-wrapper">
+                    <table class="w-full text-right">
+                        <thead>
+                            <tr>
+                                <th>رقم الدفتر</th>
+                                <th>الزبون</th>
+                                <th>المادة</th>
+                                <th>المبلغ المسدد</th>
+                                <th class="text-center">إجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="archiveTable" class="divide-y divide-slate-100"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="pos" class="tab-content">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div class="glass-card p-6 rounded-2xl">
+                    <h3 class="font-bold text-lg mb-4 text-white"><i class="fas fa-cart-plus" style="color: var(--neon-blue);"></i> مبيعات الكاش</h3>
+                    <div class="space-y-4">
+                        <input type="text" id="posItemName" list="posItemsList" placeholder="اسم المادة..." class="w-full p-4">
+                        <datalist id="posItemsList"></datalist>
+                        <input type="number" id="posSalePrice" placeholder="سعر البيع (د.ع)" class="w-full p-4">
+                        <button onclick="addPosSale()" class="w-full bg-blue-600 text-white p-4 rounded-xl font-bold">تأكيد البيع</button>
+                    </div>
+                </div>
+                <div class="glass-card p-6 rounded-2xl flex flex-col h-full">
+                    <div class="flex justify-between items-center mb-4 border-b pb-2" style="border-color: #333;">
+                        <h3 class="font-bold text-lg text-white">مبيعات اليوم</h3>
+                        <span id="posCurrentDate" class="text-sm text-slate-400"></span>
+                    </div>
+                    <ul id="posDailyList" class="space-y-2 mb-4 flex-1 overflow-y-auto max-h-[200px]"></ul>
+                    <div class="mt-auto pt-4 border-t" style="border-color: #333;">
+                        <div class="flex justify-between text-lg font-bold mb-2">
+                            <span>اليوم:</span><span id="posDailyTotal" style="color: var(--neon-green);">0</span>
+                        </div>
+                        <div class="flex justify-between text-sm font-bold text-slate-400">
+                            <span>الشهر:</span><span id="posMonthlyTotal">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<div id="custModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center z-[150] p-4">
+    <div class="glass-card rounded-[2rem] w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6" style="border: 1px solid var(--neon-blue);">
+        <div class="flex justify-between items-center mb-6 border-b pb-4" style="border-color: #333;">
+            <h3 id="custModalTitle" class="text-xl font-extrabold text-white">تفاصيل الزبون</h3>
+            <button onclick="closeModal('custModal')" class="text-slate-400 hover:text-red-500 text-2xl"><i class="fas fa-times"></i></button>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-4">
+                <div class="flex gap-2">
+                    <input type="text" id="cID" placeholder="رقم الدفتر" class="w-1/3 p-3 text-center">
+                    <input type="text" id="cName" placeholder="الاسم الثلاثي *" class="w-2/3 p-3">
+                </div>
+                <input type="text" id="cItemName" list="inventoryItemsList" placeholder="المادة المشتراة *" class="w-full p-3">
+                <datalist id="inventoryItemsList"></datalist>
+                
+                <div class="grid grid-cols-3 gap-2">
+                    <input type="number" id="cTotal" placeholder="الكلي" class="w-full p-3" onkeyup="calcRemaining()">
+                    <input type="number" id="cPaid" placeholder="واصل" class="w-full p-3" onkeyup="calcRemaining()">
+                    <input type="number" id="cRem" placeholder="المتبقي" class="w-full p-3 font-bold" style="color: var(--neon-red);" readonly>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-2">
+                    <input type="text" id="cPhone" placeholder="رقم الهاتف" class="w-full p-3">
+                    <input type="text" id="cAddress" placeholder="العنوان" class="w-full p-3">
+                </div>
+                <textarea id="cNotes" placeholder="ملاحظات" class="w-full p-3 h-20 resize-none"></textarea>
+            </div>
+
+            <div class="space-y-4">
+                <div class="bg-black/40 p-4 rounded-xl border" style="border-color: #333;">
+                    <div class="flex justify-between items-center mb-2">
+                        <h4 class="font-bold text-sm text-slate-300">سجل الأقساط</h4>
+                        <button onclick="addMonthRow()" id="addMonthBtn" class="bg-blue-600 text-white text-xs px-3 py-1 rounded">قسط جديد</button>
+                    </div>
+                    <div id="monthsContainer" class="space-y-2 max-h-[120px] overflow-y-auto"></div>
+                </div>
+
+                <div class="bg-black/40 p-4 rounded-xl border" style="border-color: #333;">
+                    <h4 class="font-bold text-sm text-slate-300 mb-2">بيانات الكفيل</h4>
+                    <input type="text" id="gkName" placeholder="اسم الكفيل" class="w-full p-3 mb-2">
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" id="gkPhone" placeholder="هاتفه" class="w-full p-3">
+                        <input type="text" id="gkAddress" placeholder="عنوانه" class="w-full p-3">
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-2 hidden"> <input type="file" id="cImageInput" onchange="previewBase64(this, 'cImagePreview')">
+                    <img id="cImagePreview" src="" class="hidden">
+                    <input type="file" id="gImageInput" onchange="previewBase64(this, 'gImagePreview')">
+                    <img id="gImagePreview" src="" class="hidden">
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-6 flex flex-wrap gap-3">
+            <button onclick="saveCustomer()" id="saveCustBtn" class="flex-1 bg-blue-600 text-white p-3 rounded-xl font-bold">حفظ الزبون</button>
+            <button onclick="printCustomerReceipt()" id="printBtn" class="bg-amber-500 text-black p-3 rounded-xl font-bold">طباعة</button>
+            <button onclick="archiveCustomer()" id="archiveBtn" class="bg-slate-700 text-white p-3 rounded-xl font-bold hidden">أرشفة</button>
+            <button onclick="deleteCustomer()" id="deleteCustBtn" class="bg-red-500 text-white p-3 rounded-xl font-bold hidden"><i class="fas fa-trash"></i></button>
+        </div>
+    </div>
+</div>
+
+<div id="invModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center z-[150] p-4">
+    <div class="glass-card p-6 rounded-[2rem] w-full max-w-sm" style="border: 1px solid var(--neon-green);">
+        <h3 id="invModalTitle" class="text-xl font-bold text-white mb-4">تفاصيل البضاعة</h3>
+        <div class="space-y-3">
+            <select id="iCat" class="w-full p-3">
+                <option value="مبايلات">موبايلات</option>
+                <option value="اكسسوارات">اكسسوارات الذكية</option>
+                <option value="أجهزة كهربائية">أجهزة كهربائية</option>
+                <option value="أجهزة منزلية">أجهزة منزلية</option>
+            </select>
+            <input type="text" id="iName" placeholder="اسم المادة" class="w-full p-3">
+            <div class="grid grid-cols-2 gap-2">
+                <input type="number" id="iQty" placeholder="الكمية" class="w-full p-3 text-center">
+                <input type="number" id="iWholesale" placeholder="الجملة" class="w-full p-3">
+            </div>
+            <input type="number" id="iSell" placeholder="سعر البيع" class="w-full p-3 font-bold text-emerald-400">
+            <textarea id="iNotes" placeholder="ملاحظات" class="w-full p-3 h-20 resize-none"></textarea>
+        </div>
+        <div class="flex gap-2 mt-4">
+            <button id="saveInvBtn" onclick="saveInventory()" class="flex-1 bg-emerald-500 text-black p-3 rounded-xl font-bold">حفظ</button>
+            <button onclick="closeModal('invModal')" class="bg-slate-700 text-white p-3 rounded-xl font-bold">إلغاء</button>
+        </div>
+    </div>
+</div>
+
+<div id="compModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center z-[150] p-4">
+    <div class="glass-card p-6 rounded-[2rem] w-full max-w-sm" style="border: 1px solid var(--neon-red);">
+        <h3 class="text-xl font-bold text-white mb-4">وصل دين شركة</h3>
+        <div class="space-y-3">
+            <input type="text" id="coName" placeholder="اسم الشركة" class="w-full p-3">
+            <input type="date" id="coDate" class="w-full p-3 text-slate-400">
+            <input type="number" id="coPrev" placeholder="المبلغ الكلي (الدين)" class="w-full p-3" style="color: var(--neon-red);">
+            <input type="number" id="coPaid" placeholder="الواصل منا لهم" class="w-full p-3" style="color: var(--neon-green);">
+        </div>
+        <div class="flex gap-2 mt-4">
+            <button onclick="saveCompany()" class="flex-1 bg-red-500 text-white p-3 rounded-xl font-bold">حفظ</button>
+            <button onclick="closeModal('compModal')" class="bg-slate-700 text-white p-3 rounded-xl font-bold">إلغاء</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // تفعيل الساعة كما كانت في النسخة المصغرة
+    function updateClock() {
+        const now = new Date();
+        const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+        const timeStr = now.toLocaleTimeString('en-GB', timeOptions); 
+        
+        const d = String(now.getDate()).padStart(2, '0');
+        const m = String(now.getMonth() + 1).padStart(2, '0');
+        const y = now.getFullYear();
+        
+        const timeElem = document.getElementById('time-display');
+        const dateElem = document.getElementById('date-display');
+        
+        if(timeElem) timeElem.textContent = timeStr.toUpperCase();
+        if(dateElem) dateElem.textContent = `${d}/${m}/${y}`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+</script>
+
+<script type="module">
+    // --- هنا نفس كود الجافاسكربت الخاص بـ Firebase للنسخة المطورة لم يتغير ---
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { getFirestore, collection, onSnapshot, addDoc, doc, updateDoc, deleteDoc, writeBatch, serverTimestamp, query, where } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB1e-lTs-hXrKq7uAkhTj_azp8CdmrwO8w",
+      authDomain: "gggg-44b14.firebaseapp.com",
+      projectId: "gggg-44b14",
+      storageBucket: "gggg-44b14.firebasestorage.app",
+      messagingSenderId: "674591791834",
+      appId: "1:674591791834:web:a37a39d5b133a227f5a3e3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    let products = [];
+    let customers = [];
+    let companies = [];
+    let posSales = [];
+    let currentCategory = 'مبايلات';
+    
+    let editCustId = null;
+    let editInvId = null; 
+    let currentCustomerImage = "";
+    let currentGuarantorImage = "";
+
+    onAuthStateChanged(auth, user => {
+        if (user) {
+            document.getElementById('authScreen').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            document.getElementById('mainApp').classList.add('flex');
+            startListeners();
+        } else {
+            document.getElementById('authScreen').classList.remove('hidden');
+            document.getElementById('mainApp').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('flex');
+        }
+    });
+
+    window.login = () => signInWithEmailAndPassword(auth, document.getElementById('authEmail').value, document.getElementById('authPassword').value);
+    window.register = () => createUserWithEmailAndPassword(auth, document.getElementById('authEmail').value, document.getElementById('authPassword').value);
+    window.logout = () => signOut(auth);
+
+    window.switchTab = (id) => {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+    };
+
+    function startListeners() {
+        onSnapshot(collection(db, 'inventory'), snap => {
+            products = snap.docs.map(d => ({id: d.id, ...d.data()}));
+            renderInventory();
+            updateDropdowns();
+            updateFinancials();
         });
-      };
-    </script>
+        onSnapshot(collection(db, 'customers'), snap => {
+            customers = snap.docs.map(d => ({id: d.id, ...d.data()}));
+            renderCustomers();
+            renderArchive();
+            updateFinancials();
+        });
+        onSnapshot(collection(db, 'companies'), snap => {
+            companies = snap.docs.map(d => ({id: d.id, ...d.data()}));
+            renderCompanies();
+            updateFinancials();
+        });
+        
+        onSnapshot(collection(db, 'pos'), snap => {
+            posSales = snap.docs.map(d => d.data());
+            renderPos();
+        });
+    }
+
+    window.previewBase64 = (input, imgId) => {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imgElement = document.getElementById(imgId);
+                imgElement.src = e.target.result;
+                imgElement.classList.remove('hidden');
+                
+                if (imgId === 'cImagePreview') currentCustomerImage = e.target.result;
+                if (imgId === 'gImagePreview') currentGuarantorImage = e.target.result;
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    };
+
+    window.filterInventory = (cat) => {
+        currentCategory = cat;
+        document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+        event.target.classList.add('active');
+        renderInventory();
+    };
+
+    window.openInventoryModal = (id = null) => {
+        editInvId = id;
+        const modal = document.getElementById('invModal');
+        const title = document.getElementById('invModalTitle');
+        const saveBtn = document.getElementById('saveInvBtn');
+
+        if (id) {
+            const p = products.find(x => x.id === id);
+            title.innerHTML = 'تعديل المادة';
+            
+            document.getElementById('iCat').value = p.category || 'مبايلات';
+            document.getElementById('iName').value = p.name || '';
+            document.getElementById('iQty').value = p.qty || '';
+            document.getElementById('iWholesale').value = p.wholesale || '';
+            document.getElementById('iSell').value = p.sell || '';
+            document.getElementById('iNotes').value = p.notes || '';
+        } else {
+            title.innerHTML = 'إضافة بضاعة جديدة';
+            
+            document.getElementById('iCat').value = 'مبايلات';
+            document.getElementById('iName').value = '';
+            document.getElementById('iQty').value = '';
+            document.getElementById('iWholesale').value = '';
+            document.getElementById('iSell').value = '';
+            document.getElementById('iNotes').value = '';
+        }
+        
+        modal.classList.remove('hidden');
+    };
+
+    window.saveInventory = async () => {
+        const data = {
+            category: document.getElementById('iCat').value,
+            name: document.getElementById('iName').value,
+            qty: parseInt(document.getElementById('iQty').value) || 0,
+            wholesale: parseFloat(document.getElementById('iWholesale').value) || 0,
+            sell: parseFloat(document.getElementById('iSell').value) || 0,
+            notes: document.getElementById('iNotes').value
+        };
+
+        if (editInvId) {
+            await updateDoc(doc(db, 'inventory', editInvId), data);
+        } else {
+            await addDoc(collection(db, 'inventory'), data);
+        }
+        closeModal('invModal');
+    };
+
+    window.deleteInventory = async (id) => {
+        if(confirm('هل أنت متأكد من حذف هذه المادة؟')) {
+            await deleteDoc(doc(db, 'inventory', id));
+        }
+    };
+
+    function renderInventory() {
+        const search = document.getElementById('invSearch').value.toLowerCase();
+        const tbody = document.getElementById('inventoryTable');
+        const filtered = products.filter(p => p.category === currentCategory && p.name.toLowerCase().includes(search));
+        
+        tbody.innerHTML = filtered.map(p => `
+            <tr>
+                <td class="font-bold">${p.name}</td>
+                <td class="text-center"><span class="${p.qty <= 0 ? 'text-red-500' : 'text-emerald-500'} font-bold">${p.qty}</span></td>
+                <td class="text-slate-400">${(p.wholesale || 0).toLocaleString()}</td>
+                <td class="font-bold" style="color: var(--neon-blue);">${((p.qty || 0) * (p.wholesale || 0)).toLocaleString()}</td>
+                <td class="font-bold" style="color: var(--neon-green);">${(p.sell || 0).toLocaleString()}</td>
+                <td class="text-xs text-slate-500 max-w-[100px] truncate" title="${p.notes || ''}">${p.notes || ''}</td>
+                <td class="flex gap-2 justify-center">
+                    <button onclick="openInventoryModal('${p.id}')" class="text-blue-500"><i class="fas fa-edit"></i></button>
+                    <button onclick="deleteInventory('${p.id}')" class="text-red-500"><i class="fas fa-trash"></i></button>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    window.openCustomerModal = (id = null, isReadOnly = false) => {
+        editCustId = id;
+        const modal = document.getElementById('custModal');
+        const title = document.getElementById('custModalTitle');
+        
+        const saveBtn = document.getElementById('saveCustBtn');
+        const archiveBtn = document.getElementById('archiveBtn');
+        const deleteBtn = document.getElementById('deleteCustBtn');
+        const addMonthBtn = document.getElementById('addMonthBtn');
+        
+        document.getElementById('monthsContainer').innerHTML = '';
+        currentCustomerImage = "";
+        currentGuarantorImage = "";
+        document.getElementById('cImagePreview').src = "";
+        document.getElementById('cImagePreview').classList.add('hidden');
+        document.getElementById('gImagePreview').src = "";
+        document.getElementById('gImagePreview').classList.add('hidden');
+        document.getElementById('cImageInput').value = "";
+        document.getElementById('gImageInput').value = "";
+        
+        modal.querySelectorAll('input:not([type="file"]), textarea').forEach(i => i.value = '');
+        modal.querySelectorAll('input, textarea, select').forEach(el => el.disabled = isReadOnly);
+        
+        addMonthBtn.style.display = isReadOnly ? 'none' : 'block';
+        saveBtn.style.display = isReadOnly ? 'none' : 'block';
+        document.getElementById('cImageInput').style.display = isReadOnly ? 'none' : 'block';
+        document.getElementById('gImageInput').style.display = isReadOnly ? 'none' : 'block';
+
+        if (id) {
+            const c = customers.find(x => x.id === id);
+            title.innerHTML = isReadOnly ? 'تفاصيل الأرشيف' : 'تعديل الزبون';
+            
+            document.getElementById('cID').value = c.bookId || '';
+            document.getElementById('cName').value = c.name || '';
+            document.getElementById('cItemName').value = c.itemName || ''; 
+            document.getElementById('cTotal').value = c.total || '';
+            document.getElementById('cPaid').value = c.paid || '';
+            document.getElementById('cRem').value = c.remaining || '';
+            document.getElementById('cAddress').value = c.address || '';
+            document.getElementById('cPhone').value = c.phone || '';
+            document.getElementById('cNotes').value = c.notes || '';
+            
+            if(c.guarantor) {
+                document.getElementById('gkName').value = c.guarantor.name || '';
+                document.getElementById('gkAddress').value = c.guarantor.address || '';
+                document.getElementById('gkPhone').value = c.guarantor.phone || '';
+            }
+
+            if(c.installments) {
+                c.installments.forEach(ins => addMonthRow(ins.amount, ins.date, ins.receiver, isReadOnly));
+            }
+            
+            if (!isReadOnly) {
+                archiveBtn.classList.toggle('hidden', c.remaining > 0 || c.archived);
+                deleteBtn.classList.remove('hidden'); 
+            } else {
+                archiveBtn.classList.add('hidden');
+                deleteBtn.classList.add('hidden'); 
+            }
+        } else {
+            title.innerHTML = 'إضافة زبون جديد';
+            archiveBtn.classList.add('hidden');
+            deleteBtn.classList.add('hidden');
+        }
+        modal.classList.remove('hidden');
+    };
+
+    window.addMonthRow = (val = '', date = '', rec = '', isReadOnly = false) => {
+        const container = document.getElementById('monthsContainer');
+        const div = document.createElement('div');
+        div.className = "flex gap-1 mb-1 items-center bg-black/50 p-1 rounded"; 
+        
+        const disabledAttr = isReadOnly ? "disabled" : "";
+        const hideBtn = isReadOnly ? "hidden" : "";
+
+        div.innerHTML = `
+            <input type="number" placeholder="المبلغ" value="${val}" class="w-1/3 p-2 text-xs border-none ins-val font-bold text-blue-400" ${disabledAttr}>
+            <input type="date" value="${date}" class="w-1/3 p-2 text-xs border-none ins-date text-slate-400" ${disabledAttr}>
+            <input type="text" placeholder="المستلم" value="${rec}" class="w-1/3 p-2 text-xs border-none ins-rec" ${disabledAttr}>
+            <button onclick="this.parentElement.remove()" class="text-red-400 p-2 ${hideBtn}"><i class="fas fa-trash-alt"></i></button>
+        `;
+        container.appendChild(div);
+    };
+
+    window.calcRemaining = () => {
+        const total = parseFloat(document.getElementById('cTotal').value) || 0;
+        const paid = parseFloat(document.getElementById('cPaid').value) || 0;
+        document.getElementById('cRem').value = total - paid;
+    };
+
+    window.saveCustomer = async () => {
+        const itemNameInput = document.getElementById('cItemName').value;
+        const matchedProduct = products.find(p => p.name === itemNameInput);
+        const productId = matchedProduct ? matchedProduct.id : null;
+
+        const instRows = document.querySelectorAll('#monthsContainer > div');
+        const installments = Array.from(instRows).map(row => ({
+            amount: row.querySelector('.ins-val').value,
+            date: row.querySelector('.ins-date').value,
+            receiver: row.querySelector('.ins-rec').value
+        }));
+
+        const data = {
+            bookId: document.getElementById('cID').value,
+            name: document.getElementById('cName').value,
+            productId: productId,
+            itemName: itemNameInput || 'غير محدد',
+            total: parseFloat(document.getElementById('cTotal').value) || 0,
+            paid: parseFloat(document.getElementById('cPaid').value) || 0,
+            remaining: parseFloat(document.getElementById('cRem').value) || 0,
+            address: document.getElementById('cAddress').value,
+            phone: document.getElementById('cPhone').value,
+            notes: document.getElementById('cNotes').value,
+            archived: false,
+            guarantor: {
+                name: document.getElementById('gkName').value,
+                address: document.getElementById('gkAddress').value,
+                phone: document.getElementById('gkPhone').value
+            },
+            installments: installments
+        };
+
+        if (editCustId) {
+            await updateDoc(doc(db, 'customers', editCustId), data);
+        } else {
+            const batch = writeBatch(db);
+            if(matchedProduct && matchedProduct.qty > 0) {
+                batch.update(doc(db, 'inventory', productId), { qty: matchedProduct.qty - 1 });
+            } else if (matchedProduct && matchedProduct.qty <= 0) {
+                alert("المادة المحددة غير متوفرة (0)!"); return;
+            }
+            batch.set(doc(collection(db, 'customers')), data);
+            await batch.commit();
+        }
+        closeModal('custModal');
+    };
+
+    window.archiveCustomer = async () => {
+        if(confirm('نقل الزبون للأرشيف لانتهاء ديونه؟')) {
+            await updateDoc(doc(db, 'customers', editCustId), { archived: true });
+            closeModal('custModal');
+        }
+    };
+
+    window.deleteCustomer = async () => {
+        if(confirm('حذف هذا الزبون نهائياً؟')) {
+            await deleteDoc(doc(db, 'customers', editCustId));
+            closeModal('custModal');
+        }
+    };
+
+    window.deleteFromArchive = async (id) => {
+        if(confirm('حذف من الأرشيف نهائياً؟')) { await deleteDoc(doc(db, 'customers', id)); }
+    };
+
+    function renderCustomers() {
+        const search = document.getElementById('custSearch').value.toLowerCase();
+        const tbody = document.getElementById('customersTable');
+        const filtered = customers.filter(c => !c.archived && c.name.toLowerCase().includes(search));
+        
+        tbody.innerHTML = filtered.map(c => `
+            <tr>
+                <td class="text-slate-400 font-bold text-sm">#${c.bookId || '-'}</td>
+                <td class="font-bold text-white">${c.name}</td>
+                <td class="text-slate-400 text-sm">${c.itemName}</td>
+                <td class="font-bold" style="color: var(--neon-red);">${(c.remaining || 0).toLocaleString()}</td>
+                <td class="text-center">
+                    <button onclick="openCustomerModal('${c.id}')" class="text-xs font-bold px-3 py-1 rounded" style="background: rgba(0,210,255,0.1); color: var(--neon-blue); border: 1px solid var(--neon-blue);">إدارة</button>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    function renderArchive() {
+        const tbody = document.getElementById('archiveTable');
+        const archived = customers.filter(c => c.archived);
+        tbody.innerHTML = archived.map(c => `
+            <tr>
+                <td class="text-slate-500 font-bold text-sm">#${c.bookId || '-'}</td>
+                <td class="font-bold text-slate-300">${c.name}</td>
+                <td class="text-slate-500 text-sm">${c.itemName}</td>
+                <td class="font-bold" style="color: var(--neon-green);">${(c.total || 0).toLocaleString()}</td>
+                <td class="flex gap-2 justify-center">
+                    <button onclick="openCustomerModal('${c.id}', true)" class="text-slate-300 text-xs px-2 py-1 border rounded">تفاصيل</button>
+                    <button onclick="deleteFromArchive('${c.id}')" class="text-red-500"><i class="fas fa-trash"></i></button>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    window.openCompanyModal = () => document.getElementById('compModal').classList.remove('hidden');
+    
+    window.saveCompany = async () => {
+        const prev = parseFloat(document.getElementById('coPrev').value) || 0;
+        const paid = parseFloat(document.getElementById('coPaid').value) || 0;
+        await addDoc(collection(db, 'companies'), {
+            name: document.getElementById('coName').value,
+            date: document.getElementById('coDate').value,
+            prev: prev, paid: paid, remaining: prev - paid
+        });
+        closeModal('compModal');
+    };
+    
+    function renderCompanies() {
+        document.getElementById('companiesTable').innerHTML = companies.map(c => `
+            <tr>
+                <td class="font-bold text-white">${c.name}</td>
+                <td class="text-slate-400">${c.date}</td>
+                <td class="font-bold text-white">${(c.prev || 0).toLocaleString()}</td>
+                <td class="font-bold" style="color: var(--neon-green);">${(c.paid || 0).toLocaleString()}</td>
+                <td class="font-bold" style="color: var(--neon-red);">${(c.remaining || 0).toLocaleString()}</td>
+            </tr>
+        `).join('');
+    }
+
+    window.addPosSale = async () => {
+        const itemNameInput = document.getElementById('posItemName').value;
+        const price = parseFloat(document.getElementById('posSalePrice').value);
+        const matchedProduct = products.find(x => x.name === itemNameInput);
+
+        if (!itemNameInput || !price) return alert("يرجى إدخال المادة والسعر.");
+
+        const batch = writeBatch(db);
+        if (matchedProduct) {
+            if (matchedProduct.qty > 0) batch.update(doc(db, 'inventory', matchedProduct.id), { qty: matchedProduct.qty - 1 });
+            else return alert("المادة نفذت (العدد 0)!");
+        }
+
+        const today = new Date();
+        batch.set(doc(collection(db, 'pos')), {
+            name: itemNameInput, price: price,
+            date: today.toLocaleDateString('en-GB'),
+            month: `${today.getMonth() + 1}-${today.getFullYear()}`,
+            timestamp: serverTimestamp()
+        });
+        await batch.commit();
+        document.getElementById('posItemName').value = ''; document.getElementById('posSalePrice').value = '';
+    };
+
+    function renderPos() {
+        const todayStr = new Date().toLocaleDateString('en-GB');
+        const monthStr = `${new Date().getMonth() + 1}-${new Date().getFullYear()}`;
+        document.getElementById('posCurrentDate').innerText = todayStr;
+
+        const dailySales = posSales.filter(s => s.date === todayStr);
+        document.getElementById('posDailyList').innerHTML = dailySales.map(s => `
+            <li class="flex justify-between p-2 rounded bg-black/40 border border-[#333]">
+                <span class="text-white text-sm">${s.name}</span>
+                <span class="font-bold text-blue-400">${s.price.toLocaleString()}</span>
+            </li>
+        `).join('');
+        
+        document.getElementById('posDailyTotal').innerText = dailySales.reduce((sum, s) => sum + s.price, 0).toLocaleString();
+        document.getElementById('posMonthlyTotal').innerText = posSales.filter(s => s.month === monthStr).reduce((sum, s) => sum + s.price, 0).toLocaleString();
+    }
+
+    function updateDropdowns() {
+        const invOptions = products.filter(p => p.qty > 0).map(p => `<option value="${p.name}">`).join('');
+        document.getElementById('inventoryItemsList').innerHTML = invOptions;
+        document.getElementById('posItemsList').innerHTML = invOptions;
+    }
+
+    function updateFinancials() {
+        const invSum = products.reduce((sum, p) => sum + ((p.qty || 0) * (p.wholesale || 0)), 0);
+        const compSum = companies.reduce((sum, c) => sum + (c.remaining || 0), 0);
+        const custSum = customers.filter(c => !c.archived).reduce((sum, c) => sum + (c.remaining || 0), 0);
+        document.getElementById('statInvTotal').innerText = invSum.toLocaleString() + ' د.ع';
+        document.getElementById('statCompTotal').innerText = compSum.toLocaleString() + ' د.ع';
+        document.getElementById('statCustTotal').innerText = custSum.toLocaleString() + ' د.ع';
+    }
+
+    window.closeModal = (id) => document.getElementById(id).classList.add('hidden');
+
+    window.exportBackup = () => {
+        const cleanCustomers = customers.map(c => { const copy = {...c}; delete copy.customerImage; delete copy.guarantorImage; return copy; });
+        const data = { customers: cleanCustomers, products, companies, posSales, backupDate: new Date().toISOString() };
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }));
+        a.download = `backup_${new Date().toLocaleDateString()}.json`;
+        a.click();
+    };
+
+    window.printCustomerReceipt = () => {
+        const name = document.getElementById('cName').value;
+        if (!name) return alert("لا توجد بيانات للطباعة.");
+        const printWindow = window.open('', '', 'width=800,height=600');
+        printWindow.document.write(`
+            <html dir="rtl"><head><title>وصل قبض - ${name}</title>
+            <style>body{font-family:sans-serif; padding:40px; text-align:right;} table{width:100%; border-collapse:collapse; margin-top:20px;} th,td{border:1px solid #ccc; padding:10px;}</style>
+            </head><body><h2>وصل قبض - معرض مهند</h2><table>
+            <tr><th>الاسم</th><td>${name}</td></tr>
+            <tr><th>المادة</th><td>${document.getElementById('cItemName').value}</td></tr>
+            <tr><th>السعر الكلي</th><td>${document.getElementById('cTotal').value} د.ع</td></tr>
+            <tr><th>الواصل</th><td>${document.getElementById('cPaid').value} د.ع</td></tr>
+            <tr><th>المتبقي</th><td>${document.getElementById('cRem').value} د.ع</td></tr>
+            </table><p>التاريخ: ${new Date().toLocaleDateString('ar-IQ')}</p></body></html>
+        `);
+        printWindow.document.close();
+        setTimeout(() => printWindow.print(), 500);
+    };
+</script>
 </body>
 </html>
