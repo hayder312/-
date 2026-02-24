@@ -1726,6 +1726,34 @@ function fileToBase64(file) {
         reader.onerror = error => reject(error);
     });
 }
+    <script>
+        function checkLogin() {
+    // 1. جلب القيمة التي أدخلها المستخدم
+    const pinInput = document.getElementById('login-pin').value;
+    
+    // 2. الرمز الصحيح الذي تحدده أنت (مثلاً: 2026)
+    const correctPin = "2026"; 
+
+    if (pinInput === correctPin) {
+        // 3. إخفاء شاشة الدخول وإظهار المحتوى الرئيسي
+        document.getElementById('login-screen').classList.add('hidden');
+        document.getElementById('main-layout').classList.remove('hidden'); // تأكد أن معرف المحتوى الرئيسي هو main-layout
+        
+        showToast("أهلاً بك في معرض مهند");
+    } else {
+        // 4. تنبيه في حال كان الرمز خطأ
+        showToast("الرمز غير صحيح، حاول مرة أخرى");
+        document.getElementById('login-pin').value = ''; // مسح الحقل لإعادة المحاولة
+    }
+}
+
+// لإتاحة الدخول عند الضغط على زر Enter في لوحة المفاتيح
+document.getElementById('login-pin')?.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        checkLogin();
+    }
+});
+
 </script>
 </body>
 </html>
