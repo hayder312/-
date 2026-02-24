@@ -1754,6 +1754,39 @@ document.getElementById('login-pin')?.addEventListener('keypress', function (e) 
     }
 });
 
+    <script>
+        // ربط الدالة بـ window لتطابق طلبك في HTML (window.checkPin)
+window.checkPin = function() {
+    // 1. جلب الرمز من الحقل الذي يحمل المعرف authPassword
+    const enteredPassword = document.getElementById('authPassword').value;
+    
+    // 2. الرمز السري الخاص بك (يمكنك تغييره هنا)
+    const secretPin = "2026"; 
+
+    if (enteredPassword === secretPin) {
+        // 3. إخفاء شاشة الدخول
+        // ملاحظة: تأكد أن القسم الأب (الذي يحتوي على الخلفية) يحمل المعرف login-screen
+        const loginScreen = document.getElementById('login-screen');
+        if (loginScreen) {
+            loginScreen.classList.add('hidden'); 
+            // أو إذا كنت لا تستخدم Tailwind بشكل كامل للاختفاء:
+            // loginScreen.style.display = 'none';
+        }
+
+        // 4. إظهار المحتوى الرئيسي
+        const mainLayout = document.getElementById('main-layout');
+        if (mainLayout) {
+            mainLayout.classList.remove('hidden');
+        }
+
+        showToast("أهلاً بك.. تم الدخول بنجاح");
+    } else {
+        // 5. في حال الخطأ
+        showToast("الرمز السري غير صحيح!");
+        document.getElementById('authPassword').value = ''; // مسح الحقل
+    }
+};
+
 </script>
 </body>
 </html>
