@@ -1601,93 +1601,116 @@
         `);
         printWindow.document.close();
     };
-</script>
-    // استبدل المفتاح باللي عندك بالصورة
-const GOOGLE_API_KEY = 'AIzaSyBpzbF0D8sliQzgWbrVGNh7cU78PswO4oM';
+<script>
+// تنبيه: لا تضع مفتاح الـ API الحقيقي هنا في التطبيقات الفعلية (يجب أن يكون في الـ Backend)
+const GOOGLE_API_KEY = 'AIzaSyDt_uidi9-XXZQBizPd_yuhoig7FSkkmTU';
 
+// دالة مسح الوصل
 async function scanReceiptWithGoogle(imageFile) {
     if (!imageFile) return;
 
-    // إظهار تنبيه للمستخدم على الشاشة
-    showToast("جاري تشغيل 'المفكر' (Gemini Pro)...");
+    // إظهار تنبيه للمستخدم
+    showToast("جاري تشغيل 'المفكر' (Gemini 2.5 Pro)...");
 
     try {
         const base64Image = await fileToBase64(imageFile);
         const base64Data = base64Image.split(',')[1];
 
-        // 1. المحاولة الأولى باستخدام الموديل الأقوى Pro
-        let result = await callGeminiAPI("gemini-1.5-pro", base64Data, imageFile.type);
+        // 1. المحاولة الأولى: أحدث نسخة من البرو (Gemini 2.5 Pro)
+        let result = await callGeminiAPI("gemini-2.5-pro", base64Data, imageFile.type);
 
-        // 2. إذا فشل البرو (بسبب انتهاء الـ 50 طلب) حول على الفلاش
+        // 2. المحاولة الثانية: في حال فشل البرو، ننتقل للنسخة السريعة (Gemini 2.5 Flash)
         if (!result) {
             showToast("البرو مشغول حالياً.. جاري التحويل لـ Flash السريع");
-            result = await callGeminiAPI("gemini-1.5-flash", base64Data, imageFile.type);
+            result = await callGeminiAPI("gemini-2.5-flash", base64Data, imageFile.type);
         }
 
-        if (result && result.items) {
+        if (result && result.items && result.items.length > 0) {
             updateReceiptTable(result.items);
             showToast("تمت قراءة الوصل بنجاح!");
         } else {
-            showToast("ما كدرت أقرأ البيانات، حاول بوضوح أكثر.");
+            showToast("لم أتمكن من قراءة البيانات، حاول استخدام صورة أوضح.");
         }
 
     } catch (error) {
-        console.error(error);
-        showToast("خطأ في الاتصال بالذكاء الاصطناعي");
+        console.error("خطأ في الاتصال:", error);
+        showToast("حدث خطأ في الاتصال بالذكاء الاصطناعي.");
     }
 }
 
 async function callGeminiAPI(modelName, base64Data, mimeType) {
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${GOOGLE_API_KEY}`;
     
-    // برومبت ذكي يفهم الوصولات العراقية والمواد والأسعار
-    const prompt = "اقرأ هذا الوصل بدقة. استخرج: اسم المادة، الكمية، السعر. أرجع النتيجة JSON فقط بهذا التنسيق: {\"items\": [{\"name\": \"\", \"quantity\": 1, \"price\": 5000}]}. لا تكتب مقدمات.";
+    // توجيهات النظام لضمان دقة العمل
+    const systemInstruction = "أنت مساعد ذكي متخصص في استخراج بيانات وصولات الشراء.";
+    const prompt = "اقرأ هذا الوصل بدقة. استخرج: اسم المادة، الكمية، السعر. أرجع النتيجة فقط ككائن JSON يحتوي على مصفوفة باسم 'items' وكل عنصر يحتوي على 'name' و 'quantity' و 'price'.";
 
     try {
         const response = await fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
+                system_instruction: {
+                    parts: [{ text: systemInstruction }]
+                },
                 contents: [{
-                    parts: [{ text: prompt }, { inline_data: { mime_type: mimeType, data: base64Data } }]
-                }]
+                    parts: [
+                        { text: prompt }, 
+                        { inline_data: { mime_type: mimeType, data: base64Data } }
+                    ]
+                }],
+                // هذه الميزة الجديدة تجبر الموديل على إرجاع JSON صالح 100% بدون أي نصوص إضافية
+                generationConfig: {
+                    response_mime_type: "application/json",
+                }
             })
         });
 
         const data = await response.json();
-        const textResponse = data.candidates[0].content.parts[0].text;
         
-        // تنظيف النص من أي زوائد Markdown
-        const cleanJson = textResponse.replace(/```json/g, '').replace(/```/g, '').trim();
-        return JSON.parse(cleanJson);
+        if (!data.candidates || data.candidates.length === 0) {
+            console.error("API response error:", data);
+            return null;
+        }
+        
+        // لم نعد بحاجة لتنظيف النص، لأنه سيأتي بصيغة JSON مباشرة
+        const textResponse = data.candidates[0].content.parts[0].text;
+        return JSON.parse(textResponse);
+        
     } catch (e) {
-        return null; // إذا صار خطأ يرجع null حتى يحول للموديل الثاني
+        console.error("استثناء أثناء استدعاء API:", e);
+        return null;
     }
 }
 
-// دالة لتحديث الجدول في صفحة "معرض مهند"
+// دالة تحديث الجدول 
 function updateReceiptTable(items) {
-    const tableBody = document.querySelector("#receiptItemsTableBody"); // تأكد من الـ ID بموقعك
+    const tableBody = document.getElementById("receiptItemsTableBody"); 
     if (!tableBody) return;
 
+    // تنظيف الجدول من رسائل الانتظار قبل إضافة المواد
+    if (tableBody.innerText.includes("جاري")) tableBody.innerHTML = '';
+
     items.forEach(item => {
-        const row = `<tr>
-            <td><input type="text" value="${item.name}" class="form-control"></td>
-            <td><input type="number" value="${item.quantity}" class="form-control"></td>
-            <td><input type="number" value="${item.price}" class="form-control"></td>
-            <td><button class="btn btn-danger btn-sm" onclick="this.closest('tr').remove()">حذف</button></td>
-        </tr>`;
+        const row = `
+            <tr class="border-b border-gray-700 hover:bg-gray-700/30 transition-colors">
+                <td class="p-3"><input type="text" value="${item.name || ''}" class="bg-gray-800 border border-gray-600 rounded px-2 py-1 w-full text-white"></td>
+                <td class="p-3 text-center"><input type="number" value="${item.quantity || 1}" class="bg-gray-800 border border-gray-600 rounded px-2 py-1 w-16 text-white text-center"></td>
+                <td class="p-3 text-center"><input type="number" value="${item.price || 0}" class="bg-gray-800 border border-gray-600 rounded px-2 py-1 w-24 text-white text-center"></td>
+                <td class="p-3 text-center">
+                    <button onclick="this.closest('tr').remove()" class="text-red-400 hover:text-red-300"><i class="fas fa-trash"></i></button>
+                </td>
+            </tr>`;
         tableBody.insertAdjacentHTML('beforeend', row);
     });
 }
 
-// دالة لإظهار رسائل تنبيهية بسيطة
 function showToast(msg) {
     let toast = document.getElementById('ai-toast');
     if (!toast) {
         toast = document.createElement('div');
         toast.id = 'ai-toast';
-        toast.style = "position:fixed; bottom:20px; right:20px; background:#333; color:#fff; padding:10px 20px; border-radius:5px; z-index:10000; font-family:sans-serif;";
+        toast.style = "position:fixed; bottom:20px; right:20px; background:rgba(0,0,0,0.8); color:#fff; padding:10px 20px; border-radius:10px; z-index:10000; font-family:sans-serif; border: 1px solid #444;";
         document.body.appendChild(toast);
     }
     toast.innerText = msg;
@@ -1703,6 +1726,6 @@ function fileToBase64(file) {
         reader.onerror = error => reject(error);
     });
 }
-
+</script>
 </body>
 </html>
