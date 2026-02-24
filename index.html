@@ -327,11 +327,13 @@
                     <div class="flex flex-col md:flex-row gap-2 w-full md:w-auto">
                         <button onclick="openInventoryModal()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-emerald-500/30 transition-transform transform hover:-translate-y-1 w-full md:w-auto"><i class="fas fa-box-open ml-2"></i> إضافة بضاعة جديدة</button>
                         
-                        <input type="file" id="invoiceScannerFile" accept="image/*" class="hidden" onchange="processInvoiceScan(event)">
-<button onclick="document.getElementById('invoiceScannerFile').click()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-blue-500/30 transition-transform transform hover:-translate-y-1 w-full md:w-auto border border-blue-400/50">
-    <i class="fas fa-camera ml-2"></i> مسح وصل
-              </button>
-                    </div>
+                        <button type="button" onclick="document.getElementById('receiptInput').click()" 
+        class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-blue-500/30 transition-transform transform hover:-translate-y-1 w-full md:w-auto border border-blue-400/50">
+    <i class="fas fa-camera ml-2"></i> 📷 مسح وصل
+</button>
+
+<input type="file" id="receiptInput" accept="image/*" style="display:none" 
+       onchange="scanReceiptWithGoogle(this.files[0])">
 
                     <div class="relative w-full md:w-72">
                         <i class="fas fa-search absolute right-3 top-3.5 text-slate-400"></i>
