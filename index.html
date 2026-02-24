@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+    <link rel="icon" type="image/png" href="https://i.ibb.co/spb1s1Jt/123.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>معرض مهند</title>
-    
+    <link rel="apple-touch-icon" href="https://i.ibb.co/spb1s1Jt/123.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
@@ -326,10 +327,10 @@
                     <div class="flex flex-col md:flex-row gap-2 w-full md:w-auto">
                         <button onclick="openInventoryModal()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-emerald-500/30 transition-transform transform hover:-translate-y-1 w-full md:w-auto"><i class="fas fa-box-open ml-2"></i> إضافة بضاعة جديدة</button>
                         
-                        <input type="file" id="invoiceScannerFile" accept="image/*" capture="environment" class="hidden" onchange="processInvoiceScan(event)">
-                        <button onclick="document.getElementById('invoiceScannerFile').click()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-blue-500/30 transition-transform transform hover:-translate-y-1 w-full md:w-auto border border-blue-400/50">
-                            <i class="fas fa-camera ml-2"></i> مسح وصل (قراءة ذكية)
-                        </button>
+                        <input type="file" id="invoiceScannerFile" accept="image/*" class="hidden" onchange="processInvoiceScan(event)">
+<button onclick="document.getElementById('invoiceScannerFile').click()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-blue-500/30 transition-transform transform hover:-translate-y-1 w-full md:w-auto border border-blue-400/50">
+    <i class="fas fa-camera ml-2"></i> مسح وصل
+              </button>
                     </div>
 
                     <div class="relative w-full md:w-72">
@@ -373,7 +374,7 @@
                             <th class="p-5">تاريخ الوصل</th>
                             <th class="p-5">إجمالي الدين</th>
                             <th class="p-5">الواصل لهم</th>
-                            <th class="p-5">المتبقي بذمتنا</th>
+                            <th class="p-5">المتبقي</th>
                         </tr>
                     </thead>
                     <tbody id="companiesTable" class="divide-y divide-slate-100/10"></tbody>
@@ -416,7 +417,7 @@
         <section id="archive" class="tab-content max-w-7xl mx-auto">
             <div class="mb-8 glass-card p-6 rounded-2xl text-center md:text-right">
                 <h2 class="text-2xl md:text-3xl font-extrabold text-slate-800 flex items-center justify-center md:justify-start gap-3"><i class="fas fa-box-archive text-slate-400"></i> أرشيف الديون المنتهية</h2>
-                <p class="text-slate-500 text-sm mt-1">سجل بجميع الزبائن الذين أكملوا تسديد ما بذمتهم</p>
+                <p class="text-slate-500 text-sm mt-1">سجل بجميع الزبائن الذين أكملوا تسديد دينهم</p>
             </div>
             <div class="glass-card rounded-2xl overflow-hidden opacity-95 overflow-x-auto w-full">
                 <table class="w-full text-right min-w-[700px]">
@@ -608,7 +609,7 @@
 
                 <div class="p-4 sm:p-6 bg-slate-900/30 rounded-2xl border border-slate-700/50 shadow-sm relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-2 h-full bg-emerald-500" style="background:var(--neon-blue)"></div>
-                    <h4 class="font-extrabold text-slate-100 mb-4 text-lg"><i class="fas fa-user-shield text-emerald-400 ml-2"></i> بيانات الكفيل (الضامن)</h4>
+                    <h4 class="font-extrabold text-slate-100 mb-4 text-lg"><i class="fas fa-user-shield text-emerald-400 ml-2"></i>بيانات الكفيل</h4>
                     <div class="space-y-4">
                         <div>
                             <input type="text" id="gkName" placeholder="اسم الكفيل الثلاثي" class="w-full p-3 border rounded-xl">
@@ -669,20 +670,20 @@
             </div>
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <label class="text-sm font-bold text-slate-400 block mb-2">الكمية/العدد</label>
+                    <label class="text-sm font-bold text-slate-400 block mb-2">العدد</label>
                     <input type="number" id="iQty" class="w-full p-3 border rounded-xl text-center font-bold text-lg">
                 </div>
                 <div>
-                    <label class="text-sm font-bold text-slate-400 block mb-2">سعر الجملة (عليك)</label>
+                    <label class="text-sm font-bold text-slate-400 block mb-2">سعر الجملة</label>
                     <input type="number" id="iWholesale" class="w-full p-3 border rounded-xl">
                 </div>
             </div>
             <div>
-                <label class="text-sm font-bold text-slate-400 block mb-2">سعر البيع المقترح</label>
+                <label class="text-sm font-bold text-slate-400 block mb-2">سعر البيع</label>
                 <input type="number" id="iSell" class="w-full p-3 border border-emerald-500/50 rounded-xl bg-emerald-900/10 text-emerald-400 font-bold text-lg">
             </div>
             <div>
-                <label class="text-sm font-bold text-slate-400 block mb-2">ملاحظات / مواصفات</label>
+                <label class="text-sm font-bold text-slate-400 block mb-2">ملاحظات</label>
                 <textarea id="iNotes" class="w-full p-3 border rounded-xl h-20 resize-none"></textarea>
             </div>
         </div>
