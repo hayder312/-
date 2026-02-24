@@ -1600,5 +1600,107 @@
         printWindow.document.close();
     };
 </script>
+    // استبدل المفتاح باللي عندك بالصورة
+const GOOGLE_API_KEY = 'اكتب_هنا_المفتاح_اللي_بالصورة';
+
+async function scanReceiptWithGoogle(imageFile) {
+    if (!imageFile) return;
+
+    // إظهار تنبيه للمستخدم على الشاشة
+    showToast("جاري تشغيل 'المفكر' (Gemini Pro)...");
+
+    try {
+        const base64Image = await fileToBase64(imageFile);
+        const base64Data = base64Image.split(',')[1];
+
+        // 1. المحاولة الأولى باستخدام الموديل الأقوى Pro
+        let result = await callGeminiAPI("gemini-1.5-pro", base64Data, imageFile.type);
+
+        // 2. إذا فشل البرو (بسبب انتهاء الـ 50 طلب) حول على الفلاش
+        if (!result) {
+            showToast("البرو مشغول حالياً.. جاري التحويل لـ Flash السريع");
+            result = await callGeminiAPI("gemini-1.5-flash", base64Data, imageFile.type);
+        }
+
+        if (result && result.items) {
+            updateReceiptTable(result.items);
+            showToast("تمت قراءة الوصل بنجاح!");
+        } else {
+            showToast("ما كدرت أقرأ البيانات، حاول بوضوح أكثر.");
+        }
+
+    } catch (error) {
+        console.error(error);
+        showToast("خطأ في الاتصال بالذكاء الاصطناعي");
+    }
+}
+
+async function callGeminiAPI(modelName, base64Data, mimeType) {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${GOOGLE_API_KEY}`;
+    
+    // برومبت ذكي يفهم الوصولات العراقية والمواد والأسعار
+    const prompt = "اقرأ هذا الوصل بدقة. استخرج: اسم المادة، الكمية، السعر. أرجع النتيجة JSON فقط بهذا التنسيق: {\"items\": [{\"name\": \"\", \"quantity\": 1, \"price\": 5000}]}. لا تكتب مقدمات.";
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [{ text: prompt }, { inline_data: { mime_type: mimeType, data: base64Data } }]
+                }]
+            })
+        });
+
+        const data = await response.json();
+        const textResponse = data.candidates[0].content.parts[0].text;
+        
+        // تنظيف النص من أي زوائد Markdown
+        const cleanJson = textResponse.replace(/```json/g, '').replace(/```/g, '').trim();
+        return JSON.parse(cleanJson);
+    } catch (e) {
+        return null; // إذا صار خطأ يرجع null حتى يحول للموديل الثاني
+    }
+}
+
+// دالة لتحديث الجدول في صفحة "معرض مهند"
+function updateReceiptTable(items) {
+    const tableBody = document.querySelector("#receiptItemsTableBody"); // تأكد من الـ ID بموقعك
+    if (!tableBody) return;
+
+    items.forEach(item => {
+        const row = `<tr>
+            <td><input type="text" value="${item.name}" class="form-control"></td>
+            <td><input type="number" value="${item.quantity}" class="form-control"></td>
+            <td><input type="number" value="${item.price}" class="form-control"></td>
+            <td><button class="btn btn-danger btn-sm" onclick="this.closest('tr').remove()">حذف</button></td>
+        </tr>`;
+        tableBody.insertAdjacentHTML('beforeend', row);
+    });
+}
+
+// دالة لإظهار رسائل تنبيهية بسيطة
+function showToast(msg) {
+    let toast = document.getElementById('ai-toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'ai-toast';
+        toast.style = "position:fixed; bottom:20px; right:20px; background:#333; color:#fff; padding:10px 20px; border-radius:5px; z-index:10000; font-family:sans-serif;";
+        document.body.appendChild(toast);
+    }
+    toast.innerText = msg;
+    toast.style.display = 'block';
+    setTimeout(() => { toast.style.display = 'none'; }, 4000);
+}
+
+function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
+}
+
 </body>
 </html>
