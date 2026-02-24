@@ -2,350 +2,491 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>معرض مهند</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     
     <style>
-        /* المتغيرات الخاصة بالتصميم الملكي النيون المأخوذة من النسخة المصغرة */
+        /* =========================================
+           1. المتغيرات الرئيسية للتصميم الملكي النيون
+           ========================================= */
         :root { 
             --main-bg: #05070a; 
-            --card-bg: rgba(22, 27, 34, 0.95); 
-            --neon-blue: #00d2ff; 
-            --neon-green: #00ff88;
-            --neon-red: #ff4757;
-            --gold: #ffc107;
-            --text: #ffffff; 
+            --card-bg: rgba(22, 27, 34, 0.7); 
+            --neon-blue: #00d2ff;
+            --neon-glow: rgba(0, 210, 255, 0.4);
+            --text-main: #ffffff; 
+            --text-muted: #a0aec0;
+            --border-color: rgba(0, 210, 255, 0.15);
         }
         
-        * { -webkit-tap-highlight-color: transparent; }
-
+        /* =========================================
+           2. الإعدادات العامة للجسم والخطوط
+           ========================================= */
         body { 
             font-family: 'Cairo', sans-serif !important; 
-            /* إضافة الخلفية من النسخة المصغرة */
-            background: url('https://images.unsplash.com/photo-1614850523296-d8c1af93d400?q=80&w=2070&auto=format&fit=crop') no-repeat center center fixed !important;
-            background-size: cover !important;
-            color: var(--text) !important; 
+            background: radial-gradient(circle at top center, #0a1118 0%, var(--main-bg) 100%) !important; 
+            color: var(--text-main) !important; 
             min-height: 100vh;
         }
 
-        .overlay-bg {
-            background: rgba(5, 7, 10, 0.88);
-            position: absolute;
-            inset: 0;
-            z-index: 0;
-            pointer-events: none;
+        h1, h2, h3, h4 { 
+            color: var(--neon-blue) !important; 
+            font-weight: 900 !important; 
+            text-shadow: 0 0 10px rgba(0, 210, 255, 0.2);
         }
 
-        /* إخفاء خلفيات Tailwind الفاتحة وتحويلها للداكنة (Glassmorphism) */
-        .bg-white, .bg-slate-50, .bg-slate-100, .bg-blue-50, .bg-emerald-50, .bg-rose-50, .glass-card, .bg-slate-200\/50, .bg-slate-900 {
+        /* =========================================
+           3. التعديل على ألوان Tailwind الافتراضية
+           ========================================= */
+        .text-slate-800, .text-slate-700, .text-slate-600 { color: var(--text-main) !important; }
+        .text-slate-500 { color: var(--text-muted) !important; }
+        .text-blue-500, .text-blue-600, .text-blue-700, .text-blue-800, 
+        .text-emerald-500, .text-emerald-600, .text-rose-600, .text-rose-500 { 
+            color: var(--neon-blue) !important; 
+        }
+
+        .bg-white, .bg-slate-50, .bg-slate-100, .bg-blue-50, 
+        .bg-emerald-50, .bg-rose-50, .bg-slate-200\/50 {
             background-color: var(--card-bg) !important;
-            border-color: rgba(0, 210, 255, 0.3) !important;
-            color: var(--text) !important;
+            border-color: var(--border-color) !important;
+            color: var(--text-main) !important;
+            backdrop-filter: blur(12px);
+        }
+
+        aside {
+            background-color: rgba(5, 7, 10, 0.95) !important;
+            border-left: 1px solid var(--border-color) !important;
             backdrop-filter: blur(15px);
         }
 
-        /* توحيد ألوان النصوص */
-        .text-slate-800, .text-slate-700, .text-slate-600 { color: var(--text) !important; }
-        .text-slate-500 { color: #aaa !important; }
-        .text-blue-500, .text-blue-600, .text-blue-700, .text-blue-800 { color: var(--neon-blue) !important; }
-        .text-emerald-500, .text-emerald-600 { color: var(--neon-green) !important; }
-        .text-rose-600, .text-rose-500, .text-red-500 { color: var(--neon-red) !important; }
-        
-        h1, h2, h3, h4 { font-weight: 900 !important; }
+        /* =========================================
+           4. البطاقات الزجاجية (Glassmorphism)
+           ========================================= */
+        .glass-card {
+            background-color: var(--card-bg) !important;
+            border: 1px solid var(--border-color) !important;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
 
-        /* حقول الإدخال */
+        /* =========================================
+           5. حقول الإدخال (Inputs)
+           ========================================= */
         input, textarea, select {
-            background: rgba(0,0,0,0.5) !important;
+            background: rgba(0, 0, 0, 0.5) !important;
             color: white !important;
             border: 1px solid #333 !important;
             outline: none !important;
-            border-radius: 12px !important;
+            transition: all 0.3s ease;
         }
         input:focus, textarea:focus, select:focus {
             border-color: var(--neon-blue) !important;
-            box-shadow: 0 0 8px rgba(0, 210, 255, 0.3) !important;
+            box-shadow: 0 0 12px var(--neon-glow) !important;
+            background: rgba(0, 0, 0, 0.8) !important;
         }
 
-        /* الأزرار الرئيسية */
-        button.bg-blue-600, button.bg-emerald-500, button.bg-slate-800, button.bg-gradient-to-r, button.bg-amber-500 {
+        /* =========================================
+           6. الأزرار (Buttons)
+           ========================================= */
+        button.bg-blue-600, button.bg-emerald-500, button.bg-slate-800, 
+        button.bg-gradient-to-r, button.bg-amber-500 {
             background: var(--neon-blue) !important;
             color: #000 !important;
             border: none !important;
-            box-shadow: 0 4px 15px rgba(0, 210, 255, 0.2) !important;
-            font-weight: bold !important;
+            box-shadow: 0 4px 15px var(--neon-glow) !important;
+            font-weight: 900 !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
         }
-        
-        /* أزرار الحذف والإلغاء */
-        button.bg-red-500, button.text-red-500 {
-            background: rgba(255, 71, 87, 0.2) !important;
-            color: var(--neon-red) !important;
-            border: 1px solid var(--neon-red) !important;
-            box-shadow: none !important;
+        button.bg-blue-600:hover, button.bg-emerald-500:hover, 
+        button.bg-slate-800:hover, button.bg-amber-500:hover {
+            background: #fff !important;
+            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.4) !important;
+            transform: translateY(-2px);
         }
 
-        /* القائمة العلوية (المتحولة من الجانبية) */
-        .main-nav-container {
-            display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px;
-            scrollbar-width: none;
+        /* أزرار الحذف */
+        button.bg-red-500, button.text-red-500 {
+            background: rgba(255, 71, 87, 0.1) !important;
+            color: #ff4757 !important;
+            border: 1px solid rgba(255, 71, 87, 0.3) !important;
+            box-shadow: none !important;
+            transition: all 0.3s ease;
         }
-        .main-nav-container::-webkit-scrollbar { display: none; }
-        
+        button.bg-red-500:hover, button.text-red-500:hover {
+            background: #ff4757 !important;
+            color: #fff !important;
+            box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4) !important;
+        }
+
+        /* =========================================
+           7. القائمة الجانبية (Sidebar)
+           ========================================= */
         .sidebar-btn { 
-            background: var(--card-bg) !important; padding: 10px 18px !important; border-radius: 12px !important;
-            border: 1px solid rgba(255,255,255,0.1) !important; cursor: pointer; font-weight: bold;
-            display: flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; transition: 0.3s;
-            color: #fff !important; width: auto !important; flex: 0 0 auto;
+            transition: all 0.3s ease; 
+            color: var(--text-muted) !important; 
+            position: relative;
+            overflow: hidden;
+        }
+        .sidebar-btn:hover { 
+            background-color: rgba(0, 210, 255, 0.05) !important; 
+            color: #fff !important;
+            transform: translateX(-5px);
         }
         .sidebar-btn.active { 
-            background: var(--neon-blue) !important; 
+            background: linear-gradient(90deg, var(--neon-blue) 0%, transparent 100%) !important;
             color: #000 !important; 
-            border-color: var(--neon-blue) !important; 
-            box-shadow: 0 0 10px rgba(0,210,255,0.5) !important;
+            border-right: 4px solid #fff !important; 
+            box-shadow: 0 4px 15px var(--neon-glow) !important;
+            font-weight: 900 !important;
         }
 
-        /* الجداول */
-        .table-wrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        /* =========================================
+           8. الجداول (Tables)
+           ========================================= */
         thead th {
             color: var(--neon-blue) !important;
-            border-bottom: 2px solid #333 !important;
-            background: transparent !important;
+            border-bottom: 2px solid var(--border-color) !important;
+            background: rgba(0, 0, 0, 0.2) !important;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
             white-space: nowrap;
         }
-        tbody tr { border-bottom: 1px solid #222 !important; }
-        tbody tr:hover { background: rgba(0, 210, 255, 0.05) !important; }
-        td { color: var(--text) !important; white-space: nowrap; }
+        tbody tr { 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important; 
+            transition: background 0.2s ease;
+        }
+        tbody tr:hover { 
+            background: rgba(0, 210, 255, 0.08) !important; 
+        }
+        td { color: var(--text-main) !important; white-space: nowrap; }
 
-        /* الساعة */
-        .digital-clock { text-align: left; line-height: 1.2; direction: ltr; }
-        #time-display { font-family: sans-serif; font-size: 18px; color: var(--neon-blue); font-weight: 800; display: block; }
-        #date-display { font-family: sans-serif; font-size: 12px; color: #aaa; font-weight: bold; }
+        /* =========================================
+           9. البطاقات الإحصائية (Stat Cards)
+           ========================================= */
+        .stat-card-1, .stat-card-2, .stat-card-3 {
+            background: var(--card-bg) !important;
+            border: 1px solid var(--border-color) !important;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .stat-card-1:hover, .stat-card-2:hover, .stat-card-3:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px var(--neon-glow) !important;
+            border-color: var(--neon-blue) !important;
+        }
+        .stat-card-1 h3, .stat-card-2 h3, .stat-card-3 h3 { color: #fff !important; }
+        .stat-card-1 p, .stat-card-2 p, .stat-card-3 p { color: var(--neon-blue) !important; text-shadow: 0 0 15px var(--neon-glow); }
 
-        /* تأثير التمرير العام */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 10px; }
-
-        /* النوافذ المنبثقة Modal */
-        .fixed.inset-0.bg-slate-900\/60, .bg-slate-900\/95 { background: rgba(0,0,0,0.95) !important; }
+        /* التبويبات الفرعية للمخزن */
+        .sub-tab { 
+            color: var(--text-muted) !important; 
+            border-bottom: 3px solid transparent !important;
+            transition: all 0.3s ease;
+        }
+        .sub-tab:hover { color: #fff !important; }
+        .sub-tab.active { 
+            color: var(--neon-blue) !important; 
+            border-bottom: 3px solid var(--neon-blue) !important; 
+            text-shadow: 0 0 10px var(--neon-glow);
+        }
         
-        /* التابات */
-        .tab-content { display: none; animation: fadeIn 0.4s ease-in-out; }
+        /* =========================================
+           10. شريط التمرير (Scrollbar)
+           ========================================= */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--main-bg); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; border: 1px solid var(--main-bg); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--neon-blue); }
+
+        /* =========================================
+           11. النوافذ المنبثقة والأنيميشن
+           ========================================= */
+        .fixed.inset-0.bg-slate-900\/60, .bg-slate-900\/95 { 
+            background: rgba(0, 0, 0, 0.85) !important; 
+            backdrop-filter: blur(8px);
+        }
+        
+        .tab-content { display: none; animation: fadeSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .tab-content.active { display: block; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+        
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* تأثيرات إضافية للهاتف */
+        .sidebar-overlay {
+            display: none;
+        }
+        .sidebar-overlay.active {
+            display: block;
         }
     </style>
 </head>
-<body class="text-slate-800 relative">
+<body class="text-slate-800">
 
-<div class="overlay-bg"></div>
-
-<div id="authScreen" class="fixed inset-0 bg-slate-900/95 backdrop-blur-sm flex items-center justify-center z-[200]">
-    <div class="glass-card p-10 rounded-3xl w-[400px] border-t-4" style="border-color: var(--neon-blue);">
+<div id="authScreen" class="fixed inset-0 bg-slate-900/95 backdrop-blur-sm flex items-center justify-center z-[200] p-4">
+    <div class="glass-card p-8 md:p-10 rounded-3xl w-full max-w-[400px] border-t-4 border-blue-600">
         <div class="text-center mb-8">
-            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full text-2xl shadow-inner mb-4" style="background: rgba(0,210,255,0.1); color: var(--neon-blue);">
-                <i class="fas fa-crown"></i>
-            </div>
-            <h2 class="text-3xl font-extrabold" style="color: var(--neon-blue);">معرض مهند</h2>
-            <p class="text-slate-500 mt-2 text-sm">نظام الإدارة الشامل</p>
+            <img src="logo.png" alt="شعار معرض مهند" class="w-24 h-24 rounded-full mx-auto mb-4 border-2 border-blue-500 shadow-[0_0_15px_rgba(0,210,255,0.5)] object-cover bg-slate-800" onerror="this.style.display='none'">
+            <h2 class="text-2xl md:text-3xl font-extrabold text-slate-800">معرض مهند</h2>
+            <p class="text-slate-500 mt-2 text-sm">للإلكترونيات والأجهزة المنزلية</p>
         </div>
-        <input type="email" id="authEmail" placeholder="البريد الإلكتروني" class="w-full p-4 mb-4 border rounded-xl bg-slate-50/50 text-left" dir="ltr">
-        <input type="password" id="authPassword" placeholder="كلمة المرور" class="w-full p-4 mb-6 border rounded-xl bg-slate-50/50 text-left" dir="ltr">
-        <button onclick="window.login()" class="w-full bg-blue-600 text-white p-4 rounded-xl font-bold transition-all">تسجيل الدخول</button>
-        <button onclick="window.register()" class="w-full text-slate-500 mt-4 text-sm hover:text-blue-600 transition">إنشاء حساب جديد</button>
+      <input type="password" id="authPassword" placeholder="أدخل رمز الدخول السري" class="w-full p-4 mb-6 border rounded-xl bg-slate-50/50 text-center font-bold text-2xl text-slate-800 tracking-widest" dir="ltr">
+<button onclick="window.checkPin()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 rounded-xl font-bold hover:shadow-lg hover:shadow-blue-500/30 transition-all transform hover:-translate-y-1">دخول</button>
     </div>
 </div>
 
-<div id="mainApp" class="hidden flex-col min-h-screen relative z-10 p-2 sm:p-4 max-w-7xl mx-auto">
+<div id="mainApp" class="flex h-screen hidden overflow-hidden w-full relative">
     
-    <header class="flex justify-between items-center p-3 sm:p-4 rounded-2xl mb-4" style="background: var(--card-bg); border: 1px solid rgba(0, 210, 255, 0.3); backdrop-filter: blur(10px);">
+    <div class="md:hidden absolute top-0 w-full flex justify-between items-center bg-slate-900/95 backdrop-blur-md p-4 border-b border-slate-700 z-30 h-16 shadow-lg">
         <div class="flex items-center gap-3">
-            <i class="fas fa-crown text-2xl" style="color: var(--neon-blue);"></i>
-            <h1 class="text-lg sm:text-xl font-extrabold" style="color: var(--neon-blue);">معرض مهند</h1>
+            <img src="logo.png" alt="شعار" class="w-10 h-10 rounded-full object-cover border border-blue-500" onerror="this.style.display='none'">
+            <h1 class="text-xl font-extrabold text-white text-shadow-sm">معرض مهند</h1>
         </div>
-        <div class="flex items-center gap-4">
-            <div class="digital-clock hidden sm:block">
-                <div id="time-display">12:00:00 AM</div>
-                <div id="date-display">16/02/2026</div>
-            </div>
-            <button onclick="window.logout()" class="text-red-500 bg-red-500/10 w-10 h-10 rounded-xl flex justify-center items-center hover:bg-red-500 hover:text-white transition">
-                <i class="fas fa-power-off"></i>
-            </button>
+        <button onclick="toggleSidebar()" class="text-white text-2xl p-2 focus:outline-none hover:text-blue-400 transition"><i class="fas fa-bars"></i></button>
+    </div>
+
+    <div id="sidebarOverlay" onclick="toggleSidebar()" class="sidebar-overlay fixed inset-0 bg-black/60 z-30 md:hidden backdrop-blur-sm transition-opacity"></div>
+
+    <aside id="sidebar" class="fixed inset-y-0 right-0 transform translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out w-72 bg-slate-900 text-slate-300 flex flex-col shadow-2xl z-40 md:z-20 border-l border-slate-700/50">
+        <div class="p-8 text-center border-b border-slate-700/50 bg-slate-900/50 relative">
+            <button onclick="toggleSidebar()" class="md:hidden absolute top-4 left-4 text-slate-400 hover:text-white text-2xl"><i class="fas fa-times"></i></button>
+            
+            <img src="logo.png" alt="شعار معرض مهند" class="w-20 h-20 rounded-2xl mx-auto mb-4 border border-blue-500 shadow-lg shadow-blue-500/30 object-cover bg-slate-800" onerror="this.style.display='none'">
+            
+            <h1 class="text-2xl font-extrabold text-white tracking-wide drop-shadow-[0_0_8px_rgba(0,210,255,0.5)]">معرض مهند</h1>
+            <p class="text-xs text-blue-400 mt-1">نظام الإدارة الشامل</p>
         </div>
-    </header>
+        <nav class="flex-1 p-4 space-y-2 overflow-y-auto text-right mt-4 custom-scrollbar">
+            <button onclick="switchTab('customers')" class="sidebar-btn active w-full p-4 rounded-xl flex items-center gap-3 font-medium"><i class="fas fa-users w-5 text-center"></i> سجل الزبائن</button>
+            <button onclick="switchTab('inventory')" class="sidebar-btn w-full p-4 rounded-xl flex items-center gap-3 font-medium"><i class="fas fa-boxes-stacked w-5 text-center"></i> إدارة المخزن</button>
+            <button onclick="switchTab('companies')" class="sidebar-btn w-full p-4 rounded-xl flex items-center gap-3 font-medium"><i class="fas fa-building w-5 text-center"></i> حسابات الشركات</button>
+            <button onclick="switchTab('financial')" class="sidebar-btn w-full p-4 rounded-xl flex items-center gap-3 font-medium"><i class="fas fa-chart-pie w-5 text-center"></i> الموقف المالي</button>
+            <button onclick="switchTab('archive')" class="sidebar-btn w-full p-4 rounded-xl flex items-center gap-3 font-medium"><i class="fas fa-box-archive w-5 text-center"></i> أرشيف الديون</button>
+            <button onclick="switchTab('pos')" class="sidebar-btn w-full p-4 rounded-xl flex items-center gap-3 font-medium"><i class="fas fa-cash-register w-5 text-center"></i> البيع المباشر</button>
+        </nav>
+        <div class="p-6 border-t border-slate-700/50 bg-slate-800/30">
+            <button onclick="window.logout()" class="w-full bg-red-500/10 hover:bg-red-500 hover:text-white text-red-400 p-3 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2"><i class="fas fa-power-off"></i> تسجيل الخروج</button>
+        </div>
+    </aside>
 
-    <nav class="main-nav-container mb-4">
-        <button onclick="switchTab('customers')" class="sidebar-btn active"><i class="fas fa-users"></i> سجل الزبائن</button>
-        <button onclick="switchTab('inventory')" class="sidebar-btn"><i class="fas fa-boxes-stacked"></i> إدارة المخزن</button>
-        <button onclick="switchTab('companies')" class="sidebar-btn"><i class="fas fa-building"></i> الشركات</button>
-        <button onclick="switchTab('financial')" class="sidebar-btn"><i class="fas fa-chart-pie"></i> المالية</button>
-        <button onclick="switchTab('archive')" class="sidebar-btn"><i class="fas fa-box-archive"></i> أرشيف الديون</button>
-        <button onclick="switchTab('pos')" class="sidebar-btn"><i class="fas fa-cash-register"></i> البيع المباشر</button>
-    </nav>
-
-    <main class="flex-1 overflow-y-auto">
+    <main class="flex-1 overflow-y-auto p-4 pt-20 md:p-8 relative z-10 custom-scrollbar w-full">
         
-        <section id="customers" class="tab-content active">
-            <div class="glass-card p-4 rounded-2xl mb-4 flex flex-col sm:flex-row gap-3">
-                <button onclick="openCustomerModal()" class="bg-blue-600 text-white w-full sm:w-auto px-6 py-3 rounded-xl font-bold flex justify-center items-center gap-2">
-                    <i class="fas fa-plus-circle"></i> إضافة زبون
-                </button>
-                <div class="relative w-full">
-                    <i class="fas fa-search absolute right-3 top-3.5 text-slate-400"></i>
-                    <input type="text" id="custSearch" placeholder="بحث باسم الزبون..." class="pl-3 pr-10 py-3 w-full" onkeyup="renderCustomers()">
+        <section id="customers" class="tab-content active max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 glass-card p-6 rounded-2xl">
+                <div class="w-full md:w-auto text-center md:text-right">
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-slate-800">إدارة الزبائن</h2>
+                    <p class="text-slate-500 text-sm mt-1">إدارة الديون والأقساط الخاصة بالعملاء</p>
                 </div>
-            </div>
-            <div class="glass-card rounded-2xl p-2 sm:p-4">
-                <div class="table-wrapper">
-                    <table class="w-full text-right">
-                        <thead>
-                            <tr>
-                                <th>رقم الدفتر</th>
-                                <th>الزبون</th>
-                                <th>المادة المشتراة</th>
-                                <th>المتبقي (د.ع)</th>
-                                <th class="text-center">إجراءات</th>
-                            </tr>
-                        </thead>
-                        <tbody id="customersTable" class="divide-y divide-slate-100"></tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <section id="inventory" class="tab-content">
-            <div class="glass-card p-4 rounded-2xl mb-4">
-                <div class="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-hide">
-                    <button onclick="filterInventory('مبايلات')" class="sub-tab active px-4 py-2 rounded-lg font-bold flex items-center gap-2 whitespace-nowrap" data-cat="مبايلات"><i class="fas fa-mobile-screen"></i> موبايلات</button>
-                    <button onclick="filterInventory('اكسسوارات')" class="sub-tab px-4 py-2 rounded-lg font-bold flex items-center gap-2 whitespace-nowrap" data-cat="اكسسوارات"><i class="fas fa-headphones"></i> اكسسوارات</button>
-                    <button onclick="filterInventory('أجهزة كهربائية')" class="sub-tab px-4 py-2 rounded-lg font-bold flex items-center gap-2 whitespace-nowrap" data-cat="أجهزة كهربائية"><i class="fas fa-tv"></i> كهربائية</button>
-                    <button onclick="filterInventory('أجهزة منزلية')" class="sub-tab px-4 py-2 rounded-lg font-bold flex items-center gap-2 whitespace-nowrap" data-cat="أجهزة منزلية"><i class="fas fa-fan"></i> منزلية</button>
-                </div>
-                <div class="flex flex-col sm:flex-row gap-3">
-                    <button onclick="openInventoryModal()" class="bg-emerald-500 text-white w-full sm:w-auto px-6 py-3 rounded-xl font-bold flex justify-center items-center gap-2">
-                        <i class="fas fa-plus-square"></i> إضافة بضاعة
-                    </button>
-                    <div class="relative w-full">
+                <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                    <div class="relative w-full md:w-72">
                         <i class="fas fa-search absolute right-3 top-3.5 text-slate-400"></i>
-                        <input type="text" id="invSearch" placeholder="بحث في المخزن..." class="pl-3 pr-10 py-3 w-full" onkeyup="renderInventory()">
+                        <input type="text" id="custSearch" placeholder="بحث باسم الزبون..." class="pl-3 pr-10 py-3 border border-slate-200 rounded-xl w-full bg-slate-50 focus:bg-white" onkeyup="renderCustomers()">
+                    </div>
+                    <button onclick="openCustomerModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-blue-500/30 transition-transform transform hover:-translate-y-1 whitespace-nowrap w-full sm:w-auto"><i class="fas fa-plus ml-2"></i> إضافة زبون</button>
+                </div>
+            </div>
+            <div class="glass-card rounded-2xl overflow-hidden overflow-x-auto w-full">
+                <table class="w-full text-right min-w-[700px]">
+                    <thead class="bg-slate-50/80 border-b border-slate-200 text-slate-500 font-bold">
+                        <tr>
+                            <th class="p-5">رقم الدفتر</th>
+                            <th class="p-5">الزبون</th>
+                            <th class="p-5">المادة المشتراة</th>
+                            <th class="p-5">المتبقي (د.ع)</th>
+                            <th class="p-5 text-center">إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customersTable" class="divide-y divide-slate-100/10"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="inventory" class="tab-content max-w-7xl mx-auto">
+            <div class="glass-card p-6 rounded-2xl mb-8">
+                <h2 class="text-2xl md:text-3xl font-extrabold text-slate-800 mb-2">إدارة المخزن</h2>
+                <p class="text-slate-500 text-sm mb-6">متابعة البضائع، الأجهزة، والاكسسوارات المتوفرة</p>
+                
+                <div class="flex flex-wrap gap-2 border-b border-slate-700/50 pb-2 mb-6 overflow-x-auto whitespace-nowrap hide-scrollbar">
+                    <button onclick="filterInventory('مبايلات')" class="sub-tab active px-5 py-2.5 rounded-t-lg font-bold flex items-center gap-2" data-cat="مبايلات"><i class="fas fa-mobile-screen"></i> موبايلات</button>
+                    <button onclick="filterInventory('اكسسوارات')" class="sub-tab px-5 py-2.5 rounded-t-lg font-bold flex items-center gap-2" data-cat="اكسسوارات"><i class="fas fa-headphones"></i> اكسسوارات</button>
+                    <button onclick="filterInventory('أجهزة كهربائية')" class="sub-tab px-5 py-2.5 rounded-t-lg font-bold flex items-center gap-2" data-cat="أجهزة كهربائية"><i class="fas fa-tv"></i> أجهزة كهربائية</button>
+                    <button onclick="filterInventory('أجهزة منزلية')" class="sub-tab px-5 py-2.5 rounded-t-lg font-bold flex items-center gap-2" data-cat="أجهزة منزلية"><i class="fas fa-fan"></i> أجهزة منزلية</button>
+                </div>
+
+                <div class="flex flex-col md:flex-row justify-between gap-4">
+                    <div class="flex flex-col md:flex-row gap-2 w-full md:w-auto">
+                        <button onclick="openInventoryModal()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-emerald-500/30 transition-transform transform hover:-translate-y-1 w-full md:w-auto"><i class="fas fa-box-open ml-2"></i> إضافة بضاعة جديدة</button>
+                        
+                        <input type="file" id="invoiceScannerFile" accept="image/*" capture="environment" class="hidden" onchange="processInvoiceScan(event)">
+                        <button onclick="document.getElementById('invoiceScannerFile').click()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-blue-500/30 transition-transform transform hover:-translate-y-1 w-full md:w-auto border border-blue-400/50">
+                            <i class="fas fa-camera ml-2"></i> مسح وصل (قراءة ذكية)
+                        </button>
+                    </div>
+
+                    <div class="relative w-full md:w-72">
+                        <i class="fas fa-search absolute right-3 top-3.5 text-slate-400"></i>
+                        <input type="text" id="invSearch" placeholder="بحث في المخزن..." class="pl-3 pr-10 py-3 border border-slate-200 rounded-xl w-full bg-slate-50 focus:bg-white" onkeyup="renderInventory()">
                     </div>
                 </div>
             </div>
 
-            <div class="glass-card rounded-2xl p-2 sm:p-4">
-                <div class="table-wrapper">
-                    <table class="w-full text-right">
-                        <thead>
-                            <tr>
-                                <th>اسم المادة</th>
-                                <th class="text-center">الكمية</th>
-                                <th>الجملة</th>
-                                <th>الإجمالي</th>
-                                <th>البيع</th>
-                                <th>ملاحظات</th>
-                                <th class="text-center">تعديل/حذف</th>
-                            </tr>
-                        </thead>
-                        <tbody id="inventoryTable" class="divide-y divide-slate-100"></tbody>
-                    </table>
-                </div>
+            <div class="glass-card rounded-2xl overflow-hidden overflow-x-auto w-full">
+                <table class="w-full text-right min-w-[900px]">
+                    <thead class="bg-slate-50/80 border-b border-slate-200 text-slate-500 font-bold">
+                        <tr>
+                            <th class="p-5">اسم المادة</th>
+                            <th class="p-5 text-center">الكمية</th>
+                            <th class="p-5">سعر الجملة (مفرد)</th>
+                            <th class="p-5">إجمالي التكلفة</th>
+                            <th class="p-5">سعر البيع</th>
+                            <th class="p-5">ملاحظات</th>
+                            <th class="p-5 text-center">تعديل/حذف</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventoryTable" class="divide-y divide-slate-100/10"></tbody>
+                </table>
             </div>
         </section>
 
-        <section id="companies" class="tab-content">
-            <div class="glass-card p-4 rounded-2xl mb-4 flex flex-col sm:flex-row justify-between items-center gap-4">
-                <h2 class="text-xl font-bold text-white"><i class="fas fa-building text-slate-400 ml-2"></i> حسابات الشركات</h2>
-                <button onclick="openCompanyModal()" class="bg-slate-800 text-white px-6 py-3 rounded-xl font-bold w-full sm:w-auto"><i class="fas fa-plus-circle ml-2"></i> إضافة وصل دين</button>
-            </div>
-            <div class="glass-card rounded-2xl p-2 sm:p-4">
-                <div class="table-wrapper">
-                    <table class="w-full text-right">
-                        <thead>
-                            <tr>
-                                <th>الشركة الموردة</th>
-                                <th>تاريخ الوصل</th>
-                                <th>الدين الكلي</th>
-                                <th>الواصل لهم</th>
-                                <th>المتبقي بذمتنا</th>
-                            </tr>
-                        </thead>
-                        <tbody id="companiesTable" class="divide-y divide-slate-100"></tbody>
-                    </table>
+        <section id="companies" class="tab-content max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 glass-card p-6 rounded-2xl">
+                <div class="w-full md:w-auto text-center md:text-right">
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-slate-800">حسابات الشركات</h2>
+                    <p class="text-slate-500 text-sm mt-1">إدارة قوائم الديون المستحقة للموردين والشركات</p>
                 </div>
+                <button onclick="openCompanyModal()" class="bg-slate-800 hover:bg-slate-900 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-slate-800/30 transition-transform transform hover:-translate-y-1 w-full md:w-auto"><i class="fas fa-file-invoice-dollar ml-2"></i> إضافة وصل دين</button>
+            </div>
+            <div class="glass-card rounded-2xl overflow-hidden overflow-x-auto w-full">
+                <table class="w-full text-right min-w-[700px]">
+                    <thead class="bg-slate-50/80 border-b border-slate-200 text-slate-500 font-bold">
+                        <tr>
+                            <th class="p-5">اسم الشركة الموردة</th>
+                            <th class="p-5">تاريخ الوصل</th>
+                            <th class="p-5">إجمالي الدين</th>
+                            <th class="p-5">الواصل لهم</th>
+                            <th class="p-5">المتبقي بذمتنا</th>
+                        </tr>
+                    </thead>
+                    <tbody id="companiesTable" class="divide-y divide-slate-100/10"></tbody>
+                </table>
             </div>
         </section>
 
-        <section id="financial" class="tab-content">
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-                <div class="glass-card p-6 rounded-2xl text-center border-b-2" style="border-bottom-color: var(--neon-blue);">
-                    <h3 class="text-slate-400 font-bold mb-2 text-sm">إجمالي المخزن</h3>
-                    <p id="statInvTotal" class="text-2xl font-extrabold text-white">0 د.ع</p>
+        <section id="financial" class="tab-content max-w-7xl mx-auto">
+            <div class="mb-8 glass-card p-6 rounded-2xl text-center md:text-right">
+                <h2 class="text-2xl md:text-3xl font-extrabold text-slate-800">الموقف المالي الشامل</h2>
+                <p class="text-slate-500 text-sm mt-1">نظرة عامة على رأس المال، الديون، والمستحقات</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="stat-card-1 p-8 rounded-3xl relative overflow-hidden text-center md:text-right">
+                    <i class="fas fa-boxes-stacked absolute -left-6 -bottom-6 text-9xl text-white opacity-5"></i>
+                    <h3 class="text-blue-100 font-bold mb-3 text-lg relative z-10">إجمالي قيمة المخزن</h3>
+                    <p id="statInvTotal" class="text-3xl md:text-4xl font-extrabold relative z-10 drop-shadow-md">0 د.ع</p>
                 </div>
-                <div class="glass-card p-6 rounded-2xl text-center border-b-2" style="border-bottom-color: var(--neon-red);">
-                    <h3 class="text-slate-400 font-bold mb-2 text-sm">ديون علينا (شركات)</h3>
-                    <p id="statCompTotal" class="text-2xl font-extrabold text-white">0 د.ع</p>
+                <div class="stat-card-2 p-8 rounded-3xl relative overflow-hidden text-center md:text-right">
+                    <i class="fas fa-hand-holding-dollar absolute -left-6 -bottom-6 text-9xl text-white opacity-5"></i>
+                    <h3 class="text-rose-100 font-bold mb-3 text-lg relative z-10">مطلوبات للشركات (ديون علينا)</h3>
+                    <p id="statCompTotal" class="text-3xl md:text-4xl font-extrabold relative z-10 drop-shadow-md">0 د.ع</p>
                 </div>
-                <div class="glass-card p-6 rounded-2xl text-center border-b-2" style="border-bottom-color: var(--neon-green);">
-                    <h3 class="text-slate-400 font-bold mb-2 text-sm">ديون لنا (زبائن)</h3>
-                    <p id="statCustTotal" class="text-2xl font-extrabold text-white">0 د.ع</p>
+                <div class="stat-card-3 p-8 rounded-3xl relative overflow-hidden text-center md:text-right">
+                    <i class="fas fa-users absolute -left-6 -bottom-6 text-9xl text-white opacity-5"></i>
+                    <h3 class="text-emerald-100 font-bold mb-3 text-lg relative z-10">مستحقات عند الزبائن (ديون لنا)</h3>
+                    <p id="statCustTotal" class="text-3xl md:text-4xl font-extrabold relative z-10 drop-shadow-md">0 د.ع</p>
                 </div>
             </div>
-            <div class="text-center">
-                <button onclick="exportBackup()" class="bg-slate-800 text-white px-8 py-4 rounded-xl font-bold w-full sm:w-auto">
-                    <i class="fas fa-cloud-arrow-down ml-2"></i> تصدير نسخة احتياطية للبيانات
+            
+            <div class="mt-16 text-center">
+                <button onclick="exportBackup()" class="w-full md:w-auto group bg-transparent text-slate-300 px-8 py-4 rounded-2xl border-2 border-dashed border-slate-600 hover:border-blue-400 hover:text-blue-400 font-bold transition-all shadow-sm hover:shadow-lg">
+                    <i class="fas fa-cloud-arrow-down ml-2 text-2xl group-hover:animate-bounce"></i> 
+                    <span class="block mt-2">تصدير نسخة احتياطية من البيانات (JSON)</span>
                 </button>
             </div>
         </section>
 
-        <section id="archive" class="tab-content">
-            <div class="glass-card p-4 rounded-2xl mb-4">
-                <h2 class="text-xl font-bold" style="color: var(--neon-green);"><i class="fas fa-check-circle ml-2"></i> أرشيف الديون المنتهية</h2>
+        <section id="archive" class="tab-content max-w-7xl mx-auto">
+            <div class="mb-8 glass-card p-6 rounded-2xl text-center md:text-right">
+                <h2 class="text-2xl md:text-3xl font-extrabold text-slate-800 flex items-center justify-center md:justify-start gap-3"><i class="fas fa-box-archive text-slate-400"></i> أرشيف الديون المنتهية</h2>
+                <p class="text-slate-500 text-sm mt-1">سجل بجميع الزبائن الذين أكملوا تسديد ما بذمتهم</p>
             </div>
-            <div class="glass-card rounded-2xl p-2 sm:p-4">
-                <div class="table-wrapper">
-                    <table class="w-full text-right">
-                        <thead>
-                            <tr>
-                                <th>رقم الدفتر</th>
-                                <th>الزبون</th>
-                                <th>المادة</th>
-                                <th>المبلغ المسدد</th>
-                                <th class="text-center">إجراءات</th>
-                            </tr>
-                        </thead>
-                        <tbody id="archiveTable" class="divide-y divide-slate-100"></tbody>
-                    </table>
-                </div>
+            <div class="glass-card rounded-2xl overflow-hidden opacity-95 overflow-x-auto w-full">
+                <table class="w-full text-right min-w-[700px]">
+                    <thead class="bg-slate-200/10 border-b border-slate-700/50 text-slate-400 font-bold">
+                        <tr>
+                            <th class="p-5">رقم الدفتر</th>
+                            <th class="p-5">الزبون</th>
+                            <th class="p-5">المادة</th>
+                            <th class="p-5">المبلغ المسدد</th>
+                            <th class="p-5 text-center">إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="archiveTable" class="divide-y divide-slate-100/10"></tbody>
+                </table>
             </div>
         </section>
 
-        <section id="pos" class="tab-content">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div class="glass-card p-6 rounded-2xl">
-                    <h3 class="font-bold text-lg mb-4 text-white"><i class="fas fa-cart-plus" style="color: var(--neon-blue);"></i> مبيعات الكاش</h3>
-                    <div class="space-y-4">
-                        <input type="text" id="posItemName" list="posItemsList" placeholder="اسم المادة..." class="w-full p-4">
-                        <datalist id="posItemsList"></datalist>
-                        <input type="number" id="posSalePrice" placeholder="سعر البيع (د.ع)" class="w-full p-4">
-                        <button onclick="addPosSale()" class="w-full bg-blue-600 text-white p-4 rounded-xl font-bold">تأكيد البيع</button>
+        <section id="pos" class="tab-content max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-8 glass-card p-6 rounded-2xl gap-4">
+                <div class="text-center md:text-right">
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-slate-800">البيع المباشر (الكاش)</h2>
+                    <p class="text-slate-500 text-sm mt-1">إضافة مبيعات اليوم الفورية</p>
+                </div>
+                <div class="w-full md:w-auto bg-blue-50/10 text-blue-400 px-6 py-3 rounded-xl font-bold border border-blue-500/30 flex justify-center items-center gap-2">
+                    <i class="far fa-calendar-alt"></i> تاريخ اليوم: <span id="posCurrentDate"></span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <div class="lg:col-span-5">
+                    <div class="glass-card p-6 md:p-8 rounded-3xl relative overflow-hidden border-t-4 border-blue-500">
+                        <i class="fas fa-barcode absolute -right-6 -top-6 text-9xl text-slate-100 opacity-5 z-0"></i>
+                        <h3 class="font-bold text-xl mb-6 relative z-10 flex items-center gap-2"><i class="fas fa-cart-plus text-blue-500"></i> مادة جديدة</h3>
+                        <div class="space-y-5 relative z-10">
+                            <div>
+                                <label class="text-sm font-bold text-slate-400 block mb-2">اسم المادة</label>
+                                <input type="text" id="posItemName" list="posItemsList" placeholder="ابحث في المخزن أو اكتب يدوياً..." class="w-full p-4 border rounded-xl text-lg">
+                                <datalist id="posItemsList"></datalist>
+                            </div>
+                            
+                            <div>
+                                <label class="text-sm font-bold text-slate-400 block mb-2">سعر البيع المباشر</label>
+                                <div class="relative">
+                                    <input type="number" id="posSalePrice" placeholder="0" class="w-full p-4 pr-12 border rounded-xl text-xl font-bold text-blue-400">
+                                    <span class="absolute right-4 top-4 font-bold text-slate-500">د.ع</span>
+                                </div>
+                            </div>
+                            
+                            <button onclick="addPosSale()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 mt-2">
+                                <i class="fas fa-check-circle ml-2"></i> تأكيد وإضافة البيع
+                            </button>
+                        </div>
                     </div>
                 </div>
-                <div class="glass-card p-6 rounded-2xl flex flex-col h-full">
-                    <div class="flex justify-between items-center mb-4 border-b pb-2" style="border-color: #333;">
-                        <h3 class="font-bold text-lg text-white">مبيعات اليوم</h3>
-                        <span id="posCurrentDate" class="text-sm text-slate-400"></span>
-                    </div>
-                    <ul id="posDailyList" class="space-y-2 mb-4 flex-1 overflow-y-auto max-h-[200px]"></ul>
-                    <div class="mt-auto pt-4 border-t" style="border-color: #333;">
-                        <div class="flex justify-between text-lg font-bold mb-2">
-                            <span>اليوم:</span><span id="posDailyTotal" style="color: var(--neon-green);">0</span>
-                        </div>
-                        <div class="flex justify-between text-sm font-bold text-slate-400">
-                            <span>الشهر:</span><span id="posMonthlyTotal">0</span>
+
+                <div class="lg:col-span-7">
+                    <div class="glass-card p-6 md:p-8 rounded-3xl h-full flex flex-col min-h-[400px]">
+                        <h3 class="font-bold text-xl mb-6 flex items-center gap-2 border-b border-slate-700 pb-4"><i class="fas fa-clipboard-list text-emerald-500"></i> قائمة مبيعات اليوم</h3>
+                        
+                        <ul id="posDailyList" class="space-y-3 mb-6 flex-1 overflow-y-auto pr-2 custom-scrollbar"></ul>
+                        
+                        <div class="bg-slate-900/50 p-6 rounded-2xl border border-slate-700/50 space-y-4 mt-auto">
+                            <div class="flex flex-col sm:flex-row justify-between items-center font-bold text-lg md:text-xl text-emerald-400 bg-emerald-900/20 p-4 rounded-xl border border-emerald-500/20 gap-2">
+                                <span><i class="fas fa-coins ml-2"></i> مجموع مبيعات اليوم:</span>
+                                <span class="text-white"><span id="posDailyTotal">0</span> د.ع</span>
+                            </div>
+                            <div class="flex flex-col sm:flex-row justify-between items-center font-bold text-md md:text-lg text-blue-400 px-4 gap-2">
+                                <span><i class="fas fa-calendar-check ml-2"></i> إجمالي مبيعات الشهر:</span>
+                                <span class="text-white"><span id="posMonthlyTotal">0</span> د.ع</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -355,138 +496,237 @@
     </main>
 </div>
 
-<div id="custModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center z-[150] p-4">
-    <div class="glass-card rounded-[2rem] w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6" style="border: 1px solid var(--neon-blue);">
-        <div class="flex justify-between items-center mb-6 border-b pb-4" style="border-color: #333;">
-            <h3 id="custModalTitle" class="text-xl font-extrabold text-white">تفاصيل الزبون</h3>
-            <button onclick="closeModal('custModal')" class="text-slate-400 hover:text-red-500 text-2xl"><i class="fas fa-times"></i></button>
+<div id="scanReviewModal" class="fixed inset-0 bg-slate-900/90 backdrop-blur-md hidden flex items-center justify-center z-[200] p-4 transition-opacity duration-300">
+    <div class="glass-card p-6 md:p-8 rounded-[2rem] w-full max-w-3xl max-h-[90vh] flex flex-col shadow-2xl border-t-8 border-blue-500">
+        <div class="flex justify-between items-center border-b border-slate-700 pb-4 mb-4">
+            <h3 class="text-xl md:text-2xl font-extrabold text-slate-100 flex items-center gap-2">
+                <i class="fas fa-robot text-blue-500"></i> مراجعة المواد المستخرجة من الوصل
+            </h3>
+            <button onclick="closeModal('scanReviewModal')" class="text-slate-400 hover:text-red-500 text-2xl transition"><i class="fas fa-times"></i></button>
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="space-y-4">
-                <div class="flex gap-2">
-                    <input type="text" id="cID" placeholder="رقم الدفتر" class="w-1/3 p-3 text-center">
-                    <input type="text" id="cName" placeholder="الاسم الثلاثي *" class="w-2/3 p-3">
-                </div>
-                <input type="text" id="cItemName" list="inventoryItemsList" placeholder="المادة المشتراة *" class="w-full p-3">
-                <datalist id="inventoryItemsList"></datalist>
-                
-                <div class="grid grid-cols-3 gap-2">
-                    <input type="number" id="cTotal" placeholder="الكلي" class="w-full p-3" onkeyup="calcRemaining()">
-                    <input type="number" id="cPaid" placeholder="واصل" class="w-full p-3" onkeyup="calcRemaining()">
-                    <input type="number" id="cRem" placeholder="المتبقي" class="w-full p-3 font-bold" style="color: var(--neon-red);" readonly>
-                </div>
-                
-                <div class="grid grid-cols-2 gap-2">
-                    <input type="text" id="cPhone" placeholder="رقم الهاتف" class="w-full p-3">
-                    <input type="text" id="cAddress" placeholder="العنوان" class="w-full p-3">
-                </div>
-                <textarea id="cNotes" placeholder="ملاحظات" class="w-full p-3 h-20 resize-none"></textarea>
-            </div>
+        <p class="text-sm text-slate-400 mb-4 bg-blue-900/20 p-3 rounded-lg border border-blue-500/20">
+            <i class="fas fa-info-circle text-blue-400 ml-1"></i> يرجى مراجعة الأسماء والأرقام وتصحيحها قبل اعتمادها وإضافتها للمخزن.
+        </p>
 
-            <div class="space-y-4">
-                <div class="bg-black/40 p-4 rounded-xl border" style="border-color: #333;">
-                    <div class="flex justify-between items-center mb-2">
-                        <h4 class="font-bold text-sm text-slate-300">سجل الأقساط</h4>
-                        <button onclick="addMonthRow()" id="addMonthBtn" class="bg-blue-600 text-white text-xs px-3 py-1 rounded">قسط جديد</button>
+        <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar">
+            <table class="w-full text-right text-sm">
+                <thead class="bg-slate-800 text-slate-300 sticky top-0">
+                    <tr>
+                        <th class="p-3 w-1/2">اسم المادة</th>
+                        <th class="p-3 w-1/6 text-center">الكمية</th>
+                        <th class="p-3 w-1/4">سعر الجملة</th>
+                        <th class="p-3 text-center">حذف</th>
+                    </tr>
+                </thead>
+                <tbody id="scannedItemsTable" class="divide-y divide-slate-700">
+                    </tbody>
+            </table>
+        </div>
+
+        <div class="mt-6 flex flex-col sm:flex-row gap-3 border-t border-slate-700 pt-4">
+            <button id="confirmScanBtn" onclick="confirmScannedItems()" class="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 rounded-xl font-bold hover:shadow-lg transition-transform transform hover:-translate-y-1">
+                <i class="fas fa-check-circle ml-2"></i> تأكيد وإضافة للمخزن
+            </button>
+            <button onclick="closeModal('scanReviewModal')" class="w-full sm:w-auto bg-slate-800 text-slate-300 p-4 rounded-xl font-bold hover:bg-slate-700 transition">إلغاء العملية</button>
+        </div>
+    </div>
+</div>
+
+<div id="custModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center z-[150] overflow-y-auto p-2 sm:p-4 transition-opacity duration-300">
+    <div class="glass-card rounded-[2rem] w-full max-w-6xl max-h-[95vh] overflow-y-auto shadow-2xl relative border-t-8 border-blue-600 custom-scrollbar">
+        <div class="sticky top-0 bg-slate-900/90 backdrop-blur p-4 sm:p-6 border-b border-slate-700 flex justify-between items-center z-20 shadow-sm">
+            <h3 id="custModalTitle" class="text-xl sm:text-2xl font-extrabold text-slate-100 flex items-center gap-2 sm:gap-3"><i class="fas fa-user-circle text-blue-500 text-2xl sm:text-3xl"></i> تفاصيل الزبون</h3>
+            <button onclick="closeModal('custModal')" class="bg-slate-800 hover:bg-red-900/50 text-slate-400 hover:text-red-400 w-10 h-10 rounded-full flex items-center justify-center transition duration-300"><i class="fas fa-times text-xl"></i></button>
+        </div>
+        
+        <div class="p-4 sm:p-8 grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-10">
+            <div class="space-y-6">
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <div class="w-full sm:w-1/3">
+                        <label class="text-sm font-bold text-slate-400 block mb-2">رقم القائمة/الدفتر</label>
+                        <input type="text" id="cID" class="w-full p-3 border rounded-xl text-center font-bold text-lg">
                     </div>
-                    <div id="monthsContainer" class="space-y-2 max-h-[120px] overflow-y-auto"></div>
-                </div>
-
-                <div class="bg-black/40 p-4 rounded-xl border" style="border-color: #333;">
-                    <h4 class="font-bold text-sm text-slate-300 mb-2">بيانات الكفيل</h4>
-                    <input type="text" id="gkName" placeholder="اسم الكفيل" class="w-full p-3 mb-2">
-                    <div class="grid grid-cols-2 gap-2">
-                        <input type="text" id="gkPhone" placeholder="هاتفه" class="w-full p-3">
-                        <input type="text" id="gkAddress" placeholder="عنوانه" class="w-full p-3">
+                    <div class="w-full sm:w-2/3">
+                        <label class="text-sm font-bold text-slate-400 block mb-2">الاسم الثلاثي للزبون <span class="text-red-500">*</span></label>
+                        <input type="text" id="cName" class="w-full p-3 border rounded-xl font-bold text-blue-400 text-lg">
                     </div>
                 </div>
                 
-                <div class="grid grid-cols-2 gap-2 hidden"> <input type="file" id="cImageInput" onchange="previewBase64(this, 'cImagePreview')">
-                    <img id="cImagePreview" src="" class="hidden">
-                    <input type="file" id="gImageInput" onchange="previewBase64(this, 'gImagePreview')">
-                    <img id="gImagePreview" src="" class="hidden">
+                <div>
+                    <label class="text-sm font-bold text-slate-400 block mb-2">المادة المشتراة <span class="text-red-500">*</span></label>
+                    <input type="text" id="cItemName" list="inventoryItemsList" placeholder="اختر من المخزن..." class="w-full p-3 border rounded-xl">
+                    <datalist id="inventoryItemsList"></datalist>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 sm:p-5 bg-blue-900/20 rounded-2xl border border-blue-500/20">
+                    <div>
+                        <label class="text-xs font-bold text-slate-400 block mb-1">المبلغ الكلي</label>
+                        <input type="number" id="cTotal" class="w-full p-3 border rounded-xl" onkeyup="calcRemaining()" onchange="calcRemaining()">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-slate-400 block mb-1">المقدمة (واصل)</label>
+                        <input type="number" id="cPaid" class="w-full p-3 border rounded-xl" onkeyup="calcRemaining()" onchange="calcRemaining()">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-red-400 block mb-1">المتبقي</label>
+                        <input type="number" id="cRem" class="w-full p-3 border-2 border-red-500/30 rounded-xl bg-red-900/10 font-bold text-red-400 text-lg" readonly>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-sm font-bold text-slate-400 block mb-2">رقم الهاتف</label>
+                        <input type="text" id="cPhone" class="w-full p-3 border rounded-xl" dir="ltr" style="text-align: right;">
+                    </div>
+                    <div>
+                        <label class="text-sm font-bold text-slate-400 block mb-2">العنوان السكني</label>
+                        <input type="text" id="cAddress" class="w-full p-3 border rounded-xl">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="text-sm font-bold text-slate-400 block mb-2">ملاحظات إضافية</label>
+                    <textarea id="cNotes" class="w-full p-3 border rounded-xl h-24 resize-none"></textarea>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <div class="p-4 sm:p-6 bg-slate-900/50 rounded-2xl border border-slate-700/50 shadow-inner">
+                    <div class="flex justify-between items-center mb-4 border-b border-slate-700 pb-3">
+                        <h4 class="font-extrabold text-blue-400 text-lg"><i class="fas fa-list-check ml-2"></i> سجل تسديد الأقساط</h4>
+                        <button onclick="addMonthRow()" id="addMonthBtn" class="bg-blue-600 hover:bg-blue-500 text-white text-sm px-4 py-2 rounded-lg shadow-md transition transform hover:scale-105"><i class="fas fa-plus ml-1"></i> قسط جديد</button>
+                    </div>
+                    <div class="flex gap-2 mb-2 text-xs text-slate-400 font-bold px-2">
+                        <div class="w-1/3">المبلغ</div>
+                        <div class="w-1/3 text-center">التاريخ</div>
+                        <div class="w-1/3 text-center">المستلم</div>
+                        <div class="w-8"></div>
+                    </div>
+                    <div id="monthsContainer" class="space-y-3 max-h-[220px] overflow-y-auto p-2 custom-scrollbar"></div>
+                </div>
+
+                <div class="p-4 sm:p-6 bg-slate-900/30 rounded-2xl border border-slate-700/50 shadow-sm relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-2 h-full bg-emerald-500" style="background:var(--neon-blue)"></div>
+                    <h4 class="font-extrabold text-slate-100 mb-4 text-lg"><i class="fas fa-user-shield text-emerald-400 ml-2"></i> بيانات الكفيل (الضامن)</h4>
+                    <div class="space-y-4">
+                        <div>
+                            <input type="text" id="gkName" placeholder="اسم الكفيل الثلاثي" class="w-full p-3 border rounded-xl">
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <input type="text" id="gkPhone" placeholder="رقم هاتف الكفيل" class="w-full p-3 border rounded-xl" dir="ltr" style="text-align: right;">
+                            </div>
+                            <div>
+                                <input type="text" id="gkAddress" placeholder="عنوان الكفيل" class="w-full p-3 border rounded-xl">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="border-2 border-dashed border-slate-600 p-4 rounded-2xl text-center bg-slate-900/30 hover:bg-slate-800 transition cursor-pointer relative">
+                        <label class="block font-bold text-sm text-slate-400 mb-2 cursor-pointer">صورة هوية الزبون</label>
+                        <input type="file" id="cImageInput" accept="image/*" class="text-sm w-full mb-2 absolute inset-0 opacity-0 cursor-pointer" onchange="previewBase64(this, 'cImagePreview')">
+                        <div class="text-blue-500 mb-2 pointer-events-none"><i class="fas fa-cloud-upload-alt text-2xl"></i></div>
+                        <img id="cImagePreview" src="" class="hidden mx-auto h-24 object-contain rounded shadow-md mt-2">
+                    </div>
+                    <div class="border-2 border-dashed border-slate-600 p-4 rounded-2xl text-center bg-slate-900/30 hover:bg-slate-800 transition cursor-pointer relative">
+                        <label class="block font-bold text-sm text-slate-400 mb-2 cursor-pointer">صورة هوية الكفيل</label>
+                        <input type="file" id="gImageInput" accept="image/*" class="text-sm w-full mb-2 absolute inset-0 opacity-0 cursor-pointer" onchange="previewBase64(this, 'gImagePreview')">
+                        <div class="text-emerald-500 mb-2 pointer-events-none"><i class="fas fa-cloud-upload-alt text-2xl"></i></div>
+                        <img id="gImagePreview" src="" class="hidden mx-auto h-24 object-contain rounded shadow-md mt-2">
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="mt-6 flex flex-wrap gap-3">
-            <button onclick="saveCustomer()" id="saveCustBtn" class="flex-1 bg-blue-600 text-white p-3 rounded-xl font-bold">حفظ الزبون</button>
-            <button onclick="printCustomerReceipt()" id="printBtn" class="bg-amber-500 text-black p-3 rounded-xl font-bold">طباعة</button>
-            <button onclick="archiveCustomer()" id="archiveBtn" class="bg-slate-700 text-white p-3 rounded-xl font-bold hidden">أرشفة</button>
-            <button onclick="deleteCustomer()" id="deleteCustBtn" class="bg-red-500 text-white p-3 rounded-xl font-bold hidden"><i class="fas fa-trash"></i></button>
+        <div class="sticky bottom-0 p-4 sm:p-5 bg-slate-900/90 backdrop-blur border-t border-slate-700 flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 z-20 rounded-b-[2rem]">
+            <button onclick="saveCustomer()" id="saveCustBtn" class="flex-1 min-w-full sm:min-w-[200px] bg-gradient-to-r from-blue-600 to-blue-700 text-white p-3 sm:p-4 rounded-xl font-bold hover:shadow-lg transition-transform transform hover:-translate-y-1 text-base sm:text-lg"><i class="fas fa-save ml-2"></i> حفظ بيانات الزبون</button>
+            <button onclick="printCustomerReceipt()" id="printBtn" class="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-black px-8 py-3 sm:py-4 rounded-xl font-bold shadow-md transition-transform transform hover:-translate-y-1"><i class="fas fa-print ml-2"></i> طباعة كشف</button>
+            <button onclick="archiveCustomer()" id="archiveBtn" class="w-full sm:w-auto bg-slate-700 hover:bg-slate-600 text-white px-6 py-3 sm:py-4 rounded-xl font-bold hidden shadow-md transition-transform transform hover:-translate-y-1"><i class="fas fa-box-archive ml-2"></i> أرشفة</button>
+            <button onclick="deleteCustomer()" id="deleteCustBtn" class="w-full sm:w-auto bg-red-500 hover:bg-red-600 text-white px-6 py-3 sm:py-4 rounded-xl font-bold hidden shadow-md transition-transform transform hover:-translate-y-1"><i class="fas fa-trash-alt"></i></button>
         </div>
     </div>
 </div>
 
-<div id="invModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center z-[150] p-4">
-    <div class="glass-card p-6 rounded-[2rem] w-full max-w-sm" style="border: 1px solid var(--neon-green);">
-        <h3 id="invModalTitle" class="text-xl font-bold text-white mb-4">تفاصيل البضاعة</h3>
-        <div class="space-y-3">
-            <select id="iCat" class="w-full p-3">
-                <option value="مبايلات">موبايلات</option>
-                <option value="اكسسوارات">اكسسوارات الذكية</option>
-                <option value="أجهزة كهربائية">أجهزة كهربائية</option>
-                <option value="أجهزة منزلية">أجهزة منزلية</option>
-            </select>
-            <input type="text" id="iName" placeholder="اسم المادة" class="w-full p-3">
-            <div class="grid grid-cols-2 gap-2">
-                <input type="number" id="iQty" placeholder="الكمية" class="w-full p-3 text-center">
-                <input type="number" id="iWholesale" placeholder="الجملة" class="w-full p-3">
+<div id="invModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md hidden flex items-center justify-center z-[150] p-4 transition-opacity duration-300">
+    <div class="glass-card p-6 md:p-8 rounded-[2rem] w-full max-w-[450px] shadow-2xl border-t-8 border-emerald-500 transform transition-all">
+        <h3 id="invModalTitle" class="text-xl md:text-2xl font-extrabold text-slate-100 mb-6 flex items-center gap-2"><i class="fas fa-box text-emerald-500"></i> تفاصيل البضاعة</h3>
+        <div class="space-y-5">
+            <div>
+                <label class="text-sm font-bold text-slate-400 block mb-2">التصنيف</label>
+                <select id="iCat" class="w-full p-3 border rounded-xl font-bold text-slate-200">
+                    <option value="مبايلات">موبايلات</option>
+                    <option value="اكسسوارات">اكسسوارات الذكية</option>
+                    <option value="أجهزة كهربائية">أجهزة كهربائية</option>
+                    <option value="أجهزة منزلية">أجهزة منزلية</option>
+                </select>
             </div>
-            <input type="number" id="iSell" placeholder="سعر البيع" class="w-full p-3 font-bold text-emerald-400">
-            <textarea id="iNotes" placeholder="ملاحظات" class="w-full p-3 h-20 resize-none"></textarea>
+            <div>
+                <label class="text-sm font-bold text-slate-400 block mb-2">اسم المادة</label>
+                <input type="text" id="iName" class="w-full p-3 border rounded-xl">
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="text-sm font-bold text-slate-400 block mb-2">الكمية/العدد</label>
+                    <input type="number" id="iQty" class="w-full p-3 border rounded-xl text-center font-bold text-lg">
+                </div>
+                <div>
+                    <label class="text-sm font-bold text-slate-400 block mb-2">سعر الجملة (عليك)</label>
+                    <input type="number" id="iWholesale" class="w-full p-3 border rounded-xl">
+                </div>
+            </div>
+            <div>
+                <label class="text-sm font-bold text-slate-400 block mb-2">سعر البيع المقترح</label>
+                <input type="number" id="iSell" class="w-full p-3 border border-emerald-500/50 rounded-xl bg-emerald-900/10 text-emerald-400 font-bold text-lg">
+            </div>
+            <div>
+                <label class="text-sm font-bold text-slate-400 block mb-2">ملاحظات / مواصفات</label>
+                <textarea id="iNotes" class="w-full p-3 border rounded-xl h-20 resize-none"></textarea>
+            </div>
         </div>
-        <div class="flex gap-2 mt-4">
-            <button id="saveInvBtn" onclick="saveInventory()" class="flex-1 bg-emerald-500 text-black p-3 rounded-xl font-bold">حفظ</button>
-            <button onclick="closeModal('invModal')" class="bg-slate-700 text-white p-3 rounded-xl font-bold">إلغاء</button>
+        <div class="flex flex-col sm:flex-row gap-3 mt-8">
+            <button id="saveInvBtn" onclick="saveInventory()" class="flex-1 bg-emerald-500 text-black p-4 rounded-xl font-bold hover:bg-emerald-400 shadow-lg shadow-emerald-500/30 transition-transform transform hover:-translate-y-1"><i class="fas fa-check ml-2"></i> حفظ المادة</button>
+            <button onclick="closeModal('invModal')" class="w-full sm:w-auto bg-slate-800 text-slate-300 p-4 rounded-xl font-bold hover:bg-slate-700 transition">إلغاء</button>
         </div>
     </div>
 </div>
 
-<div id="compModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center z-[150] p-4">
-    <div class="glass-card p-6 rounded-[2rem] w-full max-w-sm" style="border: 1px solid var(--neon-red);">
-        <h3 class="text-xl font-bold text-white mb-4">وصل دين شركة</h3>
-        <div class="space-y-3">
-            <input type="text" id="coName" placeholder="اسم الشركة" class="w-full p-3">
-            <input type="date" id="coDate" class="w-full p-3 text-slate-400">
-            <input type="number" id="coPrev" placeholder="المبلغ الكلي (الدين)" class="w-full p-3" style="color: var(--neon-red);">
-            <input type="number" id="coPaid" placeholder="الواصل منا لهم" class="w-full p-3" style="color: var(--neon-green);">
+<div id="compModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md hidden flex items-center justify-center z-[150] p-4 transition-opacity duration-300">
+    <div class="glass-card p-6 md:p-8 rounded-[2rem] w-full max-w-[450px] shadow-2xl border-t-8 border-rose-500">
+        <h3 class="text-xl md:text-2xl font-extrabold text-slate-100 mb-6 flex items-center gap-2"><i class="fas fa-building text-rose-500"></i> تسجيل وصل دين</h3>
+        <div class="space-y-5">
+            <div>
+                <label class="text-sm font-bold text-slate-400 block mb-2">اسم الشركة / المندوب</label>
+                <input type="text" id="coName" class="w-full p-3 border rounded-xl text-lg font-bold">
+            </div>
+            <div>
+                <label class="text-sm font-bold text-slate-400 block mb-2">تاريخ الوصل</label>
+                <input type="date" id="coDate" class="w-full p-3 border rounded-xl">
+            </div>
+            <div class="p-4 bg-rose-900/10 rounded-xl border border-rose-500/20 space-y-4">
+                <div>
+                    <label class="text-sm font-bold text-rose-400 block mb-2">المبلغ الكلي للوصل (الدين)</label>
+                    <input type="number" id="coPrev" class="w-full p-3 border border-rose-500/30 rounded-xl bg-black/50 text-lg font-bold text-rose-400">
+                </div>
+                <div>
+                    <label class="text-sm font-bold text-emerald-400 block mb-2">المبلغ الواصل منا لهم (التسديد)</label>
+                    <input type="number" id="coPaid" class="w-full p-3 border border-emerald-500/30 rounded-xl bg-black/50 text-lg font-bold text-emerald-400">
+                </div>
+            </div>
         </div>
-        <div class="flex gap-2 mt-4">
-            <button onclick="saveCompany()" class="flex-1 bg-red-500 text-white p-3 rounded-xl font-bold">حفظ</button>
-            <button onclick="closeModal('compModal')" class="bg-slate-700 text-white p-3 rounded-xl font-bold">إلغاء</button>
+        <div class="flex flex-col sm:flex-row gap-3 mt-8">
+            <button onclick="saveCompany()" class="flex-1 bg-rose-500 text-black p-4 rounded-xl font-bold hover:bg-rose-400 shadow-lg shadow-rose-500/30 transition-transform transform hover:-translate-y-1"><i class="fas fa-check ml-2"></i> حفظ وصل الدين</button>
+            <button onclick="closeModal('compModal')" class="w-full sm:w-auto bg-slate-800 text-slate-300 p-4 rounded-xl font-bold hover:bg-slate-700 transition">إلغاء</button>
         </div>
     </div>
 </div>
-
-<script>
-    // تفعيل الساعة كما كانت في النسخة المصغرة
-    function updateClock() {
-        const now = new Date();
-        const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
-        const timeStr = now.toLocaleTimeString('en-GB', timeOptions); 
-        
-        const d = String(now.getDate()).padStart(2, '0');
-        const m = String(now.getMonth() + 1).padStart(2, '0');
-        const y = now.getFullYear();
-        
-        const timeElem = document.getElementById('time-display');
-        const dateElem = document.getElementById('date-display');
-        
-        if(timeElem) timeElem.textContent = timeStr.toUpperCase();
-        if(dateElem) dateElem.textContent = `${d}/${m}/${y}`;
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
-</script>
 
 <script type="module">
-    // --- هنا نفس كود الجافاسكربت الخاص بـ Firebase للنسخة المطورة لم يتغير ---
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getFirestore, collection, onSnapshot, addDoc, doc, updateDoc, deleteDoc, writeBatch, serverTimestamp, query, where } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-
+   
     const firebaseConfig = {
       apiKey: "AIzaSyB1e-lTs-hXrKq7uAkhTj_azp8CdmrwO8w",
       authDomain: "gggg-44b14.firebaseapp.com",
@@ -498,8 +738,7 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const auth = getAuth(app);
-
+    
     let products = [];
     let customers = [];
     let companies = [];
@@ -511,28 +750,50 @@
     let currentCustomerImage = "";
     let currentGuarantorImage = "";
 
-    onAuthStateChanged(auth, user => {
-        if (user) {
+    window.toggleSidebar = () => {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        sidebar.classList.toggle('translate-x-full');
+        overlay.classList.toggle('active');
+    };
+
+    const SYSTEM_PIN = "@11@22@34";
+
+    if(sessionStorage.getItem("isLoggedIn") === "true") {
+        document.getElementById('authScreen').classList.add('hidden');
+        document.getElementById('mainApp').classList.remove('hidden');
+        startListeners(); 
+    }
+
+    window.checkPin = () => {
+        const enteredPin = document.getElementById('authPassword').value;
+        if (enteredPin === SYSTEM_PIN) {
+            sessionStorage.setItem("isLoggedIn", "true"); 
             document.getElementById('authScreen').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
-            document.getElementById('mainApp').classList.add('flex');
             startListeners();
         } else {
-            document.getElementById('authScreen').classList.remove('hidden');
-            document.getElementById('mainApp').classList.add('hidden');
-            document.getElementById('mainApp').classList.remove('flex');
+            alert("الرمز السري غير صحيح! يرجى المحاولة مرة أخرى.");
+            document.getElementById('authPassword').value = '';
         }
-    });
+    };
 
-    window.login = () => signInWithEmailAndPassword(auth, document.getElementById('authEmail').value, document.getElementById('authPassword').value);
-    window.register = () => createUserWithEmailAndPassword(auth, document.getElementById('authEmail').value, document.getElementById('authPassword').value);
-    window.logout = () => signOut(auth);
+    window.logout = () => {
+        sessionStorage.removeItem("isLoggedIn");
+        document.getElementById('mainApp').classList.add('hidden');
+        document.getElementById('authScreen').classList.remove('hidden');
+        document.getElementById('authPassword').value = ''; 
+    };
 
     window.switchTab = (id) => {
         document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active'));
         event.currentTarget.classList.add('active');
+        
+        if(window.innerWidth < 768) {
+            toggleSidebar();
+        }
     };
 
     function startListeners() {
@@ -542,12 +803,14 @@
             updateDropdowns();
             updateFinancials();
         });
+        
         onSnapshot(collection(db, 'customers'), snap => {
             customers = snap.docs.map(d => ({id: d.id, ...d.data()}));
             renderCustomers();
             renderArchive();
             updateFinancials();
         });
+        
         onSnapshot(collection(db, 'companies'), snap => {
             companies = snap.docs.map(d => ({id: d.id, ...d.data()}));
             renderCompanies();
@@ -578,7 +841,7 @@
     window.filterInventory = (cat) => {
         currentCategory = cat;
         document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
-        event.target.classList.add('active');
+        event.currentTarget.classList.add('active');
         renderInventory();
     };
 
@@ -590,7 +853,8 @@
 
         if (id) {
             const p = products.find(x => x.id === id);
-            title.innerHTML = 'تعديل المادة';
+            title.innerHTML = '<i class="fas fa-pen-to-square text-emerald-500"></i> تعديل المادة';
+            saveBtn.innerHTML = '<i class="fas fa-check ml-2"></i> حفظ التعديلات';
             
             document.getElementById('iCat').value = p.category || 'مبايلات';
             document.getElementById('iName').value = p.name || '';
@@ -599,7 +863,8 @@
             document.getElementById('iSell').value = p.sell || '';
             document.getElementById('iNotes').value = p.notes || '';
         } else {
-            title.innerHTML = 'إضافة بضاعة جديدة';
+            title.innerHTML = '<i class="fas fa-box text-emerald-500"></i> إضافة بضاعة جديدة';
+            saveBtn.innerHTML = '<i class="fas fa-check ml-2"></i> حفظ المادة';
             
             document.getElementById('iCat').value = 'مبايلات';
             document.getElementById('iName').value = '';
@@ -631,7 +896,7 @@
     };
 
     window.deleteInventory = async (id) => {
-        if(confirm('هل أنت متأكد من حذف هذه المادة؟')) {
+        if(confirm('هل أنت متأكد من حذف هذه المادة من المخزن بشكل نهائي؟')) {
             await deleteDoc(doc(db, 'inventory', id));
         }
     };
@@ -642,20 +907,168 @@
         const filtered = products.filter(p => p.category === currentCategory && p.name.toLowerCase().includes(search));
         
         tbody.innerHTML = filtered.map(p => `
-            <tr>
-                <td class="font-bold">${p.name}</td>
-                <td class="text-center"><span class="${p.qty <= 0 ? 'text-red-500' : 'text-emerald-500'} font-bold">${p.qty}</span></td>
-                <td class="text-slate-400">${(p.wholesale || 0).toLocaleString()}</td>
-                <td class="font-bold" style="color: var(--neon-blue);">${((p.qty || 0) * (p.wholesale || 0)).toLocaleString()}</td>
-                <td class="font-bold" style="color: var(--neon-green);">${(p.sell || 0).toLocaleString()}</td>
-                <td class="text-xs text-slate-500 max-w-[100px] truncate" title="${p.notes || ''}">${p.notes || ''}</td>
-                <td class="flex gap-2 justify-center">
-                    <button onclick="openInventoryModal('${p.id}')" class="text-blue-500"><i class="fas fa-edit"></i></button>
-                    <button onclick="deleteInventory('${p.id}')" class="text-red-500"><i class="fas fa-trash"></i></button>
+            <tr class="transition duration-200 hover:bg-white/5">
+                <td class="p-5 font-bold text-slate-200">${p.name}</td>
+                <td class="p-5 text-center">
+                    <span class="${p.qty <= 0 ? 'text-red-500' : 'text-emerald-400'} font-bold text-lg">
+                        ${p.qty}
+                    </span>
+                </td>
+                <td class="p-5 text-slate-400">${(p.wholesale || 0).toLocaleString()}</td>
+                <td class="p-5 text-blue-400 font-bold">${((p.qty || 0) * (p.wholesale || 0)).toLocaleString()}</td>
+                <td class="p-5 text-emerald-400 font-bold">${(p.sell || 0).toLocaleString()}</td>
+                <td class="p-5 text-sm text-slate-500 max-w-[150px] truncate" title="${p.notes || ''}">${p.notes || ''}</td>
+                <td class="p-5 flex gap-2 justify-center">
+                    <button onclick="openInventoryModal('${p.id}')" class="text-blue-400 hover:bg-blue-900/50 w-8 h-8 rounded-full transition" title="تعديل"><i class="fas fa-edit"></i></button>
+                    <button onclick="deleteInventory('${p.id}')" class="text-red-400 hover:bg-red-900/50 w-8 h-8 rounded-full transition" title="حذف"><i class="fas fa-trash"></i></button>
                 </td>
             </tr>
         `).join('');
     }
+
+    // ==========================================
+    // إضافة نظام المسح الضوئي (OCR) للوصولات
+    // ==========================================
+    let tempScannedItems = [];
+
+    window.processInvoiceScan = (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        // فتح نافذة المراجعة وعرض حالة التحميل
+        document.getElementById('scanReviewModal').classList.remove('hidden');
+        const tbody = document.getElementById('scannedItemsTable');
+        document.getElementById('confirmScanBtn').classList.add('hidden');
+        
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="4" class="text-center p-10">
+                    <i class="fas fa-spinner fa-spin text-4xl text-blue-500 mb-4"></i>
+                    <p class="text-lg font-bold text-white">جاري تحليل الوصل بالذكاء الاصطناعي...</p>
+                    <p class="text-sm text-slate-400">قد تستغرق العملية ثواني معدودة</p>
+                </td>
+            </tr>
+        `;
+
+        Tesseract.recognize(
+            file,
+            'ara+eng', // اللغة العربية والانجليزية (للأرقام)
+            { logger: m => console.log(m) }
+        ).then(({ data: { text } }) => {
+            parseInvoiceText(text);
+        }).catch(err => {
+            alert('عذراً، حدث خطأ أثناء قراءة الصورة. تأكد من وضوح الصورة.');
+            closeModal('scanReviewModal');
+        });
+
+        event.target.value = ''; // تصفير الملف
+    };
+
+    function parseInvoiceText(text) {
+        tempScannedItems = [];
+        // تقسيم النص الى اسطر وتنظيفها
+        const lines = text.split('\n').filter(line => line.trim().length > 2);
+        
+        lines.forEach(line => {
+            let cleanLine = line.trim();
+            let numbers = cleanLine.match(/\d+/g);
+            // ابقاء الحروف العربية والانجليزية للاسم
+            let namePart = cleanLine.replace(/\d+/g, '').replace(/[^\u0600-\u06FFa-zA-Z\s]/g, '').trim(); 
+            
+            // اذا كان السطر يحتوي على اسم مادة منطقي
+            if (namePart.length > 2 && !namePart.includes("رقم") && !namePart.includes("تاريخ") && !namePart.includes("مجموع")) {
+                let qty = 1;
+                let price = 0;
+                
+                if (numbers && numbers.length > 0) {
+                    let numValues = numbers.map(Number);
+                    // غالباً الكمية تكون الرقم الأصغر، والسعر هو الرقم الأكبر
+                    qty = Math.min(...numValues) < 50 ? Math.min(...numValues) : 1; 
+                    price = Math.max(...numValues);
+                }
+
+                tempScannedItems.push({
+                    name: namePart,
+                    qty: qty,
+                    price: price
+                });
+            }
+        });
+
+        if (tempScannedItems.length === 0) {
+            tempScannedItems.push({ name: 'عذراً، لم أتمكن من قراءة الخط بوضوح، أضف يدوياً', qty: 1, price: 0 });
+        }
+
+        renderScannedItems();
+    }
+
+    window.renderScannedItems = () => {
+        const tbody = document.getElementById('scannedItemsTable');
+        document.getElementById('confirmScanBtn').classList.remove('hidden');
+        
+        tbody.innerHTML = tempScannedItems.map((item, index) => `
+            <tr class="border-b border-slate-700 bg-slate-800/50 hover:bg-slate-700/50 transition">
+                <td class="p-2">
+                    <input type="text" value="${item.name}" id="scan_name_${index}" class="w-full p-2 rounded-lg bg-slate-900 border border-slate-600 text-white font-bold">
+                </td>
+                <td class="p-2">
+                    <input type="number" value="${item.qty}" id="scan_qty_${index}" class="w-full p-2 rounded-lg bg-slate-900 border border-slate-600 text-center text-blue-400 font-bold">
+                </td>
+                <td class="p-2">
+                    <input type="number" value="${item.price}" id="scan_price_${index}" class="w-full p-2 rounded-lg bg-slate-900 border border-slate-600 text-emerald-400 font-bold">
+                </td>
+                <td class="p-2 text-center">
+                    <button onclick="removeScannedItem(${index})" class="text-red-500 hover:text-red-400 hover:bg-red-900/30 w-8 h-8 rounded-full transition"><i class="fas fa-trash"></i></button>
+                </td>
+            </tr>
+        `).join('');
+    };
+
+    window.removeScannedItem = (index) => {
+        tempScannedItems.splice(index, 1);
+        renderScannedItems();
+    };
+
+    window.confirmScannedItems = async () => {
+        const btn = document.getElementById('confirmScanBtn');
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin ml-2"></i> جاري الحفظ...';
+        btn.disabled = true;
+
+        const batch = writeBatch(db);
+        let addedCount = 0;
+        
+        for (let i = 0; i < tempScannedItems.length; i++) {
+            const nameEl = document.getElementById(`scan_name_${i}`);
+            const qtyEl = document.getElementById(`scan_qty_${i}`);
+            const priceEl = document.getElementById(`scan_price_${i}`);
+            
+            if (nameEl && nameEl.value.trim() !== '' && nameEl.value.trim() !== 'عذراً، لم أتمكن من قراءة الخط بوضوح، أضف يدوياً') {
+                const newRef = doc(collection(db, 'inventory'));
+                batch.set(newRef, {
+                    category: currentCategory || 'مبايلات', // اضافتها للتصنيف المفتوح حالياً
+                    name: nameEl.value.trim(),
+                    qty: parseInt(qtyEl.value) || 1,
+                    wholesale: parseFloat(priceEl.value) || 0,
+                    sell: 0,
+                    notes: 'تمت الإضافة عبر المسح الضوئي'
+                });
+                addedCount++;
+            }
+        }
+
+        if (addedCount > 0) {
+            await batch.commit();
+            alert(`تمت إضافة ${addedCount} مواد إلى المخزن بنجاح!`);
+        } else {
+            alert('لم يتم إضافة أي مواد!');
+        }
+
+        closeModal('scanReviewModal');
+        btn.innerHTML = '<i class="fas fa-check-circle ml-2"></i> تأكيد وإضافة للمخزن';
+        btn.disabled = false;
+    };
+    // ==========================================
+
 
     window.openCustomerModal = (id = null, isReadOnly = false) => {
         editCustId = id;
@@ -678,16 +1091,16 @@
         document.getElementById('gImageInput').value = "";
         
         modal.querySelectorAll('input:not([type="file"]), textarea').forEach(i => i.value = '');
+
         modal.querySelectorAll('input, textarea, select').forEach(el => el.disabled = isReadOnly);
-        
         addMonthBtn.style.display = isReadOnly ? 'none' : 'block';
         saveBtn.style.display = isReadOnly ? 'none' : 'block';
-        document.getElementById('cImageInput').style.display = isReadOnly ? 'none' : 'block';
-        document.getElementById('gImageInput').style.display = isReadOnly ? 'none' : 'block';
+        document.getElementById('cImageInput').parentElement.style.display = isReadOnly ? 'none' : 'block';
+        document.getElementById('gImageInput').parentElement.style.display = isReadOnly ? 'none' : 'block';
 
         if (id) {
             const c = customers.find(x => x.id === id);
-            title.innerHTML = isReadOnly ? 'تفاصيل الأرشيف' : 'تعديل الزبون';
+            title.innerHTML = isReadOnly ? '<i class="fas fa-box-archive text-slate-400 text-2xl sm:text-3xl"></i> تفاصيل الأرشيف' : '<i class="fas fa-user-edit text-blue-500 text-2xl sm:text-3xl"></i> تعديل بيانات الزبون';
             
             document.getElementById('cID').value = c.bookId || '';
             document.getElementById('cName').value = c.name || '';
@@ -705,6 +1118,19 @@
                 document.getElementById('gkPhone').value = c.guarantor.phone || '';
             }
 
+            if(c.customerImage) {
+                currentCustomerImage = c.customerImage;
+                document.getElementById('cImagePreview').src = c.customerImage;
+                document.getElementById('cImagePreview').classList.remove('hidden');
+                if(isReadOnly) document.getElementById('cImageInput').parentElement.style.display = 'block';
+            }
+            if(c.guarantorImage) {
+                currentGuarantorImage = c.guarantorImage;
+                document.getElementById('gImagePreview').src = c.guarantorImage;
+                document.getElementById('gImagePreview').classList.remove('hidden');
+                if(isReadOnly) document.getElementById('gImageInput').parentElement.style.display = 'block';
+            }
+
             if(c.installments) {
                 c.installments.forEach(ins => addMonthRow(ins.amount, ins.date, ins.receiver, isReadOnly));
             }
@@ -717,7 +1143,7 @@
                 deleteBtn.classList.add('hidden'); 
             }
         } else {
-            title.innerHTML = 'إضافة زبون جديد';
+            title.innerHTML = '<i class="fas fa-user-plus text-blue-500 text-2xl sm:text-3xl"></i> إضافة زبون جديد';
             archiveBtn.classList.add('hidden');
             deleteBtn.classList.add('hidden');
         }
@@ -727,24 +1153,34 @@
     window.addMonthRow = (val = '', date = '', rec = '', isReadOnly = false) => {
         const container = document.getElementById('monthsContainer');
         const div = document.createElement('div');
-        div.className = "flex gap-1 mb-1 items-center bg-black/50 p-1 rounded"; 
+        div.className = "flex gap-2 mb-2 items-center p-2 border rounded-lg shadow-sm transition"; 
+        div.style.background = "rgba(0,0,0,0.4)"; 
+        div.style.borderColor = "rgba(255,255,255,0.1)";
         
         const disabledAttr = isReadOnly ? "disabled" : "";
         const hideBtn = isReadOnly ? "hidden" : "";
 
         div.innerHTML = `
-            <input type="number" placeholder="المبلغ" value="${val}" class="w-1/3 p-2 text-xs border-none ins-val font-bold text-blue-400" ${disabledAttr}>
-            <input type="date" value="${date}" class="w-1/3 p-2 text-xs border-none ins-date text-slate-400" ${disabledAttr}>
-            <input type="text" placeholder="المستلم" value="${rec}" class="w-1/3 p-2 text-xs border-none ins-rec" ${disabledAttr}>
-            <button onclick="this.parentElement.remove()" class="text-red-400 p-2 ${hideBtn}"><i class="fas fa-trash-alt"></i></button>
+            <input type="number" placeholder="المبلغ" value="${val}" class="w-1/3 p-2 text-sm border-none rounded ins-val font-bold text-blue-400" onkeyup="calcRemaining()" onchange="calcRemaining()" ${disabledAttr}>
+            <input type="date" value="${date}" class="w-1/3 p-2 text-sm border-none rounded ins-date text-slate-300" ${disabledAttr}>
+            <input type="text" placeholder="المستلم" value="${rec}" class="w-1/3 p-2 text-sm border-none rounded ins-rec" ${disabledAttr}>
+            <button onclick="this.parentElement.remove(); calcRemaining();" class="text-red-400 hover:text-red-500 hover:bg-red-900/30 w-8 h-8 flex items-center justify-center rounded transition ${hideBtn}"><i class="fas fa-trash-alt text-sm"></i></button>
         `;
         container.appendChild(div);
+        calcRemaining(); 
     };
 
     window.calcRemaining = () => {
         const total = parseFloat(document.getElementById('cTotal').value) || 0;
         const paid = parseFloat(document.getElementById('cPaid').value) || 0;
-        document.getElementById('cRem').value = total - paid;
+        
+        let installmentsTotal = 0;
+        const instInputs = document.querySelectorAll('.ins-val');
+        instInputs.forEach(input => {
+            installmentsTotal += parseFloat(input.value) || 0;
+        });
+
+        document.getElementById('cRem').value = total - (paid + installmentsTotal);
     };
 
     window.saveCustomer = async () => {
@@ -771,6 +1207,8 @@
             phone: document.getElementById('cPhone').value,
             notes: document.getElementById('cNotes').value,
             archived: false,
+            customerImage: currentCustomerImage, 
+            guarantorImage: currentGuarantorImage, 
             guarantor: {
                 name: document.getElementById('gkName').value,
                 address: document.getElementById('gkAddress').value,
@@ -783,33 +1221,40 @@
             await updateDoc(doc(db, 'customers', editCustId), data);
         } else {
             const batch = writeBatch(db);
+            
             if(matchedProduct && matchedProduct.qty > 0) {
-                batch.update(doc(db, 'inventory', productId), { qty: matchedProduct.qty - 1 });
+                const pRef = doc(db, 'inventory', productId);
+                batch.update(pRef, { qty: matchedProduct.qty - 1 });
             } else if (matchedProduct && matchedProduct.qty <= 0) {
-                alert("المادة المحددة غير متوفرة (0)!"); return;
+                alert("المادة المحددة غير متوفرة في المخزن حالياً (العدد 0)!");
+                return;
             }
-            batch.set(doc(collection(db, 'customers')), data);
+
+            const newCustRef = doc(collection(db, 'customers'));
+            batch.set(newCustRef, data);
             await batch.commit();
         }
         closeModal('custModal');
     };
 
     window.archiveCustomer = async () => {
-        if(confirm('نقل الزبون للأرشيف لانتهاء ديونه؟')) {
+        if(confirm('هل تريد نقل هذا الزبون للأرشيف لانتهاء ديونه؟')) {
             await updateDoc(doc(db, 'customers', editCustId), { archived: true });
             closeModal('custModal');
         }
     };
 
     window.deleteCustomer = async () => {
-        if(confirm('حذف هذا الزبون نهائياً؟')) {
+        if(confirm('هل أنت متأكد من حذف هذا الزبون نهائياً؟ لا يمكن التراجع عن هذا الإجراء.')) {
             await deleteDoc(doc(db, 'customers', editCustId));
             closeModal('custModal');
         }
     };
 
     window.deleteFromArchive = async (id) => {
-        if(confirm('حذف من الأرشيف نهائياً؟')) { await deleteDoc(doc(db, 'customers', id)); }
+        if(confirm('هل أنت متأكد من حذف هذا السجل نهائياً من الأرشيف؟')) {
+            await deleteDoc(doc(db, 'customers', id));
+        }
     };
 
     function renderCustomers() {
@@ -818,13 +1263,17 @@
         const filtered = customers.filter(c => !c.archived && c.name.toLowerCase().includes(search));
         
         tbody.innerHTML = filtered.map(c => `
-            <tr>
-                <td class="text-slate-400 font-bold text-sm">#${c.bookId || '-'}</td>
-                <td class="font-bold text-white">${c.name}</td>
-                <td class="text-slate-400 text-sm">${c.itemName}</td>
-                <td class="font-bold" style="color: var(--neon-red);">${(c.remaining || 0).toLocaleString()}</td>
-                <td class="text-center">
-                    <button onclick="openCustomerModal('${c.id}')" class="text-xs font-bold px-3 py-1 rounded" style="background: rgba(0,210,255,0.1); color: var(--neon-blue); border: 1px solid var(--neon-blue);">إدارة</button>
+            <tr class="transition duration-200 hover:bg-white/5">
+                <td class="p-5">
+                    <span class="text-slate-400 font-bold text-sm">#${c.bookId || '-'}</span>
+                </td>
+                <td class="p-5 font-bold text-lg text-white">${c.name}</td>
+                <td class="p-5 text-slate-400"><i class="fas fa-tag text-slate-500 ml-1"></i> ${c.itemName}</td>
+                <td class="p-5">
+                    <span class="font-extrabold text-red-400 text-lg">${(c.remaining || 0).toLocaleString()}</span>
+                </td>
+                <td class="p-5 text-center">
+                    <button onclick="openCustomerModal('${c.id}')" class="text-blue-400 px-5 py-2 rounded-xl text-sm font-bold shadow-sm transition-all hover:bg-blue-500 hover:text-white" style="border:1px solid var(--neon-blue);">إدارة وعرض</button>
                 </td>
             </tr>
         `).join('');
@@ -834,14 +1283,14 @@
         const tbody = document.getElementById('archiveTable');
         const archived = customers.filter(c => c.archived);
         tbody.innerHTML = archived.map(c => `
-            <tr>
-                <td class="text-slate-500 font-bold text-sm">#${c.bookId || '-'}</td>
-                <td class="font-bold text-slate-300">${c.name}</td>
-                <td class="text-slate-500 text-sm">${c.itemName}</td>
-                <td class="font-bold" style="color: var(--neon-green);">${(c.total || 0).toLocaleString()}</td>
-                <td class="flex gap-2 justify-center">
-                    <button onclick="openCustomerModal('${c.id}', true)" class="text-slate-300 text-xs px-2 py-1 border rounded">تفاصيل</button>
-                    <button onclick="deleteFromArchive('${c.id}')" class="text-red-500"><i class="fas fa-trash"></i></button>
+            <tr class="transition duration-200 hover:bg-white/5">
+                <td class="p-5 text-slate-500 font-bold">#${c.bookId || '-'}</td>
+                <td class="p-5 font-bold text-slate-300">${c.name}</td>
+                <td class="p-5 text-slate-500">${c.itemName}</td>
+                <td class="p-5 text-emerald-500 font-bold">${(c.total || 0).toLocaleString()}</td>
+                <td class="p-5 flex gap-2 justify-center">
+                    <button onclick="openCustomerModal('${c.id}', true)" class="text-slate-300 px-4 py-2 rounded-xl font-bold text-sm transition hover:bg-slate-700" style="border:1px solid #555">التفاصيل</button>
+                    <button onclick="deleteFromArchive('${c.id}')" class="text-red-500 w-9 h-9 flex justify-center items-center rounded-xl transition hover:bg-red-900/50"><i class="fas fa-trash"></i></button>
                 </td>
             </tr>
         `).join('');
@@ -852,22 +1301,25 @@
     window.saveCompany = async () => {
         const prev = parseFloat(document.getElementById('coPrev').value) || 0;
         const paid = parseFloat(document.getElementById('coPaid').value) || 0;
-        await addDoc(collection(db, 'companies'), {
+        const data = {
             name: document.getElementById('coName').value,
             date: document.getElementById('coDate').value,
-            prev: prev, paid: paid, remaining: prev - paid
-        });
+            prev: prev,
+            paid: paid,
+            remaining: prev - paid
+        };
+        await addDoc(collection(db, 'companies'), data);
         closeModal('compModal');
     };
     
     function renderCompanies() {
         document.getElementById('companiesTable').innerHTML = companies.map(c => `
-            <tr>
-                <td class="font-bold text-white">${c.name}</td>
-                <td class="text-slate-400">${c.date}</td>
-                <td class="font-bold text-white">${(c.prev || 0).toLocaleString()}</td>
-                <td class="font-bold" style="color: var(--neon-green);">${(c.paid || 0).toLocaleString()}</td>
-                <td class="font-bold" style="color: var(--neon-red);">${(c.remaining || 0).toLocaleString()}</td>
+            <tr class="transition duration-200 hover:bg-white/5">
+                <td class="p-5 font-bold text-slate-200 text-lg"><i class="fas fa-building text-slate-500 ml-2"></i> ${c.name}</td>
+                <td class="p-5 text-slate-400">${c.date}</td>
+                <td class="p-5 font-bold text-slate-300">${(c.prev || 0).toLocaleString()}</td>
+                <td class="p-5 font-bold text-emerald-400">${(c.paid || 0).toLocaleString()}</td>
+                <td class="p-5 font-extrabold text-rose-500 text-lg">${(c.remaining || 0).toLocaleString()}</td>
             </tr>
         `).join('');
     }
@@ -877,40 +1329,64 @@
         const price = parseFloat(document.getElementById('posSalePrice').value);
         const matchedProduct = products.find(x => x.name === itemNameInput);
 
-        if (!itemNameInput || !price) return alert("يرجى إدخال المادة والسعر.");
+        if (!itemNameInput || !price) {
+            alert("يرجى إدخال اسم المادة وسعر البيع بشكل صحيح.");
+            return;
+        }
 
         const batch = writeBatch(db);
+        
         if (matchedProduct) {
-            if (matchedProduct.qty > 0) batch.update(doc(db, 'inventory', matchedProduct.id), { qty: matchedProduct.qty - 1 });
-            else return alert("المادة نفذت (العدد 0)!");
+            if (matchedProduct.qty > 0) {
+                batch.update(doc(db, 'inventory', matchedProduct.id), { qty: matchedProduct.qty - 1 });
+            } else {
+                alert("المادة المحددة نفذت من المخزن (العدد 0)!");
+                return;
+            }
         }
 
         const today = new Date();
+        const dateStr = today.toLocaleDateString('en-GB'); 
+        const monthStr = `${today.getMonth() + 1}-${today.getFullYear()}`; 
+
         batch.set(doc(collection(db, 'pos')), {
-            name: itemNameInput, price: price,
-            date: today.toLocaleDateString('en-GB'),
-            month: `${today.getMonth() + 1}-${today.getFullYear()}`,
+            name: itemNameInput,
+            price: price,
+            date: dateStr,
+            month: monthStr,
             timestamp: serverTimestamp()
         });
+
         await batch.commit();
-        document.getElementById('posItemName').value = ''; document.getElementById('posSalePrice').value = '';
+        document.getElementById('posItemName').value = '';
+        document.getElementById('posSalePrice').value = '';
     };
 
     function renderPos() {
-        const todayStr = new Date().toLocaleDateString('en-GB');
-        const monthStr = `${new Date().getMonth() + 1}-${new Date().getFullYear()}`;
+        const list = document.getElementById('posDailyList');
+        const dailyTotalElem = document.getElementById('posDailyTotal');
+        const monthlyTotalElem = document.getElementById('posMonthlyTotal');
+        
+        const today = new Date();
+        const todayStr = today.toLocaleDateString('en-GB');
+        const currentMonthStr = `${today.getMonth() + 1}-${today.getFullYear()}`;
+        
         document.getElementById('posCurrentDate').innerText = todayStr;
 
         const dailySales = posSales.filter(s => s.date === todayStr);
-        document.getElementById('posDailyList').innerHTML = dailySales.map(s => `
-            <li class="flex justify-between p-2 rounded bg-black/40 border border-[#333]">
-                <span class="text-white text-sm">${s.name}</span>
-                <span class="font-bold text-blue-400">${s.price.toLocaleString()}</span>
+        list.innerHTML = dailySales.map(s => `
+            <li class="flex justify-between items-center p-4 rounded-xl border border-slate-700 shadow-sm hover:shadow-md transition hover:bg-slate-800/50" style="background:rgba(0,0,0,0.3);">
+                <span class="font-bold text-white flex items-center gap-2"><i class="fas fa-tag text-slate-500"></i> ${s.name}</span>
+                <span class="font-extrabold text-blue-400 px-3 py-1 rounded-lg">${s.price.toLocaleString()} د.ع</span>
             </li>
         `).join('');
         
-        document.getElementById('posDailyTotal').innerText = dailySales.reduce((sum, s) => sum + s.price, 0).toLocaleString();
-        document.getElementById('posMonthlyTotal').innerText = posSales.filter(s => s.month === monthStr).reduce((sum, s) => sum + s.price, 0).toLocaleString();
+        const dailyTotal = dailySales.reduce((sum, s) => sum + s.price, 0);
+        dailyTotalElem.innerText = dailyTotal.toLocaleString();
+
+        const monthlySales = posSales.filter(s => s.month === currentMonthStr);
+        const monthlyTotal = monthlySales.reduce((sum, s) => sum + s.price, 0);
+        monthlyTotalElem.innerText = monthlyTotal.toLocaleString();
     }
 
     function updateDropdowns() {
@@ -923,6 +1399,7 @@
         const invSum = products.reduce((sum, p) => sum + ((p.qty || 0) * (p.wholesale || 0)), 0);
         const compSum = companies.reduce((sum, c) => sum + (c.remaining || 0), 0);
         const custSum = customers.filter(c => !c.archived).reduce((sum, c) => sum + (c.remaining || 0), 0);
+
         document.getElementById('statInvTotal').innerText = invSum.toLocaleString() + ' د.ع';
         document.getElementById('statCompTotal').innerText = compSum.toLocaleString() + ' د.ع';
         document.getElementById('statCustTotal').innerText = custSum.toLocaleString() + ' د.ع';
@@ -931,31 +1408,195 @@
     window.closeModal = (id) => document.getElementById(id).classList.add('hidden');
 
     window.exportBackup = () => {
-        const cleanCustomers = customers.map(c => { const copy = {...c}; delete copy.customerImage; delete copy.guarantorImage; return copy; });
+        const cleanCustomers = customers.map(c => {
+            const copy = {...c};
+            delete copy.customerImage;
+            delete copy.guarantorImage;
+            return copy;
+        });
+
         const data = { customers: cleanCustomers, products, companies, posSales, backupDate: new Date().toISOString() };
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
-        a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }));
-        a.download = `backup_${new Date().toLocaleDateString()}.json`;
+        a.href = url;
+        a.download = `mohannad_backup_${new Date().toLocaleDateString()}.json`;
         a.click();
     };
 
     window.printCustomerReceipt = () => {
-        const name = document.getElementById('cName').value;
-        if (!name) return alert("لا توجد بيانات للطباعة.");
-        const printWindow = window.open('', '', 'width=800,height=600');
+        const name = document.getElementById('cName').value || 'غير محدد';
+        const item = document.getElementById('cItemName').value || 'غير محدد';
+        const remAmount = parseFloat(document.getElementById('cRem').value) || 0;
+        
+        let latestPaid = 0;
+        const instInputs = document.querySelectorAll('.ins-val');
+        if (instInputs.length > 0) {
+            for (let i = instInputs.length - 1; i >= 0; i--) {
+                let val = parseFloat(instInputs[i].value);
+                if (!isNaN(val) && val > 0) {
+                    latestPaid = val;
+                    break;
+                }
+            }
+        }
+        if (latestPaid === 0) {
+            latestPaid = parseFloat(document.getElementById('cPaid').value) || 0;
+        }
+
+        const totalAmount = remAmount + latestPaid;
+        const now = new Date();
+        const date = now.toLocaleDateString('ar-IQ');
+        const time = now.toLocaleTimeString('ar-IQ', { hour: '2-digit', minute: '2-digit', hour12: true });
+
+        const printWindow = window.open('', '', 'width=400,height=600');
         printWindow.document.write(`
-            <html dir="rtl"><head><title>وصل قبض - ${name}</title>
-            <style>body{font-family:sans-serif; padding:40px; text-align:right;} table{width:100%; border-collapse:collapse; margin-top:20px;} th,td{border:1px solid #ccc; padding:10px;}</style>
-            </head><body><h2>وصل قبض - معرض مهند</h2><table>
-            <tr><th>الاسم</th><td>${name}</td></tr>
-            <tr><th>المادة</th><td>${document.getElementById('cItemName').value}</td></tr>
-            <tr><th>السعر الكلي</th><td>${document.getElementById('cTotal').value} د.ع</td></tr>
-            <tr><th>الواصل</th><td>${document.getElementById('cPaid').value} د.ع</td></tr>
-            <tr><th>المتبقي</th><td>${document.getElementById('cRem').value} د.ع</td></tr>
-            </table><p>التاريخ: ${new Date().toLocaleDateString('ar-IQ')}</p></body></html>
+            <html dir="rtl" lang="ar">
+            <head>
+                <title>وصل قبض - ${name}</title>
+                <style>
+                    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&display=swap');
+                    @page { margin: 0; size: 80mm auto; }
+                    body { 
+                        font-family: 'Cairo', sans-serif; 
+                        width: 74mm; 
+                        margin: 0 auto; 
+                        padding: 5mm; 
+                        color: #000;
+                    }
+                    .text-center { text-align: center; }
+                    .dashed-line { border-top: 1px dashed #000; margin: 10px 0; }
+                    .solid-line { border-top: 2px solid #000; margin: 5px 0 15px 0; }
+                    
+                    .info-row {
+                        display: flex;
+                        align-items: center;
+                        margin-bottom: 8px;
+                        font-size: 15px;
+                    }
+                    .label {
+                        width: 85px; 
+                        text-align: right;
+                        font-weight: 700;
+                        white-space: nowrap;
+                    }
+                    .value {
+                        flex-grow: 1;
+                        text-align: center; 
+                        font-weight: 800;
+                        font-size: 16px;
+                    }
+                    .tafqeet {
+                        text-align: center;
+                        width: 100%;
+                        margin-top: 10px;
+                        font-size: 13px;
+                        font-weight: 700;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="text-center">
+                    <strong style="font-size: 18px;">معرض مهند التجاري</strong><br>
+                    <span style="font-size: 11px;">للاجهزة الكهربائية والموبايلات</span><br>
+                    <span style="font-size: 11px;">كركوك - تازة - قرب اطفائية القديمة</span><br>
+                    <span style="font-size: 12px; direction: ltr; display: block;">07702362911</span>
+                    <span style="font-size: 12px; direction: ltr; display: block;">07705957430</span>
+                </div>
+
+                <div class="dashed-line"></div>
+                <div class="text-center" style="font-size: 19px; font-weight: 800;">وصـل قـبـض</div>
+                <div class="solid-line"></div>
+
+                <div class="info-row">
+                    <span class="label">الاسم :</span>
+                    <span class="value">${name}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">المادة :</span>
+                    <span class="value">${item}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">المبلغ :</span>
+                    <span class="value">${totalAmount.toLocaleString()} د.ع</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">مبلغ الواصل :</span>
+                    <span class="value">${latestPaid.toLocaleString()} د.ع</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">المتبقي :</span>
+                    <span class="value">${remAmount.toLocaleString()} د.ع</span>
+                </div>
+                
+                <div id="wordText" class="tafqeet"></div>
+
+                <div class="dashed-line" style="margin-top: 20px;"></div>
+                
+                <div style="display: flex; justify-content: space-between; font-size: 11px;">
+                    <span>التاريخ: ${date}</span>
+                    <span>الوقت: ${time}</span>
+                </div>
+
+                <div class="text-center" style="margin-top: 25px;">
+                    <p style="font-size: 14px;">توقيع الزبون: .....................</p>
+                    <p style="font-size: 10px;">شكراً لزيارتكم</p>
+                </div>
+
+                <script>
+                    function tafqeet(num) {
+                        if (!num || num === 0) return '';
+                        const a = ['','واحد','اثنان','ثلاثة','أربعة','خمسة','ستة','سبعة','ثمانية','تسعة','عشرة','أحد عشر','اثنا عشر','ثلاثة عشر','أربعة عشر','خمسة عشر','ستة عشر','سبعة عشر','ثمانية عشر','تسعة عشر'];
+                        const b = ['','','عشرون','ثلاثون','أربعون','خمسون','ستون','سبعون','ثمانون','تسعون'];
+                        const c = ['','مائة','مائتان','ثلاثمائة','أربعمائة','خمسمائة','ستمائة','سبعمائة','ثمانمائة','تسعمائة'];
+                        
+                        function convertHund(n) {
+                            let res = '';
+                            let h = Math.floor(n / 100);
+                            let rem = n % 100;
+                            if (h > 0) res += c[h];
+                            if (rem > 0) {
+                                if (res !== '') res += ' و ';
+                                if (rem < 20) res += a[rem];
+                                else {
+                                    let t = Math.floor(rem / 10);
+                                    let o = rem % 10;
+                                    if (o > 0) res += (a[o] ? a[o] + ' و ' : '') + b[t];
+                                    else res += b[t];
+                                }
+                            }
+                            return res;
+                        }
+
+                        let millions = Math.floor((num % 1000000000) / 1000000);
+                        let thousands = Math.floor((num % 1000000) / 1000);
+                        let remainder = num % 1000;
+
+                        let parts = [];
+                        if (millions > 0) parts.push(convertHund(millions) + ' مليون');
+                        if (thousands > 0) {
+                            if (thousands === 1) parts.push('ألف');
+                            else if (thousands === 2) parts.push('ألفان');
+                            else parts.push(convertHund(thousands) + ' ألف');
+                        }
+                        if (remainder > 0) parts.push(convertHund(remainder));
+
+                        return 'فقط ' + parts.join(' و ') + ' دينار لا غير';
+                    }
+
+                    const remValue = ${remAmount};
+                    if(remValue > 0) {
+                        document.getElementById('wordText').innerText = tafqeet(remValue);
+                    }
+
+                    window.onload = function() { 
+                        setTimeout(() => { window.print(); window.close(); }, 500);
+                    }
+                <\/script>
+            </body>
+            </html>
         `);
         printWindow.document.close();
-        setTimeout(() => printWindow.print(), 500);
     };
 </script>
 </body>
