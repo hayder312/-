@@ -9,7 +9,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     
     <style>
         /* =========================================
@@ -327,13 +326,11 @@
                     <div class="flex flex-col md:flex-row gap-2 w-full md:w-auto">
                         <button onclick="openInventoryModal()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-emerald-500/30 transition-transform transform hover:-translate-y-1 w-full md:w-auto"><i class="fas fa-box-open ml-2"></i> إضافة بضاعة جديدة</button>
                         
-                        <button type="button" onclick="document.getElementById('receiptInput').click()" 
-        class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-blue-500/30 transition-transform transform hover:-translate-y-1 w-full md:w-auto border border-blue-400/50">
-    <i class="fas fa-camera ml-2"></i> 📷 مسح وصل
-</button>
-
-<input type="file" id="receiptInput" accept="image/*" style="display:none" 
-       onchange="scanReceiptWithGoogle(this.files[0])">
+                        <input type="file" id="invoiceScannerFile" accept="image/*" class="hidden" onchange="processInvoiceScan(event)">
+<button onclick="document.getElementById('invoiceScannerFile').click()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-blue-500/30 transition-transform transform hover:-translate-y-1 w-full md:w-auto border border-blue-400/50">
+    <i class="fas fa-camera ml-2"></i> مسح وصل
+              </button>
+                    </div>
 
                     <div class="relative w-full md:w-72">
                         <i class="fas fa-search absolute right-3 top-3.5 text-slate-400"></i>
@@ -522,7 +519,7 @@
                         <th class="p-3 text-center">حذف</th>
                     </tr>
                 </thead>
-                <tbody id="receiptItemsTableBody"
+                <tbody id="scannedItemsTable" class="divide-y divide-slate-700">
                     </tbody>
             </table>
         </div>
@@ -930,11 +927,11 @@
     }
 
     // ==========================================
-    // إضافة نظام المسح الضوئي (OCR) للوصولات
+    // إضافة نظام المسح الضوئي المطور باستخدام Gemini
     // ==========================================
     let tempScannedItems = [];
 
-    window.processInvoiceScan = (event) => {
+    window.processInvoiceScan = async (event) => {
         const file = event.target.files[0];
         if (!file) return;
 
@@ -947,63 +944,72 @@
             <tr>
                 <td colspan="4" class="text-center p-10">
                     <i class="fas fa-spinner fa-spin text-4xl text-blue-500 mb-4"></i>
-                    <p class="text-lg font-bold text-white">جاري تحليل الوصل بالذكاء الاصطناعي...</p>
-                    <p class="text-sm text-slate-400">قد تستغرق العملية ثواني معدودة</p>
+                    <p class="text-lg font-bold text-white">جاري تحليل الوصل باستخدام ذكاء Gemini...</p>
+                    <p class="text-sm text-slate-400">يرجى الانتظار، دقة عالية قيد التنفيذ</p>
                 </td>
             </tr>
         `;
 
-        Tesseract.recognize(
-            file,
-            'ara+eng', // اللغة العربية والانجليزية (للأرقام)
-            { logger: m => console.log(m) }
-        ).then(({ data: { text } }) => {
-            parseInvoiceText(text);
-        }).catch(err => {
-            alert('عذراً، حدث خطأ أثناء قراءة الصورة. تأكد من وضوح الصورة.');
-            closeModal('scanReviewModal');
-        });
-
-        event.target.value = ''; // تصفير الملف
-    };
-
-    function parseInvoiceText(text) {
-        tempScannedItems = [];
-        // تقسيم النص الى اسطر وتنظيفها
-        const lines = text.split('\n').filter(line => line.trim().length > 2);
-        
-        lines.forEach(line => {
-            let cleanLine = line.trim();
-            let numbers = cleanLine.match(/\d+/g);
-            // ابقاء الحروف العربية والانجليزية للاسم
-            let namePart = cleanLine.replace(/\d+/g, '').replace(/[^\u0600-\u06FFa-zA-Z\s]/g, '').trim(); 
-            
-            // اذا كان السطر يحتوي على اسم مادة منطقي
-            if (namePart.length > 2 && !namePart.includes("رقم") && !namePart.includes("تاريخ") && !namePart.includes("مجموع")) {
-                let qty = 1;
-                let price = 0;
+        try {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = async () => {
+                const base64Image = reader.result.split(',')[1]; 
                 
-                if (numbers && numbers.length > 0) {
-                    let numValues = numbers.map(Number);
-                    // غالباً الكمية تكون الرقم الأصغر، والسعر هو الرقم الأكبر
-                    qty = Math.min(...numValues) < 50 ? Math.min(...numValues) : 1; 
-                    price = Math.max(...numValues);
-                }
+                // تنبيه: ضع مفتاح API الخاص بك هنا ⬇️
+                const GEMINI_API_KEY = 'AIzaSyD-zN04-7gWNkit2L83wZ9ClzIF4KfkH_U'; 
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
-                tempScannedItems.push({
-                    name: namePart,
-                    qty: qty,
-                    price: price
+                const payload = {
+                    contents: [{
+                        parts: [
+                            { 
+                                text: "أنت نظام محاسبي ذكي. قم بقراءة هذا الوصل واستخراج المواد منه. قم بإرجاع مصفوفة JSON (Array) فقط لا غير. يجب أن يحتوي كل كائن على: 'name' (اسم المادة - نص عربي)، 'qty' (الكمية - رقم)، 'price' (سعر المفرد أو الجملة - رقم). لا تضف أي نص توضيحي ولا تضف علامات Markdown." 
+                            },
+                            { 
+                                inline_data: { mime_type: file.type, data: base64Image } 
+                            }
+                        ]
+                    }],
+                    generationConfig: {
+                        temperature: 0.1, 
+                        response_mime_type: "application/json" 
+                    }
+                };
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
                 });
-            }
-        });
 
-        if (tempScannedItems.length === 0) {
-            tempScannedItems.push({ name: 'عذراً، لم أتمكن من قراءة الخط بوضوح، أضف يدوياً', qty: 1, price: 0 });
+                if (!response.ok) throw new Error(`API Error: ${response.status}`);
+
+                const data = await response.json();
+                
+                if (data.candidates && data.candidates[0].content.parts[0].text) {
+                    let jsonString = data.candidates[0].content.parts[0].text;
+                    jsonString = jsonString.replace(/```json/g, '').replace(/```/g, '').trim();
+                    
+                    tempScannedItems = JSON.parse(jsonString);
+                    
+                    if (tempScannedItems.length === 0) {
+                        tempScannedItems.push({ name: 'لم يتم العثور على مواد واضحة في الوصل', qty: 1, price: 0 });
+                    }
+                    
+                    renderScannedItems(); // هذه الدالة موجودة بالفعل في كودك ولا تحذفها
+                } else {
+                    throw new Error("استجابة غير صالحة");
+                }
+            };
+        } catch (err) {
+            console.error("Gemini OCR Error:", err);
+            alert('عذراً، حدث خطأ أثناء تحليل الصورة. تأكد من وضوح الصورة ومن صحة مفتاح الـ API.');
+            closeModal('scanReviewModal');
         }
 
-        renderScannedItems();
-    }
+        event.target.value = ''; 
+    };
 
     window.renderScannedItems = () => {
         const tbody = document.getElementById('scannedItemsTable');
@@ -1601,192 +1607,6 @@
         `);
         printWindow.document.close();
     };
-<script>
-// تنبيه: لا تضع مفتاح الـ API الحقيقي هنا في التطبيقات الفعلية (يجب أن يكون في الـ Backend)
-const GOOGLE_API_KEY = 'AIzaSyDt_uidi9-XXZQBizPd_yuhoig7FSkkmTU';
-
-// دالة مسح الوصل
-async function scanReceiptWithGoogle(imageFile) {
-    if (!imageFile) return;
-
-    // إظهار تنبيه للمستخدم
-    showToast("جاري تشغيل 'المفكر' (Gemini 2.5 Pro)...");
-
-    try {
-        const base64Image = await fileToBase64(imageFile);
-        const base64Data = base64Image.split(',')[1];
-
-        // 1. المحاولة الأولى: أحدث نسخة من البرو (Gemini 2.5 Pro)
-        let result = await callGeminiAPI("gemini-2.5-pro", base64Data, imageFile.type);
-
-        // 2. المحاولة الثانية: في حال فشل البرو، ننتقل للنسخة السريعة (Gemini 2.5 Flash)
-        if (!result) {
-            showToast("البرو مشغول حالياً.. جاري التحويل لـ Flash السريع");
-            result = await callGeminiAPI("gemini-2.5-flash", base64Data, imageFile.type);
-        }
-
-        if (result && result.items && result.items.length > 0) {
-            updateReceiptTable(result.items);
-            showToast("تمت قراءة الوصل بنجاح!");
-        } else {
-            showToast("لم أتمكن من قراءة البيانات، حاول استخدام صورة أوضح.");
-        }
-
-    } catch (error) {
-        console.error("خطأ في الاتصال:", error);
-        showToast("حدث خطأ في الاتصال بالذكاء الاصطناعي.");
-    }
-}
-
-async function callGeminiAPI(modelName, base64Data, mimeType) {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${GOOGLE_API_KEY}`;
-    
-    // توجيهات النظام لضمان دقة العمل
-    const systemInstruction = "أنت مساعد ذكي متخصص في استخراج بيانات وصولات الشراء.";
-    const prompt = "اقرأ هذا الوصل بدقة. استخرج: اسم المادة، الكمية، السعر. أرجع النتيجة فقط ككائن JSON يحتوي على مصفوفة باسم 'items' وكل عنصر يحتوي على 'name' و 'quantity' و 'price'.";
-
-    try {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                system_instruction: {
-                    parts: [{ text: systemInstruction }]
-                },
-                contents: [{
-                    parts: [
-                        { text: prompt }, 
-                        { inline_data: { mime_type: mimeType, data: base64Data } }
-                    ]
-                }],
-                // هذه الميزة الجديدة تجبر الموديل على إرجاع JSON صالح 100% بدون أي نصوص إضافية
-                generationConfig: {
-                    response_mime_type: "application/json",
-                }
-            })
-        });
-
-        const data = await response.json();
-        
-        if (!data.candidates || data.candidates.length === 0) {
-            console.error("API response error:", data);
-            return null;
-        }
-        
-        // لم نعد بحاجة لتنظيف النص، لأنه سيأتي بصيغة JSON مباشرة
-        const textResponse = data.candidates[0].content.parts[0].text;
-        return JSON.parse(textResponse);
-        
-    } catch (e) {
-        console.error("استثناء أثناء استدعاء API:", e);
-        return null;
-    }
-}
-
-// دالة تحديث الجدول 
-function updateReceiptTable(items) {
-    const tableBody = document.getElementById("receiptItemsTableBody"); 
-    if (!tableBody) return;
-
-    // تنظيف الجدول من رسائل الانتظار قبل إضافة المواد
-    if (tableBody.innerText.includes("جاري")) tableBody.innerHTML = '';
-
-    items.forEach(item => {
-        const row = `
-            <tr class="border-b border-gray-700 hover:bg-gray-700/30 transition-colors">
-                <td class="p-3"><input type="text" value="${item.name || ''}" class="bg-gray-800 border border-gray-600 rounded px-2 py-1 w-full text-white"></td>
-                <td class="p-3 text-center"><input type="number" value="${item.quantity || 1}" class="bg-gray-800 border border-gray-600 rounded px-2 py-1 w-16 text-white text-center"></td>
-                <td class="p-3 text-center"><input type="number" value="${item.price || 0}" class="bg-gray-800 border border-gray-600 rounded px-2 py-1 w-24 text-white text-center"></td>
-                <td class="p-3 text-center">
-                    <button onclick="this.closest('tr').remove()" class="text-red-400 hover:text-red-300"><i class="fas fa-trash"></i></button>
-                </td>
-            </tr>`;
-        tableBody.insertAdjacentHTML('beforeend', row);
-    });
-}
-
-function showToast(msg) {
-    let toast = document.getElementById('ai-toast');
-    if (!toast) {
-        toast = document.createElement('div');
-        toast.id = 'ai-toast';
-        toast.style = "position:fixed; bottom:20px; right:20px; background:rgba(0,0,0,0.8); color:#fff; padding:10px 20px; border-radius:10px; z-index:10000; font-family:sans-serif; border: 1px solid #444;";
-        document.body.appendChild(toast);
-    }
-    toast.innerText = msg;
-    toast.style.display = 'block';
-    setTimeout(() => { toast.style.display = 'none'; }, 4000);
-}
-
-function fileToBase64(file) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
-    });
-}
-    <script>
-        function checkLogin() {
-    // 1. جلب القيمة التي أدخلها المستخدم
-    const pinInput = document.getElementById('login-pin').value;
-    
-    // 2. الرمز الصحيح الذي تحدده أنت (مثلاً: 2026)
-    const correctPin = "2026"; 
-
-    if (pinInput === correctPin) {
-        // 3. إخفاء شاشة الدخول وإظهار المحتوى الرئيسي
-        document.getElementById('login-screen').classList.add('hidden');
-        document.getElementById('main-layout').classList.remove('hidden'); // تأكد أن معرف المحتوى الرئيسي هو main-layout
-        
-        showToast("أهلاً بك في معرض مهند");
-    } else {
-        // 4. تنبيه في حال كان الرمز خطأ
-        showToast("الرمز غير صحيح، حاول مرة أخرى");
-        document.getElementById('login-pin').value = ''; // مسح الحقل لإعادة المحاولة
-    }
-}
-
-// لإتاحة الدخول عند الضغط على زر Enter في لوحة المفاتيح
-document.getElementById('login-pin')?.addEventListener('keypress', function (e) {
-    if (e.key === 'Enter') {
-        checkLogin();
-    }
-});
-
-    <script>
-        // ربط الدالة بـ window لتطابق طلبك في HTML (window.checkPin)
-window.checkPin = function() {
-    // 1. جلب الرمز من الحقل الذي يحمل المعرف authPassword
-    const enteredPassword = document.getElementById('authPassword').value;
-    
-    // 2. الرمز السري الخاص بك (يمكنك تغييره هنا)
-    const secretPin = "2026"; 
-
-    if (enteredPassword === secretPin) {
-        // 3. إخفاء شاشة الدخول
-        // ملاحظة: تأكد أن القسم الأب (الذي يحتوي على الخلفية) يحمل المعرف login-screen
-        const loginScreen = document.getElementById('login-screen');
-        if (loginScreen) {
-            loginScreen.classList.add('hidden'); 
-            // أو إذا كنت لا تستخدم Tailwind بشكل كامل للاختفاء:
-            // loginScreen.style.display = 'none';
-        }
-
-        // 4. إظهار المحتوى الرئيسي
-        const mainLayout = document.getElementById('main-layout');
-        if (mainLayout) {
-            mainLayout.classList.remove('hidden');
-        }
-
-        showToast("أهلاً بك.. تم الدخول بنجاح");
-    } else {
-        // 5. في حال الخطأ
-        showToast("الرمز السري غير صحيح!");
-        document.getElementById('authPassword').value = ''; // مسح الحقل
-    }
-};
-
 </script>
 </body>
 </html>
