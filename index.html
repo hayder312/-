@@ -926,90 +926,89 @@
         `).join('');
     }
 
-    // ==========================================
-    // إضافة نظام المسح الضوئي المطور باستخدام Gemini
-    // ==========================================
-    let tempScannedItems = [];
+// ==========================================
+// نسخة مطورة من نظام المسح الضوئي (Flash + تصغير الصورة للسرعة)
+// ==========================================
+window.processInvoiceScan = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
 
-    window.processInvoiceScan = async (event) => {
-        const file = event.target.files[0];
-        if (!file) return;
+    // فتح نافذة المراجعة وعرض حالة التحميل
+    document.getElementById('scanReviewModal').classList.remove('hidden');
+    const tbody = document.getElementById('scannedItemsTable');
+    document.getElementById('confirmScanBtn').classList.add('hidden');
+    tbody.innerHTML = `
+        <tr>
+            <td colspan="4" class="text-center p-10">
+                <i class="fas fa-spinner fa-spin text-4xl text-blue-500 mb-4"></i>
+                <p class="text-lg font-bold text-white">جاري معالجة الصورة بسرعة Flash...</p>
+                <p class="text-sm text-slate-400">يتم الآن ضغط الصورة وتحليلها</p>
+            </td>
+        </tr>
+    `;
 
-        // فتح نافذة المراجعة وعرض حالة التحميل
-        document.getElementById('scanReviewModal').classList.remove('hidden');
-        const tbody = document.getElementById('scannedItemsTable');
-        document.getElementById('confirmScanBtn').classList.add('hidden');
-        
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="4" class="text-center p-10">
-                    <i class="fas fa-spinner fa-spin text-4xl text-blue-500 mb-4"></i>
-                    <p class="text-lg font-bold text-white">جاري تحليل الوصل باستخدام ذكاء Gemini...</p>
-                    <p class="text-sm text-slate-400">يرجى الانتظار، دقة عالية قيد التنفيذ</p>
-                </td>
-            </tr>
-        `;
-
-        try {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = async () => {
-                const base64Image = reader.result.split(',')[1]; 
-                
-                // تنبيه: ضع مفتاح API الخاص بك هنا ⬇️
-                const GEMINI_API_KEY = 'AIzaSyD-zN04-7gWNkit2L83wZ9ClzIF4KfkH_U'; 
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
-
-                const payload = {
-                    contents: [{
-                        parts: [
-                            { 
-                                text: "أنت نظام محاسبي ذكي. قم بقراءة هذا الوصل واستخراج المواد منه. قم بإرجاع مصفوفة JSON (Array) فقط لا غير. يجب أن يحتوي كل كائن على: 'name' (اسم المادة - نص عربي)، 'qty' (الكمية - رقم)، 'price' (سعر المفرد أو الجملة - رقم). لا تضف أي نص توضيحي ولا تضف علامات Markdown." 
-                            },
-                            { 
-                                inline_data: { mime_type: file.type, data: base64Image } 
-                            }
-                        ]
-                    }],
-                    generationConfig: {
-                        temperature: 0.1, 
-                        response_mime_type: "application/json" 
-                    }
+    try {
+        // 1. وظيفة لتصغير حجم الصورة قبل الإرسال (هذا هو سر السرعة)
+        const resizeImage = (file) => {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const MAX_WIDTH = 1000; // تقليل العرض لسرعة الرفع
+                        const scaleSize = MAX_WIDTH / img.width;
+                        canvas.width = MAX_WIDTH;
+                        canvas.height = img.height * scaleSize;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        // تصدير الصورة بجودة 70% لتقليل الحجم جداً
+                        resolve(canvas.toDataURL('image/jpeg', 0.7).split(',')[1]);
+                    };
                 };
+            });
+        };
 
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
+        const base64Image = await resizeImage(file);
+        
+        // 2. استخدام نسخة Gemini 1.5 Flash الرسمية
+        const GEMINI_API_KEY = 'AIzaSyD-zN04-7gWNkit2L83wZ9ClzIF4KfkH_U'; // مفتاحك الحالي
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
-                if (!response.ok) throw new Error(`API Error: ${response.status}`);
+        const payload = {
+            contents: [{
+                parts: [
+                    { text: "أنت نظام محاسبي ذكي. قم بقراءة هذا الوصل واستخرج المواد المذكورة فيه بصيغة JSON فقط: [{ \"name\": \"اسم المادة\", \"qty\": الكمية, \"price\": سعر الجملة }]. إذا لم يكن هناك سعر جملة، اترك السعر 0. الأسماء يجب أن تكون بالعربية." },
+                    { inline_data: { mime_type: "image/jpeg", data: base64Image } }
+                ]
+            }]
+        };
 
-                const data = await response.json();
-                
-                if (data.candidates && data.candidates[0].content.parts[0].text) {
-                    let jsonString = data.candidates[0].content.parts[0].text;
-                    jsonString = jsonString.replace(/```json/g, '').replace(/```/g, '').trim();
-                    
-                    tempScannedItems = JSON.parse(jsonString);
-                    
-                    if (tempScannedItems.length === 0) {
-                        tempScannedItems.push({ name: 'لم يتم العثور على مواد واضحة في الوصل', qty: 1, price: 0 });
-                    }
-                    
-                    renderScannedItems(); // هذه الدالة موجودة بالفعل في كودك ولا تحذفها
-                } else {
-                    throw new Error("استجابة غير صالحة");
-                }
-            };
-        } catch (err) {
-            console.error("Gemini OCR Error:", err);
-            alert('عذراً، حدث خطأ أثناء تحليل الصورة. تأكد من وضوح الصورة ومن صحة مفتاح الـ API.');
-            closeModal('scanReviewModal');
+        const response = await fetch(url, {
+            method: 'POST',
+            body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+        const textResponse = data.candidates[0].content.parts[0].text;
+        
+        // تنظيف النص المستلم وتحويله لـ JSON
+        const jsonMatch = textResponse.match(/\[[\s\S]*\]/);
+        if (jsonMatch) {
+            tempScannedItems = JSON.parse(jsonMatch[0]);
+            renderScannedItems();
+            document.getElementById('confirmScanBtn').classList.remove('hidden');
+        } else {
+            throw new Error("لم يتم التعرف على البيانات");
         }
 
-        event.target.value = ''; 
-    };
+    } catch (error) {
+        console.error("خطأ في المسح:", error);
+        tbody.innerHTML = `<tr><td colspan="4" class="text-center p-10 text-red-500">حدث خطأ أثناء الاتصال بالذكاء الاصطناعي. تأكد من الإنترنت أو مفتاح API.</td></tr>`;
+    }
+};
 
     window.renderScannedItems = () => {
         const tbody = document.getElementById('scannedItemsTable');
