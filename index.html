@@ -6,16 +6,16 @@
     <title>معرض مهند</title>
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="apple-touch-icon" href="logo.png">
-    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
-    <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css)">
-    <link href="[https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap](https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap)" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     
     <style>
         /* =========================================
            1. المتغيرات الرئيسية للتصميم الملكي النيون
            ========================================= */
         :root { 
-            --main-bg: #05070a;
+            --main-bg: #05070a; 
             --card-bg: rgba(22, 27, 34, 0.7); 
             --neon-blue: #00d2ff;
             --neon-glow: rgba(0, 210, 255, 0.4);
@@ -28,14 +28,14 @@
            2. الإعدادات العامة للجسم والخطوط
            ========================================= */
         body { 
-            font-family: 'Cairo', sans-serif !important;
+            font-family: 'Cairo', sans-serif !important; 
             background: radial-gradient(circle at top center, #0a1118 0%, var(--main-bg) 100%) !important; 
             color: var(--text-main) !important; 
             min-height: 100vh;
         }
 
         h1, h2, h3, h4 { 
-            color: var(--neon-blue) !important;
+            color: var(--neon-blue) !important; 
             font-weight: 900 !important; 
             text-shadow: 0 0 10px rgba(0, 210, 255, 0.2);
         }
@@ -47,7 +47,7 @@
         .text-slate-500 { color: var(--text-muted) !important; }
         .text-blue-500, .text-blue-600, .text-blue-700, .text-blue-800, 
         .text-emerald-500, .text-emerald-600, .text-rose-600, .text-rose-500 { 
-            color: var(--neon-blue) !important;
+            color: var(--neon-blue) !important; 
         }
 
         .bg-white, .bg-slate-50, .bg-slate-100, .bg-blue-50, 
@@ -128,13 +128,13 @@
            7. القائمة الجانبية (Sidebar)
            ========================================= */
         .sidebar-btn { 
-            transition: all 0.3s ease;
+            transition: all 0.3s ease; 
             color: var(--text-muted) !important; 
             position: relative;
             overflow: hidden;
         }
         .sidebar-btn:hover { 
-            background-color: rgba(0, 210, 255, 0.05) !important;
+            background-color: rgba(0, 210, 255, 0.05) !important; 
             color: #fff !important;
             transform: translateX(-5px);
         }
@@ -158,11 +158,11 @@
             white-space: nowrap;
         }
         tbody tr { 
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important; 
             transition: background 0.2s ease;
         }
         tbody tr:hover { 
-            background: rgba(0, 210, 255, 0.08) !important;
+            background: rgba(0, 210, 255, 0.08) !important; 
         }
         td { color: var(--text-main) !important; white-space: nowrap; }
 
@@ -186,13 +186,13 @@
 
         /* التبويبات الفرعية للمخزن */
         .sub-tab { 
-            color: var(--text-muted) !important;
+            color: var(--text-muted) !important; 
             border-bottom: 3px solid transparent !important;
             transition: all 0.3s ease;
         }
         .sub-tab:hover { color: #fff !important; }
         .sub-tab.active { 
-            color: var(--neon-blue) !important;
+            color: var(--neon-blue) !important; 
             border-bottom: 3px solid var(--neon-blue) !important; 
             text-shadow: 0 0 10px var(--neon-glow);
         }
@@ -209,7 +209,7 @@
            11. النوافذ المنبثقة والأنيميشن
            ========================================= */
         .fixed.inset-0.bg-slate-900\/60, .bg-slate-900\/95 { 
-            background: rgba(0, 0, 0, 0.85) !important;
+            background: rgba(0, 0, 0, 0.85) !important; 
             backdrop-filter: blur(8px);
         }
         
@@ -222,8 +222,12 @@
         }
         
         /* تأثيرات إضافية للهاتف */
-        .sidebar-overlay { display: none; }
-        .sidebar-overlay.active { display: block; }
+        .sidebar-overlay {
+            display: none;
+        }
+        .sidebar-overlay.active {
+            display: block;
+        }
     </style>
 </head>
 <body class="text-slate-800">
@@ -323,9 +327,9 @@
                         <button onclick="openInventoryModal()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-emerald-500/30 transition-transform transform hover:-translate-y-1 w-full md:w-auto"><i class="fas fa-box-open ml-2"></i> إضافة بضاعة جديدة</button>
                         
                         <input type="file" id="invoiceScannerFile" accept="image/*" class="hidden" onchange="processInvoiceScan(event)">
-                        <button onclick="document.getElementById('invoiceScannerFile').click()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-blue-500/30 transition-transform transform hover:-translate-y-1 w-full md:w-auto border border-blue-400/50">
-                            <i class="fas fa-camera ml-2"></i> مسح وصل
-                        </button>
+<button onclick="document.getElementById('invoiceScannerFile').click()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-blue-500/30 transition-transform transform hover:-translate-y-1 w-full md:w-auto border border-blue-400/50">
+    <i class="fas fa-camera ml-2"></i> مسح وصل
+              </button>
                     </div>
 
                     <div class="relative w-full md:w-72">
@@ -496,7 +500,7 @@
     <div class="glass-card p-6 md:p-8 rounded-[2rem] w-full max-w-3xl max-h-[90vh] flex flex-col shadow-2xl border-t-8 border-blue-500">
         <div class="flex justify-between items-center border-b border-slate-700 pb-4 mb-4">
             <h3 class="text-xl md:text-2xl font-extrabold text-slate-100 flex items-center gap-2">
-                 <i class="fas fa-robot text-blue-500"></i> مراجعة المواد المستخرجة من الوصل
+                <i class="fas fa-robot text-blue-500"></i> مراجعة المواد المستخرجة من الوصل
             </h3>
             <button onclick="closeModal('scanReviewModal')" class="text-slate-400 hover:text-red-500 text-2xl transition"><i class="fas fa-times"></i></button>
         </div>
@@ -521,7 +525,7 @@
         </div>
 
         <div class="mt-6 flex flex-col sm:flex-row gap-3 border-t border-slate-700 pt-4">
-             <button id="confirmScanBtn" onclick="confirmScannedItems()" class="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 rounded-xl font-bold hover:shadow-lg transition-transform transform hover:-translate-y-1">
+            <button id="confirmScanBtn" onclick="confirmScannedItems()" class="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 rounded-xl font-bold hover:shadow-lg transition-transform transform hover:-translate-y-1">
                 <i class="fas fa-check-circle ml-2"></i> تأكيد وإضافة للمخزن
             </button>
             <button onclick="closeModal('scanReviewModal')" class="w-full sm:w-auto bg-slate-800 text-slate-300 p-4 rounded-xl font-bold hover:bg-slate-700 transition">إلغاء العملية</button>
@@ -534,86 +538,86 @@
         <div class="sticky top-0 bg-slate-900/90 backdrop-blur p-4 sm:p-6 border-b border-slate-700 flex justify-between items-center z-20 shadow-sm">
             <h3 id="custModalTitle" class="text-xl sm:text-2xl font-extrabold text-slate-100 flex items-center gap-2 sm:gap-3"><i class="fas fa-user-circle text-blue-500 text-2xl sm:text-3xl"></i> تفاصيل الزبون</h3>
             <button onclick="closeModal('custModal')" class="bg-slate-800 hover:bg-red-900/50 text-slate-400 hover:text-red-400 w-10 h-10 rounded-full flex items-center justify-center transition duration-300"><i class="fas fa-times text-xl"></i></button>
-         </div>
+        </div>
         
         <div class="p-4 sm:p-8 grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-10">
             <div class="space-y-6">
                 <div class="flex flex-col sm:flex-row gap-4">
                     <div class="w-full sm:w-1/3">
-                         <label class="text-sm font-bold text-slate-400 block mb-2">رقم القائمة/الدفتر</label>
+                        <label class="text-sm font-bold text-slate-400 block mb-2">رقم القائمة/الدفتر</label>
                         <input type="text" id="cID" class="w-full p-3 border rounded-xl text-center font-bold text-lg">
                     </div>
                     <div class="w-full sm:w-2/3">
-                         <label class="text-sm font-bold text-slate-400 block mb-2">الاسم الثلاثي للزبون <span class="text-red-500">*</span></label>
+                        <label class="text-sm font-bold text-slate-400 block mb-2">الاسم الثلاثي للزبون <span class="text-red-500">*</span></label>
                         <input type="text" id="cName" class="w-full p-3 border rounded-xl font-bold text-blue-400 text-lg">
                     </div>
                 </div>
-                 
+                
                 <div>
                     <label class="text-sm font-bold text-slate-400 block mb-2">المادة المشتراة <span class="text-red-500">*</span></label>
                     <input type="text" id="cItemName" list="inventoryItemsList" placeholder="اختر من المخزن..." class="w-full p-3 border rounded-xl">
                     <datalist id="inventoryItemsList"></datalist>
-                 </div>
+                </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 sm:p-5 bg-blue-900/20 rounded-2xl border border-blue-500/20">
                     <div>
                         <label class="text-xs font-bold text-slate-400 block mb-1">المبلغ الكلي</label>
-                         <input type="number" id="cTotal" class="w-full p-3 border rounded-xl" onkeyup="calcRemaining()" onchange="calcRemaining()">
+                        <input type="number" id="cTotal" class="w-full p-3 border rounded-xl" onkeyup="calcRemaining()" onchange="calcRemaining()">
                     </div>
                     <div>
                         <label class="text-xs font-bold text-slate-400 block mb-1">المقدمة (واصل)</label>
-                         <input type="number" id="cPaid" class="w-full p-3 border rounded-xl" onkeyup="calcRemaining()" onchange="calcRemaining()">
+                        <input type="number" id="cPaid" class="w-full p-3 border rounded-xl" onkeyup="calcRemaining()" onchange="calcRemaining()">
                     </div>
                     <div>
                         <label class="text-xs font-bold text-red-400 block mb-1">المتبقي</label>
-                         <input type="number" id="cRem" class="w-full p-3 border-2 border-red-500/30 rounded-xl bg-red-900/10 font-bold text-red-400 text-lg" readonly>
+                        <input type="number" id="cRem" class="w-full p-3 border-2 border-red-500/30 rounded-xl bg-red-900/10 font-bold text-red-400 text-lg" readonly>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                     <div>
+                    <div>
                         <label class="text-sm font-bold text-slate-400 block mb-2">رقم الهاتف</label>
                         <input type="text" id="cPhone" class="w-full p-3 border rounded-xl" dir="ltr" style="text-align: right;">
                     </div>
-                     <div>
+                    <div>
                         <label class="text-sm font-bold text-slate-400 block mb-2">العنوان السكني</label>
                         <input type="text" id="cAddress" class="w-full p-3 border rounded-xl">
                     </div>
-                 </div>
+                </div>
                 
                 <div>
                     <label class="text-sm font-bold text-slate-400 block mb-2">ملاحظات إضافية</label>
                     <textarea id="cNotes" class="w-full p-3 border rounded-xl h-24 resize-none"></textarea>
-                 </div>
+                </div>
             </div>
 
             <div class="space-y-6">
                 <div class="p-4 sm:p-6 bg-slate-900/50 rounded-2xl border border-slate-700/50 shadow-inner">
                     <div class="flex justify-between items-center mb-4 border-b border-slate-700 pb-3">
-                         <h4 class="font-extrabold text-blue-400 text-lg"><i class="fas fa-list-check ml-2"></i> سجل تسديد الأقساط</h4>
+                        <h4 class="font-extrabold text-blue-400 text-lg"><i class="fas fa-list-check ml-2"></i> سجل تسديد الأقساط</h4>
                         <button onclick="addMonthRow()" id="addMonthBtn" class="bg-blue-600 hover:bg-blue-500 text-white text-sm px-4 py-2 rounded-lg shadow-md transition transform hover:scale-105"><i class="fas fa-plus ml-1"></i> قسط جديد</button>
                     </div>
                     <div class="flex gap-2 mb-2 text-xs text-slate-400 font-bold px-2">
                         <div class="w-1/3">المبلغ</div>
                         <div class="w-1/3 text-center">التاريخ</div>
                         <div class="w-1/3 text-center">المستلم</div>
-                         <div class="w-8"></div>
+                        <div class="w-8"></div>
                     </div>
                     <div id="monthsContainer" class="space-y-3 max-h-[220px] overflow-y-auto p-2 custom-scrollbar"></div>
                 </div>
 
                 <div class="p-4 sm:p-6 bg-slate-900/30 rounded-2xl border border-slate-700/50 shadow-sm relative overflow-hidden">
-                     <div class="absolute top-0 left-0 w-2 h-full bg-emerald-500" style="background:var(--neon-blue)"></div>
+                    <div class="absolute top-0 left-0 w-2 h-full bg-emerald-500" style="background:var(--neon-blue)"></div>
                     <h4 class="font-extrabold text-slate-100 mb-4 text-lg"><i class="fas fa-user-shield text-emerald-400 ml-2"></i>بيانات الكفيل</h4>
                     <div class="space-y-4">
                         <div>
-                             <input type="text" id="gkName" placeholder="اسم الكفيل الثلاثي" class="w-full p-3 border rounded-xl">
+                            <input type="text" id="gkName" placeholder="اسم الكفيل الثلاثي" class="w-full p-3 border rounded-xl">
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                     <div>
+                            <div>
                                 <input type="text" id="gkPhone" placeholder="رقم هاتف الكفيل" class="w-full p-3 border rounded-xl" dir="ltr" style="text-align: right;">
                             </div>
-                     <div>
+                            <div>
                                 <input type="text" id="gkAddress" placeholder="عنوان الكفيل" class="w-full p-3 border rounded-xl">
                             </div>
                         </div>
@@ -622,10 +626,10 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div class="border-2 border-dashed border-slate-600 p-4 rounded-2xl text-center bg-slate-900/30 hover:bg-slate-800 transition cursor-pointer relative">
-                         <label class="block font-bold text-sm text-slate-400 mb-2 cursor-pointer">صورة هوية الزبون</label>
+                        <label class="block font-bold text-sm text-slate-400 mb-2 cursor-pointer">صورة هوية الزبون</label>
                         <input type="file" id="cImageInput" accept="image/*" class="text-sm w-full mb-2 absolute inset-0 opacity-0 cursor-pointer" onchange="previewBase64(this, 'cImagePreview')">
                         <div class="text-blue-500 mb-2 pointer-events-none"><i class="fas fa-cloud-upload-alt text-2xl"></i></div>
-                         <img id="cImagePreview" src="" class="hidden mx-auto h-24 object-contain rounded shadow-md mt-2">
+                        <img id="cImagePreview" src="" class="hidden mx-auto h-24 object-contain rounded shadow-md mt-2">
                     </div>
                     <div class="border-2 border-dashed border-slate-600 p-4 rounded-2xl text-center bg-slate-900/30 hover:bg-slate-800 transition cursor-pointer relative">
                         <label class="block font-bold text-sm text-slate-400 mb-2 cursor-pointer">صورة هوية الكفيل</label>
@@ -651,7 +655,7 @@
         <h3 id="invModalTitle" class="text-xl md:text-2xl font-extrabold text-slate-100 mb-6 flex items-center gap-2"><i class="fas fa-box text-emerald-500"></i> تفاصيل البضاعة</h3>
         <div class="space-y-5">
             <div>
-                 <label class="text-sm font-bold text-slate-400 block mb-2">التصنيف</label>
+                <label class="text-sm font-bold text-slate-400 block mb-2">التصنيف</label>
                 <select id="iCat" class="w-full p-3 border rounded-xl font-bold text-slate-200">
                     <option value="مبايلات">موبايلات</option>
                     <option value="اكسسوارات">اكسسوارات الذكية</option>
@@ -661,7 +665,7 @@
             </div>
             <div>
                 <label class="text-sm font-bold text-slate-400 block mb-2">اسم المادة</label>
-                 <input type="text" id="iName" class="w-full p-3 border rounded-xl">
+                <input type="text" id="iName" class="w-full p-3 border rounded-xl">
             </div>
             <div class="grid grid-cols-2 gap-4">
                 <div>
@@ -671,13 +675,13 @@
                 <div>
                     <label class="text-sm font-bold text-slate-400 block mb-2">سعر الجملة</label>
                     <input type="number" id="iWholesale" class="w-full p-3 border rounded-xl">
-                 </div>
+                </div>
             </div>
             <div>
                 <label class="text-sm font-bold text-slate-400 block mb-2">سعر البيع</label>
                 <input type="number" id="iSell" class="w-full p-3 border border-emerald-500/50 rounded-xl bg-emerald-900/10 text-emerald-400 font-bold text-lg">
             </div>
-             <div>
+            <div>
                 <label class="text-sm font-bold text-slate-400 block mb-2">ملاحظات</label>
                 <textarea id="iNotes" class="w-full p-3 border rounded-xl h-20 resize-none"></textarea>
             </div>
@@ -698,12 +702,12 @@
                 <input type="text" id="coName" class="w-full p-3 border rounded-xl text-lg font-bold">
             </div>
             <div>
-                 <label class="text-sm font-bold text-slate-400 block mb-2">تاريخ الوصل</label>
+                <label class="text-sm font-bold text-slate-400 block mb-2">تاريخ الوصل</label>
                 <input type="date" id="coDate" class="w-full p-3 border rounded-xl">
             </div>
             <div class="p-4 bg-rose-900/10 rounded-xl border border-rose-500/20 space-y-4">
                 <div>
-                     <label class="text-sm font-bold text-rose-400 block mb-2">المبلغ الكلي للوصل (الدين)</label>
+                    <label class="text-sm font-bold text-rose-400 block mb-2">المبلغ الكلي للوصل (الدين)</label>
                     <input type="number" id="coPrev" class="w-full p-3 border border-rose-500/30 rounded-xl bg-black/50 text-lg font-bold text-rose-400">
                 </div>
                 <div>
@@ -720,8 +724,9 @@
 </div>
 
 <script type="module">
-    import { initializeApp } from "[https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js](https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js)";
-    import { getFirestore, collection, onSnapshot, addDoc, doc, updateDoc, deleteDoc, writeBatch, serverTimestamp, query, where } from "[https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js](https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js)";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { getFirestore, collection, onSnapshot, addDoc, doc, updateDoc, deleteDoc, writeBatch, serverTimestamp, query, where } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+   
     const firebaseConfig = {
       apiKey: "AIzaSyB1e-lTs-hXrKq7uAkhTj_azp8CdmrwO8w",
       authDomain: "gggg-44b14.firebaseapp.com",
@@ -730,6 +735,7 @@
       messagingSenderId: "674591791834",
       appId: "1:674591791834:web:a37a39d5b133a227f5a3e3"
     };
+
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     
@@ -752,10 +758,11 @@
     };
 
     const SYSTEM_PIN = "@11@22@34";
+
     if(sessionStorage.getItem("isLoggedIn") === "true") {
         document.getElementById('authScreen').classList.add('hidden');
         document.getElementById('mainApp').classList.remove('hidden');
-        startListeners();
+        startListeners(); 
     }
 
     window.checkPin = () => {
@@ -796,17 +803,20 @@
             updateDropdowns();
             updateFinancials();
         });
+        
         onSnapshot(collection(db, 'customers'), snap => {
             customers = snap.docs.map(d => ({id: d.id, ...d.data()}));
             renderCustomers();
             renderArchive();
             updateFinancials();
         });
+        
         onSnapshot(collection(db, 'companies'), snap => {
             companies = snap.docs.map(d => ({id: d.id, ...d.data()}));
             renderCompanies();
             updateFinancials();
         });
+        
         onSnapshot(collection(db, 'pos'), snap => {
             posSales = snap.docs.map(d => d.data());
             renderPos();
@@ -827,7 +837,7 @@
             reader.readAsDataURL(input.files[0]);
         }
     };
-    
+
     window.filterInventory = (cat) => {
         currentCategory = cat;
         document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
@@ -840,6 +850,7 @@
         const modal = document.getElementById('invModal');
         const title = document.getElementById('invModalTitle');
         const saveBtn = document.getElementById('saveInvBtn');
+
         if (id) {
             const p = products.find(x => x.id === id);
             title.innerHTML = '<i class="fas fa-pen-to-square text-emerald-500"></i> تعديل المادة';
@@ -875,6 +886,7 @@
             sell: parseFloat(document.getElementById('iSell').value) || 0,
             notes: document.getElementById('iNotes').value
         };
+
         if (editInvId) {
             await updateDoc(doc(db, 'inventory', editInvId), data);
         } else {
@@ -882,7 +894,7 @@
         }
         closeModal('invModal');
     };
-    
+
     window.deleteInventory = async (id) => {
         if(confirm('هل أنت متأكد من حذف هذه المادة من المخزن بشكل نهائي؟')) {
             await deleteDoc(doc(db, 'inventory', id));
@@ -893,12 +905,13 @@
         const search = document.getElementById('invSearch').value.toLowerCase();
         const tbody = document.getElementById('inventoryTable');
         const filtered = products.filter(p => p.category === currentCategory && p.name.toLowerCase().includes(search));
+        
         tbody.innerHTML = filtered.map(p => `
             <tr class="transition duration-200 hover:bg-white/5">
                 <td class="p-5 font-bold text-slate-200">${p.name}</td>
                 <td class="p-5 text-center">
                     <span class="${p.qty <= 0 ? 'text-red-500' : 'text-emerald-400'} font-bold text-lg">
-                         ${p.qty}
+                        ${p.qty}
                     </span>
                 </td>
                 <td class="p-5 text-slate-400">${(p.wholesale || 0).toLocaleString()}</td>
@@ -907,117 +920,100 @@
                 <td class="p-5 text-sm text-slate-500 max-w-[150px] truncate" title="${p.notes || ''}">${p.notes || ''}</td>
                 <td class="p-5 flex gap-2 justify-center">
                     <button onclick="openInventoryModal('${p.id}')" class="text-blue-400 hover:bg-blue-900/50 w-8 h-8 rounded-full transition" title="تعديل"><i class="fas fa-edit"></i></button>
-                     <button onclick="deleteInventory('${p.id}')" class="text-red-400 hover:bg-red-900/50 w-8 h-8 rounded-full transition" title="حذف"><i class="fas fa-trash"></i></button>
+                    <button onclick="deleteInventory('${p.id}')" class="text-red-400 hover:bg-red-900/50 w-8 h-8 rounded-full transition" title="حذف"><i class="fas fa-trash"></i></button>
                 </td>
             </tr>
         `).join('');
     }
 
-    // ==========================================
-    // نسخة مطورة من نظام المسح الضوئي (تستخدم Gemini Structured Outputs)
-    // ==========================================
-    window.processInvoiceScan = async (event) => {
-        const file = event.target.files[0];
-        if (!file) return;
+// ==========================================
+// نسخة مطورة من نظام المسح الضوئي (Flash + تصغير الصورة للسرعة)
+// ==========================================
+window.processInvoiceScan = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
 
-        // فتح نافذة المراجعة وعرض حالة التحميل
-        document.getElementById('scanReviewModal').classList.remove('hidden');
-        const tbody = document.getElementById('scannedItemsTable');
-        document.getElementById('confirmScanBtn').classList.add('hidden');
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="4" class="text-center p-10">
-                    <i class="fas fa-spinner fa-spin text-4xl text-blue-500 mb-4"></i>
-                    <p class="text-lg font-bold text-white">جاري معالجة الصورة عبر Gemini...</p>
-                    <p class="text-sm text-slate-400">يتم الآن التحليل واستخراج البيانات بدقة عالية</p>
-                </td>
-            </tr>
-        `;
-        try {
-            // 1. وظيفة لتصغير حجم الصورة قبل الإرسال (زيادة السرعة وتقليل التكلفة)
-            const resizeImage = (file) => {
-                return new Promise((resolve) => {
-                    const reader = new FileReader();
-                    reader.readAsDataURL(file);
-                    reader.onload = (event) => {
-                        const img = new Image();
-                        img.src = event.target.result;
-                        img.onload = () => {
-                            const canvas = document.createElement('canvas');
-                            const MAX_WIDTH = 1000;
-                            const scaleSize = MAX_WIDTH / img.width;
-                            canvas.width = MAX_WIDTH;
-                            canvas.height = img.height * scaleSize;
-                            const ctx = canvas.getContext('2d');
-                            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                            resolve(canvas.toDataURL('image/jpeg', 0.7).split(',')[1]);
-                        };
+    // فتح نافذة المراجعة وعرض حالة التحميل
+    document.getElementById('scanReviewModal').classList.remove('hidden');
+    const tbody = document.getElementById('scannedItemsTable');
+    document.getElementById('confirmScanBtn').classList.add('hidden');
+    tbody.innerHTML = `
+        <tr>
+            <td colspan="4" class="text-center p-10">
+                <i class="fas fa-spinner fa-spin text-4xl text-blue-500 mb-4"></i>
+                <p class="text-lg font-bold text-white">جاري معالجة الصورة بسرعة Flash...</p>
+                <p class="text-sm text-slate-400">يتم الآن ضغط الصورة وتحليلها</p>
+            </td>
+        </tr>
+    `;
+
+    try {
+        // 1. وظيفة لتصغير حجم الصورة قبل الإرسال (هذا هو سر السرعة)
+        const resizeImage = (file) => {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const MAX_WIDTH = 1000; // تقليل العرض لسرعة الرفع
+                        const scaleSize = MAX_WIDTH / img.width;
+                        canvas.width = MAX_WIDTH;
+                        canvas.height = img.height * scaleSize;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        // تصدير الصورة بجودة 70% لتقليل الحجم جداً
+                        resolve(canvas.toDataURL('image/jpeg', 0.7).split(',')[1]);
                     };
-                });
-            };
-
-            const base64Image = await resizeImage(file);
-            
-            // 2. استخدام نسخة Gemini 1.5 Flash مع تفعيل المخرجات المهيكلة
-            const GEMINI_API_KEY = 'AIzaSyD-zN04-7gWNkit2L83wZ9ClzIF4KfkH_U'; 
-            const url = \`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=\${GEMINI_API_KEY}\`;
-            
-            const payload = {
-                contents: [{
-                    parts: [
-                        { text: "أنت نظام محاسبي ذكي. قم بقراءة هذا الوصل واستخرج المواد المذكورة فيه. الأسماء يجب أن تكون باللغة العربية. إذا لم يكن هناك سعر جملة، اترك السعر 0." },
-                        { inline_data: { mime_type: "image/jpeg", data: base64Image } }
-                    ]
-                }],
-                generationConfig: {
-                    temperature: 0.1, // تقليل العشوائية لزيادة الدقة
-                    response_mime_type: "application/json",
-                    response_schema: {
-                        type: "ARRAY",
-                        items: {
-                            type: "OBJECT",
-                            properties: {
-                                name: { type: "STRING" },
-                                qty: { type: "INTEGER" },
-                                price: { type: "NUMBER" }
-                            },
-                            required: ["name", "qty", "price"]
-                        }
-                    }
-                }
-            };
-
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+                };
             });
+        };
 
-            if (!response.ok) {
-                throw new Error("فشل الاتصال، يرجى التحقق من مفتاح API (انتهت صلاحيته أو الرصيد).");
-            }
+        const base64Image = await resizeImage(file);
+        
+        // 2. استخدام نسخة Gemini 1.5 Flash الرسمية
+        const GEMINI_API_KEY = 'AIzaSyD-zN04-7gWNkit2L83wZ9ClzIF4KfkH_U'; // مفتاحك الحالي
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
-            const data = await response.json();
-            const textResponse = data.candidates[0].content.parts[0].text;
-            
-            // بفضل `response_mime_type` المخرجات ستكون JSON جاهز بلا أخطاء نصوص
-            tempScannedItems = JSON.parse(textResponse);
-            
-            if (tempScannedItems && tempScannedItems.length > 0) {
-                renderScannedItems();
-            } else {
-                throw new Error("لم يتم العثور على أي مواد في الوصل.");
-            }
+        const payload = {
+            contents: [{
+                parts: [
+                    { text: "أنت نظام محاسبي ذكي. قم بقراءة هذا الوصل واستخرج المواد المذكورة فيه بصيغة JSON فقط: [{ \"name\": \"اسم المادة\", \"qty\": الكمية, \"price\": سعر الجملة }]. إذا لم يكن هناك سعر جملة، اترك السعر 0. الأسماء يجب أن تكون بالعربية." },
+                    { inline_data: { mime_type: "image/jpeg", data: base64Image } }
+                ]
+            }]
+        };
 
-        } catch (error) {
-            console.error("خطأ في المسح:", error);
-            tbody.innerHTML = \`<tr><td colspan="4" class="text-center p-10 text-red-500 font-bold">\${error.message || "حدث خطأ غير معروف."}</td></tr>\`;
+        const response = await fetch(url, {
+            method: 'POST',
+            body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+        const textResponse = data.candidates[0].content.parts[0].text;
+        
+        // تنظيف النص المستلم وتحويله لـ JSON
+        const jsonMatch = textResponse.match(/\[[\s\S]*\]/);
+        if (jsonMatch) {
+            tempScannedItems = JSON.parse(jsonMatch[0]);
+            renderScannedItems();
+            document.getElementById('confirmScanBtn').classList.remove('hidden');
+        } else {
+            throw new Error("لم يتم التعرف على البيانات");
         }
-    };
+
+    } catch (error) {
+        console.error("خطأ في المسح:", error);
+        tbody.innerHTML = `<tr><td colspan="4" class="text-center p-10 text-red-500">حدث خطأ أثناء الاتصال بالذكاء الاصطناعي. تأكد من الإنترنت أو مفتاح API.</td></tr>`;
+    }
+};
 
     window.renderScannedItems = () => {
         const tbody = document.getElementById('scannedItemsTable');
         document.getElementById('confirmScanBtn').classList.remove('hidden');
+        
         tbody.innerHTML = tempScannedItems.map((item, index) => `
             <tr class="border-b border-slate-700 bg-slate-800/50 hover:bg-slate-700/50 transition">
                 <td class="p-2">
@@ -1028,7 +1024,7 @@
                 </td>
                 <td class="p-2">
                     <input type="number" value="${item.price}" id="scan_price_${index}" class="w-full p-2 rounded-lg bg-slate-900 border border-slate-600 text-emerald-400 font-bold">
-                 </td>
+                </td>
                 <td class="p-2 text-center">
                     <button onclick="removeScannedItem(${index})" class="text-red-500 hover:text-red-400 hover:bg-red-900/30 w-8 h-8 rounded-full transition"><i class="fas fa-trash"></i></button>
                 </td>
@@ -1040,7 +1036,7 @@
         tempScannedItems.splice(index, 1);
         renderScannedItems();
     };
-    
+
     window.confirmScannedItems = async () => {
         const btn = document.getElementById('confirmScanBtn');
         btn.innerHTML = '<i class="fas fa-spinner fa-spin ml-2"></i> جاري الحفظ...';
@@ -1048,6 +1044,7 @@
 
         const batch = writeBatch(db);
         let addedCount = 0;
+        
         for (let i = 0; i < tempScannedItems.length; i++) {
             const nameEl = document.getElementById(`scan_name_${i}`);
             const qtyEl = document.getElementById(`scan_qty_${i}`);
@@ -1080,6 +1077,7 @@
     };
     // ==========================================
 
+
     window.openCustomerModal = (id = null, isReadOnly = false) => {
         editCustId = id;
         const modal = document.getElementById('custModal');
@@ -1107,10 +1105,11 @@
         saveBtn.style.display = isReadOnly ? 'none' : 'block';
         document.getElementById('cImageInput').parentElement.style.display = isReadOnly ? 'none' : 'block';
         document.getElementById('gImageInput').parentElement.style.display = isReadOnly ? 'none' : 'block';
-        
+
         if (id) {
             const c = customers.find(x => x.id === id);
             title.innerHTML = isReadOnly ? '<i class="fas fa-box-archive text-slate-400 text-2xl sm:text-3xl"></i> تفاصيل الأرشيف' : '<i class="fas fa-user-edit text-blue-500 text-2xl sm:text-3xl"></i> تعديل بيانات الزبون';
+            
             document.getElementById('cID').value = c.bookId || '';
             document.getElementById('cName').value = c.name || '';
             document.getElementById('cItemName').value = c.itemName || ''; 
@@ -1158,16 +1157,17 @@
         }
         modal.classList.remove('hidden');
     };
-    
+
     window.addMonthRow = (val = '', date = '', rec = '', isReadOnly = false) => {
         const container = document.getElementById('monthsContainer');
         const div = document.createElement('div');
         div.className = "flex gap-2 mb-2 items-center p-2 border rounded-lg shadow-sm transition"; 
-        div.style.background = "rgba(0,0,0,0.4)";
+        div.style.background = "rgba(0,0,0,0.4)"; 
         div.style.borderColor = "rgba(255,255,255,0.1)";
         
         const disabledAttr = isReadOnly ? "disabled" : "";
         const hideBtn = isReadOnly ? "hidden" : "";
+
         div.innerHTML = `
             <input type="number" placeholder="المبلغ" value="${val}" class="w-1/3 p-2 text-sm border-none rounded ins-val font-bold text-blue-400" onkeyup="calcRemaining()" onchange="calcRemaining()" ${disabledAttr}>
             <input type="date" value="${date}" class="w-1/3 p-2 text-sm border-none rounded ins-date text-slate-300" ${disabledAttr}>
@@ -1187,6 +1187,7 @@
         instInputs.forEach(input => {
             installmentsTotal += parseFloat(input.value) || 0;
         });
+
         document.getElementById('cRem').value = total - (paid + installmentsTotal);
     };
 
@@ -1194,12 +1195,14 @@
         const itemNameInput = document.getElementById('cItemName').value;
         const matchedProduct = products.find(p => p.name === itemNameInput);
         const productId = matchedProduct ? matchedProduct.id : null;
+
         const instRows = document.querySelectorAll('#monthsContainer > div');
         const installments = Array.from(instRows).map(row => ({
             amount: row.querySelector('.ins-val').value,
             date: row.querySelector('.ins-date').value,
             receiver: row.querySelector('.ins-rec').value
         }));
+
         const data = {
             bookId: document.getElementById('cID').value,
             name: document.getElementById('cName').value,
@@ -1215,16 +1218,18 @@
             customerImage: currentCustomerImage, 
             guarantorImage: currentGuarantorImage, 
             guarantor: {
-                 name: document.getElementById('gkName').value,
+                name: document.getElementById('gkName').value,
                 address: document.getElementById('gkAddress').value,
                 phone: document.getElementById('gkPhone').value
             },
             installments: installments
         };
+
         if (editCustId) {
             await updateDoc(doc(db, 'customers', editCustId), data);
         } else {
             const batch = writeBatch(db);
+            
             if(matchedProduct && matchedProduct.qty > 0) {
                 const pRef = doc(db, 'inventory', productId);
                 batch.update(pRef, { qty: matchedProduct.qty - 1 });
@@ -1239,7 +1244,7 @@
         }
         closeModal('custModal');
     };
-    
+
     window.archiveCustomer = async () => {
         if(confirm('هل تريد نقل هذا الزبون للأرشيف لانتهاء ديونه؟')) {
             await updateDoc(doc(db, 'customers', editCustId), { archived: true });
@@ -1264,13 +1269,14 @@
         const search = document.getElementById('custSearch').value.toLowerCase();
         const tbody = document.getElementById('customersTable');
         const filtered = customers.filter(c => !c.archived && c.name.toLowerCase().includes(search));
+        
         tbody.innerHTML = filtered.map(c => `
             <tr class="transition duration-200 hover:bg-white/5">
                 <td class="p-5">
                     <span class="text-slate-400 font-bold text-sm">#${c.bookId || '-'}</span>
                 </td>
                 <td class="p-5 font-bold text-lg text-white">${c.name}</td>
-                 <td class="p-5 text-slate-400"><i class="fas fa-tag text-slate-500 ml-1"></i> ${c.itemName}</td>
+                <td class="p-5 text-slate-400"><i class="fas fa-tag text-slate-500 ml-1"></i> ${c.itemName}</td>
                 <td class="p-5">
                     <span class="font-extrabold text-red-400 text-lg">${(c.remaining || 0).toLocaleString()}</span>
                 </td>
@@ -1293,7 +1299,7 @@
                 <td class="p-5 flex gap-2 justify-center">
                     <button onclick="openCustomerModal('${c.id}', true)" class="text-slate-300 px-4 py-2 rounded-xl font-bold text-sm transition hover:bg-slate-700" style="border:1px solid #555">التفاصيل</button>
                     <button onclick="deleteFromArchive('${c.id}')" class="text-red-500 w-9 h-9 flex justify-center items-center rounded-xl transition hover:bg-red-900/50"><i class="fas fa-trash"></i></button>
-                 </td>
+                </td>
             </tr>
         `).join('');
     }
@@ -1320,7 +1326,7 @@
                 <td class="p-5 font-bold text-slate-200 text-lg"><i class="fas fa-building text-slate-500 ml-2"></i> ${c.name}</td>
                 <td class="p-5 text-slate-400">${c.date}</td>
                 <td class="p-5 font-bold text-slate-300">${(c.prev || 0).toLocaleString()}</td>
-                 <td class="p-5 font-bold text-emerald-400">${(c.paid || 0).toLocaleString()}</td>
+                <td class="p-5 font-bold text-emerald-400">${(c.paid || 0).toLocaleString()}</td>
                 <td class="p-5 font-extrabold text-rose-500 text-lg">${(c.remaining || 0).toLocaleString()}</td>
             </tr>
         `).join('');
@@ -1330,12 +1336,14 @@
         const itemNameInput = document.getElementById('posItemName').value;
         const price = parseFloat(document.getElementById('posSalePrice').value);
         const matchedProduct = products.find(x => x.name === itemNameInput);
+
         if (!itemNameInput || !price) {
             alert("يرجى إدخال اسم المادة وسعر البيع بشكل صحيح.");
             return;
         }
 
         const batch = writeBatch(db);
+        
         if (matchedProduct) {
             if (matchedProduct.qty > 0) {
                 batch.update(doc(db, 'inventory', matchedProduct.id), { qty: matchedProduct.qty - 1 });
@@ -1347,7 +1355,8 @@
 
         const today = new Date();
         const dateStr = today.toLocaleDateString('en-GB'); 
-        const monthStr = `${today.getMonth() + 1}-${today.getFullYear()}`;
+        const monthStr = `${today.getMonth() + 1}-${today.getFullYear()}`; 
+
         batch.set(doc(collection(db, 'pos')), {
             name: itemNameInput,
             price: price,
@@ -1355,6 +1364,7 @@
             month: monthStr,
             timestamp: serverTimestamp()
         });
+
         await batch.commit();
         document.getElementById('posItemName').value = '';
         document.getElementById('posSalePrice').value = '';
@@ -1378,8 +1388,10 @@
                 <span class="font-extrabold text-blue-400 px-3 py-1 rounded-lg">${s.price.toLocaleString()} د.ع</span>
             </li>
         `).join('');
+        
         const dailyTotal = dailySales.reduce((sum, s) => sum + s.price, 0);
         dailyTotalElem.innerText = dailyTotal.toLocaleString();
+
         const monthlySales = posSales.filter(s => s.month === currentMonthStr);
         const monthlyTotal = monthlySales.reduce((sum, s) => sum + s.price, 0);
         monthlyTotalElem.innerText = monthlyTotal.toLocaleString();
@@ -1410,6 +1422,7 @@
             delete copy.guarantorImage;
             return copy;
         });
+
         const data = { customers: cleanCustomers, products, companies, posSales, backupDate: new Date().toISOString() };
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
@@ -1443,13 +1456,14 @@
         const now = new Date();
         const date = now.toLocaleDateString('ar-IQ');
         const time = now.toLocaleTimeString('ar-IQ', { hour: '2-digit', minute: '2-digit', hour12: true });
+
         const printWindow = window.open('', '', 'width=400,height=600');
         printWindow.document.write(`
             <html dir="rtl" lang="ar">
             <head>
                 <title>وصل قبض - ${name}</title>
                 <style>
-                    @import url('[https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&display=swap](https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&display=swap)');
+                    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&display=swap');
                     @page { margin: 0; size: 80mm auto; }
                     body { 
                         font-family: 'Cairo', sans-serif; 
@@ -1469,7 +1483,7 @@
                         font-size: 15px;
                     }
                     .label {
-                        width: 85px;
+                        width: 85px; 
                         text-align: right;
                         font-weight: 700;
                         white-space: nowrap;
@@ -1496,7 +1510,7 @@
                     <span style="font-size: 11px;">كركوك - تازة - قرب اطفائية القديمة</span><br>
                     <span style="font-size: 12px; direction: ltr; display: block;">07702362911</span>
                     <span style="font-size: 12px; direction: ltr; display: block;">07705957430</span>
-                 </div>
+                </div>
 
                 <div class="dashed-line"></div>
                 <div class="text-center" style="font-size: 19px; font-weight: 800;">وصـل قـبـض</div>
@@ -1574,6 +1588,7 @@
                             else parts.push(convertHund(thousands) + ' ألف');
                         }
                         if (remainder > 0) parts.push(convertHund(remainder));
+
                         return 'فقط ' + parts.join(' و ') + ' دينار لا غير';
                     }
 
@@ -1594,4 +1609,3 @@
 </script>
 </body>
 </html>
-
