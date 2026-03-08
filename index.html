@@ -927,21 +927,11 @@
         `).join('');
     }
 
-    // ==========================================
-// نسخة مطورة ومضمونة 100% من نظام المسح الضوئي عبر Gemini
-// ==========================================
-// ==========================================
-// الدالة الأولى: معالجة الصورة وإرسالها للذكاء الاصطناعي
-// ==========================================
-// ==========================================
-// الدالة الأولى: معالجة الصورة وإرسالها للذكاء الاصطناعي (المُحدثة)
-// ==========================================
 window.processInvoiceScan = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
 
-    // تصفير حقل الإدخال حتى يشتغل إذا اختاريت نفس الصورة مرة ثانية
-    event.target.value = '';
+    event.target.value = ''; // تصفير حقل الإدخال
 
     document.getElementById('scanReviewModal').classList.remove('hidden');
     const tbody = document.getElementById('scannedItemsTable');
@@ -951,38 +941,63 @@ window.processInvoiceScan = async (event) => {
         <tr>
             <td colspan="5" class="text-center p-10">
                 <i class="fas fa-spinner fa-spin text-4xl text-blue-500 mb-4"></i>
-                <p class="text-lg font-bold text-white">جاري معالجة الصورة بذكاء...</p>
-                <p class="text-sm text-slate-400">يتم الآن استخراج البيانات، يرجى الانتظار</p>
+                <p class="text-lg font-bold text-white">جاري المعالجة وضبط الاتجاه...</p>
+                <p class="text-sm text-slate-400">لحظات وتكتمل العملية (تم ضبطها لأجهزة آبل)</p>
             </td>
         </tr>
     `;
     
     try {
-        const getBase64Safe = (file) => {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => {
-            // نأخذ الـ Base64 من الملف الأصلي مباشرة للحفاظ على اتجاه الصورة (EXIF)
-            const base64String = reader.result.split(',')[1];
-            resolve(base64String);
-        };
-        reader.onerror = () => reject(new Error("لا يمكن قراءة الملف المرفق."));
-    });
-};
+        // هذه الدالة السحرية ستجبر الآيفون والآيباد على تعديل اتجاه الصورة وتخفيف حجمها
+        const processImageForIOS = (file) => {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        
+                        // تصغير الحجم لمنع انهيار متصفح الآيفون وتسريع الذكاء الاصطناعي
+                        const MAX_SIZE = 1200;
+                        let width = img.width;
+                        let height = img.height;
 
-     const base64Image = await getBase64Safe(file);
+                        if (width > height && width > MAX_SIZE) {
+                            height *= MAX_SIZE / width;
+                            width = MAX_SIZE;
+                        } else if (height > MAX_SIZE) {
+                            width *= MAX_SIZE / height;
+                            height = MAX_SIZE;
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+
+                        // رسم الصورة هنا يثبت الاتجاه الصحيح ويحذف التشفير المزعج
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        // تصدير الصورة جاهزة وخفيفة
+                        const base64String = canvas.toDataURL('image/jpeg', 0.8).split(',')[1];
+                        resolve(base64String);
+                    };
+                    img.onerror = () => reject(new Error("فشل تحميل الصورة في المتصفح."));
+                    img.src = e.target.result;
+                };
+                reader.onerror = () => reject(new Error("لا يمكن قراءة الملف المرفق."));
+                reader.readAsDataURL(file);
+            });
+        };
+
+        const base64Image = await processImageForIOS(file);
         
-        // 🛑 أضف مفتاحك الجديد هنا 🛑
         const GEMINI_API_KEY = 'AIzaSyAVOz1YXrM4P33wuzLWakcO_MIIIB1K5t4'; 
-        
-        // استخدام v1beta لضمان استقرار قراءة الصور
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
         
         const payload = {
             contents: [{
                 parts: [
-                   { text: "أنت محاسب ذكي لمعرض تجاري. استخرج المواد من هذا الوصل. صنف كل مادة إلى أحد هذه الأقسام الأربعة حصراً: (مبايلات، اكسسوارات، أجهزة كهربائية، أجهزة منزلية). الرد يجب أن يكون مصفوفة مخرجات فقط." },
+                    { text: "أنت محاسب ذكي لمعرض تجاري. استخرج المواد من هذا الوصل. صنف كل مادة إلى أحد هذه الأقسام الأربعة حصراً: (مبايلات، اكسسوارات، أجهزة كهربائية، أجهزة منزلية). الرد يجب أن يكون مصفوفة مخرجات فقط." },
                     { 
                         inlineData: { 
                             mimeType: "image/jpeg", 
@@ -991,7 +1006,6 @@ window.processInvoiceScan = async (event) => {
                     }
                 ]
             }],
-            // هذه الإضافة السحرية تجبر الذكاء الاصطناعي يرجع JSON نظيف بدون أي كلام إضافي
             generationConfig: {
                 responseMimeType: "application/json",
                 responseSchema: {
@@ -1019,15 +1033,13 @@ window.processInvoiceScan = async (event) => {
         const data = await response.json();
         
         if (!response.ok) {
-            console.error("API Error Response:", data);
-            throw new Error(data.error?.message || "تأكد من صلاحية مفتاح الـ API والاتصال بالإنترنت (جرب تشغل VPN).");
+            throw new Error("حدث خطأ في الاتصال بالذكاء الاصطناعي، يرجى المحاولة مرة أخرى.");
         }
 
         if (!data.candidates || !data.candidates[0].content) {
-            throw new Error("لم يتمكن الذكاء الاصطناعي من قراءة الوصل (قد يكون غير واضح).");
+            throw new Error("لم يتمكن النظام من قراءة الوصل بوضوح.");
         }
 
-        // بما أننا طلبنا JSON صافي، نقدر نحوله مباشرة بدون قص النصوص
         const rawJsonText = data.candidates[0].content.parts[0].text;
         tempScannedItems = JSON.parse(rawJsonText);
         
@@ -1039,13 +1051,13 @@ window.processInvoiceScan = async (event) => {
         }
 
     } catch (error) {
-        console.error("Scanner Error:", error); // حتى تشوف المشكلة بالـ Console
-        tbody.innerHTML = `<tr><td colspan="5" class="text-center p-10 text-red-500">
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center p-10 text-red-500 font-bold">
             <i class="fas fa-exclamation-triangle text-3xl mb-2 block"></i> 
             ${error.message}
         </td></tr>`;
     }
 };
+
 window.renderScannedItems = () => {
     const tbody = document.getElementById('scannedItemsTable');
     
