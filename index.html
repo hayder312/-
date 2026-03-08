@@ -958,7 +958,7 @@ window.processInvoiceScan = async (event) => {
     `;
     
     try {
-        const resizeImage = (file) => {
+       const resizeImage = (file) => {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
@@ -967,8 +967,8 @@ window.processInvoiceScan = async (event) => {
                     img.src = event.target.result;
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
-                        const MAX_WIDTH = 800;
-                        // تصليح منطق التصغير حتى ما يكبر الصور الصغيرة
+                        // التعديل الأول: رفع الدقة للضعف للحفاظ على ملامح الحروف
+                        const MAX_WIDTH = 1600; 
                         let scaleSize = 1;
                         if (img.width > MAX_WIDTH) {
                             scaleSize = MAX_WIDTH / img.width;
@@ -976,8 +976,13 @@ window.processInvoiceScan = async (event) => {
                         canvas.width = img.width * scaleSize;
                         canvas.height = img.height * scaleSize;
                         const ctx = canvas.getContext('2d');
+                        
+                        // التعديل الثاني: زيادة التباين قليلاً لتوضيح حبر القلم على الورقة
+                        ctx.filter = 'contrast(1.1) brightness(1.05)';
                         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        resolve(canvas.toDataURL('image/jpeg', 0.6).split(',')[1]);
+                        
+                        // التعديل الثالث: رفع جودة حفظ الصورة إلى 95% بدلاً من 60%
+                        resolve(canvas.toDataURL('image/jpeg', 0.95).split(',')[1]);
                     };
                     img.onerror = () => reject(new Error("فشلت قراءة الصورة."));
                 };
@@ -996,7 +1001,8 @@ window.processInvoiceScan = async (event) => {
         const payload = {
             contents: [{
                 parts: [
-                   { text: "أنت محاسب ذكي لمعرض تجاري. استخرج المواد من هذا الوصل. صنف كل مادة إلى أحد هذه الأقسام الأربعة حصراً: (مبايلات، اكسسوارات، أجهزة كهربائية، أجهزة منزلية). الرد يجب أن يكون مصفوفة مخرجات فقط." },
+                   // التعديل الرابع: توجيه الذكاء الاصطناعي بشكل صارم لعدم اختصار الحروف العربية
+                   { text: "أنت محاسب ذكي لمعرض تجاري. استخرج المواد من هذا الوصل بدقة متناهية. ركز جداً على الحروف العربية والنقاط ولا تحذف أي حرف من الكلمة (مثلاً 'بلك' يجب أن تبقى 'بلك' ولا تصبح 'بك'). اقرأ الخط اليدوي بعناية فائقة وتجنب الأخطاء الإملائية. صنف كل مادة إلى أحد هذه الأقسام الأربعة حصراً: (مبايلات، اكسسوارات، أجهزة كهربائية، أجهزة منزلية). الرد يجب أن يكون مصفوفة مخرجات فقط." },
                     { 
                         inlineData: { 
                             mimeType: "image/jpeg", 
@@ -1005,6 +1011,7 @@ window.processInvoiceScan = async (event) => {
                     }
                 ]
             }],
+            
             // هذه الإضافة السحرية تجبر الذكاء الاصطناعي يرجع JSON نظيف بدون أي كلام إضافي
             generationConfig: {
                 responseMimeType: "application/json",
