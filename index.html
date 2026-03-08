@@ -967,51 +967,31 @@ window.processInvoiceScan = async (event) => {
                     img.src = event.target.result;
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
-                        
-                        // رفعنا الدقة حتى نقرأ الحروف العربية بوضوح
-                        const MAX_DIMENSION = 1600; 
-                        let width = img.width;
-                        let height = img.height;
-
-                        // نحسب التصغير بناءً على أطول ضلع (سواء كان بالطول أو بالعرض)
-                        if (width > height) {
-                            if (width > MAX_DIMENSION) {
-                                height *= MAX_DIMENSION / width;
-                                width = MAX_DIMENSION;
-                            }
-                        } else {
-                            if (height > MAX_DIMENSION) {
-                                width *= MAX_DIMENSION / height;
-                                height = MAX_DIMENSION;
-                            }
+                        const MAX_WIDTH = 800;
+                        // تصليح منطق التصغير حتى ما يكبر الصور الصغيرة
+                        let scaleSize = 1;
+                        if (img.width > MAX_WIDTH) {
+                            scaleSize = MAX_WIDTH / img.width;
                         }
-
-                        canvas.width = width;
-                        canvas.height = height;
+                        canvas.width = img.width * scaleSize;
+                        canvas.height = img.height * scaleSize;
                         const ctx = canvas.getContext('2d');
-                        
-                        // تعبئة الخلفية باللون الأبيض (مهم جداً للوصولات الشفافة أو الـ PNG)
-                        ctx.fillStyle = "#ffffff";
-                        ctx.fillRect(0, 0, canvas.width, canvas.height);
-                        
-                        ctx.drawImage(img, 0, 0, width, height);
-                        
-                        // رفعنا الجودة لـ 85% لضمان عدم ضياع تفاصيل الكلمات
-                        resolve(canvas.toDataURL('image/jpeg', 0.85).split(',')[1]);
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        resolve(canvas.toDataURL('image/jpeg', 0.6).split(',')[1]);
                     };
                     img.onerror = () => reject(new Error("فشلت قراءة الصورة."));
                 };
                 reader.onerror = () => reject(new Error("لا يمكن قراءة الملف المرفق."));
             });
         };
-        
+
         const base64Image = await resizeImage(file);
         
         // 🛑 أضف مفتاحك الجديد هنا 🛑
         const GEMINI_API_KEY = 'AIzaSyBIRL0eEVmw8vCOPuTnr_p_vy7jdUH0RlA'; 
         
         // استخدام v1beta لضمان استقرار قراءة الصور
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
         
         const payload = {
             contents: [{
@@ -1080,6 +1060,7 @@ window.processInvoiceScan = async (event) => {
         </td></tr>`;
     }
 };
+
 window.renderScannedItems = () => {
     const tbody = document.getElementById('scannedItemsTable');
     
