@@ -927,6 +927,15 @@
         `).join('');
     }
 
+    // ==========================================
+// نسخة مطورة ومضمونة 100% من نظام المسح الضوئي عبر Gemini
+// ==========================================
+// ==========================================
+// الدالة الأولى: معالجة الصورة وإرسالها للذكاء الاصطناعي
+// ==========================================
+// ==========================================
+// الدالة الأولى: معالجة الصورة وإرسالها للذكاء الاصطناعي (المُحدثة)
+// ==========================================
 window.processInvoiceScan = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -958,8 +967,8 @@ window.processInvoiceScan = async (event) => {
                         const canvas = document.createElement('canvas');
                         const ctx = canvas.getContext('2d');
                         
-                        // تصغير الحجم لمنع انهيار متصفح الآيفون وتسريع الذكاء الاصطناعي
-                        const MAX_SIZE = 1200;
+                        // التعديل هنا: كبرنا الحجم إلى 2500 حتى الذكاء الاصطناعي يقدر يقرأ الأرقام الصغيرة
+                        const MAX_SIZE = 2500;
                         let width = img.width;
                         let height = img.height;
 
@@ -974,11 +983,11 @@ window.processInvoiceScan = async (event) => {
                         canvas.width = width;
                         canvas.height = height;
 
-                        // رسم الصورة هنا يثبت الاتجاه الصحيح ويحذف التشفير المزعج
+                        // رسم الصورة هنا يثبت الاتجاه الصحيح
                         ctx.drawImage(img, 0, 0, width, height);
                         
-                        // تصدير الصورة جاهزة وخفيفة
-                        const base64String = canvas.toDataURL('image/jpeg', 0.8).split(',')[1];
+                        // التعديل هنا: رفعنا دقة الصورة (Quality) إلى 0.95
+                        const base64String = canvas.toDataURL('image/jpeg', 0.95).split(',')[1];
                         resolve(base64String);
                     };
                     img.onerror = () => reject(new Error("فشل تحميل الصورة في المتصفح."));
