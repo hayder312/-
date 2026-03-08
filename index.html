@@ -958,7 +958,7 @@ window.processInvoiceScan = async (event) => {
     `;
     
     try {
-       const resizeImage = (file) => {
+        const resizeImage = (file) => {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
@@ -967,25 +967,17 @@ window.processInvoiceScan = async (event) => {
                     img.src = event.target.result;
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
-                        
-                        // التعديل الأول: رفع الحد الأقصى للعرض إلى 1800 بكسل لقراءة النصوص بوضوح
-                        const MAX_WIDTH = 1800; 
+                        const MAX_WIDTH = 800;
+                        // تصليح منطق التصغير حتى ما يكبر الصور الصغيرة
                         let scaleSize = 1;
                         if (img.width > MAX_WIDTH) {
                             scaleSize = MAX_WIDTH / img.width;
                         }
                         canvas.width = img.width * scaleSize;
                         canvas.height = img.height * scaleSize;
-                        
-                        // تحسين جودة الرسم على الـ Canvas
                         const ctx = canvas.getContext('2d');
-                        ctx.imageSmoothingEnabled = true;
-                        ctx.imageSmoothingQuality = 'high';
-                        
                         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        
-                        // التعديل الثاني: رفع جودة ضغط الـ JPEG من 0.6 إلى 0.95 (95%)
-                        resolve(canvas.toDataURL('image/jpeg', 0.95).split(',')[1]);
+                        resolve(canvas.toDataURL('image/jpeg', 0.6).split(',')[1]);
                     };
                     img.onerror = () => reject(new Error("فشلت قراءة الصورة."));
                 };
@@ -996,7 +988,7 @@ window.processInvoiceScan = async (event) => {
         const base64Image = await resizeImage(file);
         
         // 🛑 أضف مفتاحك الجديد هنا 🛑
-        const GEMINI_API_KEY = 'AIzaSyAtNdbFbUquY-K-OXW9y8lrhmSuLtQALio'; 
+        const GEMINI_API_KEY = 'YOUR_NEW_API_KEY_HERE'; 
         
         // استخدام v1beta لضمان استقرار قراءة الصور
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
