@@ -958,7 +958,7 @@ window.processInvoiceScan = async (event) => {
     `;
     
     try {
-        const resizeImage = (file) => {
+       const resizeImage = (file) => {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
@@ -967,17 +967,25 @@ window.processInvoiceScan = async (event) => {
                     img.src = event.target.result;
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
-                        const MAX_WIDTH = 800;
-                        // تصليح منطق التصغير حتى ما يكبر الصور الصغيرة
+                        
+                        // التعديل الأول: رفع الحد الأقصى للعرض إلى 1800 بكسل لقراءة النصوص بوضوح
+                        const MAX_WIDTH = 1800; 
                         let scaleSize = 1;
                         if (img.width > MAX_WIDTH) {
                             scaleSize = MAX_WIDTH / img.width;
                         }
                         canvas.width = img.width * scaleSize;
                         canvas.height = img.height * scaleSize;
+                        
+                        // تحسين جودة الرسم على الـ Canvas
                         const ctx = canvas.getContext('2d');
+                        ctx.imageSmoothingEnabled = true;
+                        ctx.imageSmoothingQuality = 'high';
+                        
                         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        resolve(canvas.toDataURL('image/jpeg', 0.6).split(',')[1]);
+                        
+                        // التعديل الثاني: رفع جودة ضغط الـ JPEG من 0.6 إلى 0.95 (95%)
+                        resolve(canvas.toDataURL('image/jpeg', 0.95).split(',')[1]);
                     };
                     img.onerror = () => reject(new Error("فشلت قراءة الصورة."));
                 };
