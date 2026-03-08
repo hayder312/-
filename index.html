@@ -940,7 +940,8 @@ window.processInvoiceScan = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
 
-    event.target.value = ''; // تصفير حقل الإدخال
+    // تصفير حقل الإدخال حتى يشتغل إذا اختاريت نفس الصورة مرة ثانية
+    event.target.value = '';
 
     document.getElementById('scanReviewModal').classList.remove('hidden');
     const tbody = document.getElementById('scannedItemsTable');
@@ -950,35 +951,72 @@ window.processInvoiceScan = async (event) => {
         <tr>
             <td colspan="5" class="text-center p-10">
                 <i class="fas fa-spinner fa-spin text-4xl text-blue-500 mb-4"></i>
-                <p class="text-lg font-bold text-white">جاري المعالجة وضبط الاتجاه...</p>
-                <p class="text-sm text-slate-400">لحظات وتكتمل العملية (تم ضبطها لأجهزة آبل)</p>
+                <p class="text-lg font-bold text-white">جاري معالجة الصورة بذكاء...</p>
+                <p class="text-sm text-slate-400">يتم الآن استخراج البيانات، يرجى الانتظار</p>
             </td>
         </tr>
     `;
     
     try {
-        // هذه الدالة السحرية ستجبر الآيفون والآيباد على تعديل اتجاه الصورة وتخفيف حجمها
-        const processImageForIOS = (file) => {
+        const resizeImage = (file) => {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    const base64String = e.target.result.split(',')[1];
-                    resolve(base64String);
+                reader.readAsDataURL(file);
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        
+                        // رفعنا الدقة حتى نقرأ الحروف العربية بوضوح
+                        const MAX_DIMENSION = 1600; 
+                        let width = img.width;
+                        let height = img.height;
+
+                        // نحسب التصغير بناءً على أطول ضلع (سواء كان بالطول أو بالعرض)
+                        if (width > height) {
+                            if (width > MAX_DIMENSION) {
+                                height *= MAX_DIMENSION / width;
+                                width = MAX_DIMENSION;
+                            }
+                        } else {
+                            if (height > MAX_DIMENSION) {
+                                width *= MAX_DIMENSION / height;
+                                height = MAX_DIMENSION;
+                            }
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        
+                        // تعبئة الخلفية باللون الأبيض (مهم جداً للوصولات الشفافة أو الـ PNG)
+                        ctx.fillStyle = "#ffffff";
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        // رفعنا الجودة لـ 85% لضمان عدم ضياع تفاصيل الكلمات
+                        resolve(canvas.toDataURL('image/jpeg', 0.85).split(',')[1]);
+                    };
+                    img.onerror = () => reject(new Error("فشلت قراءة الصورة."));
                 };
                 reader.onerror = () => reject(new Error("لا يمكن قراءة الملف المرفق."));
-                reader.readAsDataURL(file); 
             });
         };
-
-        const base64Image = await processImageForIOS(file);
         
+        const base64Image = await resizeImage(file);
+        
+        // 🛑 أضف مفتاحك الجديد هنا 🛑
         const GEMINI_API_KEY = 'AIzaSyAVOz1YXrM4P33wuzLWakcO_MIIIB1K5t4'; 
+        
+        // استخدام v1beta لضمان استقرار قراءة الصور
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
         
         const payload = {
             contents: [{
                 parts: [
-                    { text: "أنت محاسب ذكي لمعرض تجاري. استخرج المواد من هذا الوصل. صنف كل مادة إلى أحد هذه الأقسام الأربعة حصراً: (مبايلات، اكسسوارات، أجهزة كهربائية، أجهزة منزلية). الرد يجب أن يكون مصفوفة مخرجات فقط." },
+                   { text: "أنت محاسب ذكي لمعرض تجاري. استخرج المواد من هذا الوصل. صنف كل مادة إلى أحد هذه الأقسام الأربعة حصراً: (مبايلات، اكسسوارات، أجهزة كهربائية، أجهزة منزلية). الرد يجب أن يكون مصفوفة مخرجات فقط." },
                     { 
                         inlineData: { 
                             mimeType: "image/jpeg", 
@@ -987,6 +1025,7 @@ window.processInvoiceScan = async (event) => {
                     }
                 ]
             }],
+            // هذه الإضافة السحرية تجبر الذكاء الاصطناعي يرجع JSON نظيف بدون أي كلام إضافي
             generationConfig: {
                 responseMimeType: "application/json",
                 responseSchema: {
@@ -1014,13 +1053,15 @@ window.processInvoiceScan = async (event) => {
         const data = await response.json();
         
         if (!response.ok) {
-            throw new Error("حدث خطأ في الاتصال بالذكاء الاصطناعي، يرجى المحاولة مرة أخرى.");
+            console.error("API Error Response:", data);
+            throw new Error(data.error?.message || "تأكد من صلاحية مفتاح الـ API والاتصال بالإنترنت (جرب تشغل VPN).");
         }
 
         if (!data.candidates || !data.candidates[0].content) {
-            throw new Error("لم يتمكن النظام من قراءة الوصل بوضوح.");
+            throw new Error("لم يتمكن الذكاء الاصطناعي من قراءة الوصل (قد يكون غير واضح).");
         }
 
+        // بما أننا طلبنا JSON صافي، نقدر نحوله مباشرة بدون قص النصوص
         const rawJsonText = data.candidates[0].content.parts[0].text;
         tempScannedItems = JSON.parse(rawJsonText);
         
@@ -1032,13 +1073,13 @@ window.processInvoiceScan = async (event) => {
         }
 
     } catch (error) {
-        tbody.innerHTML = `<tr><td colspan="5" class="text-center p-10 text-red-500 font-bold">
+        console.error("Scanner Error:", error); // حتى تشوف المشكلة بالـ Console
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center p-10 text-red-500">
             <i class="fas fa-exclamation-triangle text-3xl mb-2 block"></i> 
             ${error.message}
         </td></tr>`;
     }
 };
-
 window.renderScannedItems = () => {
     const tbody = document.getElementById('scannedItemsTable');
     
