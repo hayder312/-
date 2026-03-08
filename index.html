@@ -971,7 +971,7 @@ window.processInvoiceScan = async (event) => {
     });
 };
 
-        const base64Image = await resizeImage(file);
+     const base64Image = await getBase64Safe(file);
         
         // 🛑 أضف مفتاحك الجديد هنا 🛑
         const GEMINI_API_KEY = 'AIzaSyAVOz1YXrM4P33wuzLWakcO_MIIIB1K5t4'; 
