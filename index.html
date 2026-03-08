@@ -996,7 +996,7 @@ window.processInvoiceScan = async (event) => {
         const base64Image = await resizeImage(file);
         
         // 🛑 أضف مفتاحك الجديد هنا 🛑
-        const GEMINI_API_KEY = 'AIzaSyBIRL0eEVmw8vCOPuTnr_p_vy7jdUH0RlA'; 
+        const GEMINI_API_KEY = 'AIzaSyAtNdbFbUquY-K-OXW9y8lrhmSuLtQALio'; 
         
         // استخدام v1beta لضمان استقرار قراءة الصور
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
