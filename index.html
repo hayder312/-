@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +7,7 @@
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="apple-touch-icon" href="logo.png">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/heic2any"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     
@@ -32,6 +33,8 @@
             background: radial-gradient(circle at top center, #0a1118 0%, var(--main-bg) 100%) !important; 
             color: var(--text-main) !important; 
             min-height: 100vh;
+            font-feature-settings: "tnum" 1;
+            font-variant-numeric: tabular-nums;
         }
 
         h1, h2, h3, h4 { 
@@ -75,9 +78,15 @@
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
 
-        /* =========================================
-           5. حقول الإدخال (Inputs)
-           ========================================= */
+        input[inputmode="numeric"], input[type="number"], .ins-val {
+            font-family: Arial, Helvetica, sans-serif !important;
+            direction: ltr !important;
+            text-align: right !important;
+        }
+        input[type="date"] {
+            font-family: Arial, Helvetica, sans-serif !important;
+            text-align: center !important;
+        }
         input, textarea, select {
             background: rgba(0, 0, 0, 0.5) !important;
             color: white !important;
@@ -91,9 +100,6 @@
             background: rgba(0, 0, 0, 0.8) !important;
         }
 
-        /* =========================================
-           6. الأزرار (Buttons)
-           ========================================= */
         button.bg-blue-600, button.bg-emerald-500, button.bg-slate-800, 
         button.bg-gradient-to-r, button.bg-amber-500 {
             background: var(--neon-blue) !important;
@@ -110,7 +116,6 @@
             transform: translateY(-2px);
         }
 
-        /* أزرار الحذف */
         button.bg-red-500, button.text-red-500 {
             background: rgba(255, 71, 87, 0.1) !important;
             color: #ff4757 !important;
@@ -124,9 +129,6 @@
             box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4) !important;
         }
 
-        /* =========================================
-           7. القائمة الجانبية (Sidebar)
-           ========================================= */
         .sidebar-btn { 
             transition: all 0.3s ease; 
             color: var(--text-muted) !important; 
@@ -146,9 +148,6 @@
             font-weight: 900 !important;
         }
 
-        /* =========================================
-           8. الجداول (Tables)
-           ========================================= */
         thead th {
             color: var(--neon-blue) !important;
             border-bottom: 2px solid var(--border-color) !important;
@@ -166,9 +165,6 @@
         }
         td { color: var(--text-main) !important; white-space: nowrap; }
 
-        /* =========================================
-           9. البطاقات الإحصائية (Stat Cards)
-           ========================================= */
         .stat-card-1, .stat-card-2, .stat-card-3 {
             background: var(--card-bg) !important;
             border: 1px solid var(--border-color) !important;
@@ -183,8 +179,7 @@
         }
         .stat-card-1 h3, .stat-card-2 h3, .stat-card-3 h3 { color: #fff !important; }
         .stat-card-1 p, .stat-card-2 p, .stat-card-3 p { color: var(--neon-blue) !important; text-shadow: 0 0 15px var(--neon-glow); }
-
-        /* التبويبات الفرعية للمخزن */
+        
         .sub-tab { 
             color: var(--text-muted) !important; 
             border-bottom: 3px solid transparent !important;
@@ -228,19 +223,135 @@
         .sidebar-overlay.active {
             display: block;
         }
+       /* =========================================
+   12. شاشة الترحيب الخرافية (VIP & Chaos Edition)
+   ========================================= */
+#splash-vip {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #020408;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* شبكة الليزر الـ 3D في الخلفية */
+.cyber-grid {
+    position: absolute;
+    width: 200vw; height: 200vh;
+    background-image: 
+        linear-gradient(rgba(0, 210, 255, 0.15) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 210, 255, 0.15) 1px, transparent 1px);
+    background-size: 50px 50px;
+    transform: perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px);
+    animation: gridMove 3s linear infinite;
+    z-index: 1;
+}
+
+@keyframes gridMove {
+    0% { transform: perspective(500px) rotateX(60deg) translateY(0) translateZ(-200px); }
+    100% { transform: perspective(500px) rotateX(60deg) translateY(50px) translateZ(-200px); }
+}
+
+/* الحلقات الدوارة حول الشعار */
+.rings-wrapper {
+    position: relative;
+    width: 180px; height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.ring-1, .ring-2, .ring-3 {
+    position: absolute;
+    border-radius: 50%;
+    border: 3px solid transparent;
+}
+
+.ring-1 { width: 100%; height: 100%; border-top-color: #00d2ff; border-bottom-color: #00d2ff; animation: spin1 1.5s linear infinite; }
+.ring-2 { width: 120%; height: 120%; border-left-color: #ff0055; border-right-color: #ff0055; animation: spin2 2s linear infinite; }
+.ring-3 { width: 140%; height: 140%; border-top-color: #00ffaa; border-bottom-color: transparent; animation: spin1 3s linear infinite reverse; box-shadow: 0 0 15px rgba(0, 255, 170, 0.4); }
+
+@keyframes spin1 { 100% { transform: rotate(360deg); } }
+@keyframes spin2 { 100% { transform: rotate(-360deg); } }
+
+/* الشعار في المنتصف */
+.chaos-logo {
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    z-index: 20;
+    box-shadow: 0 0 30px rgba(0, 210, 255, 0.8);
+    animation: pulseChaos 0.5s infinite alternate;
+    object-fit: cover;
+}
+
+@keyframes pulseChaos {
+    100% { transform: scale(1.05); box-shadow: 0 0 50px rgba(0, 210, 255, 1); }
+}
+
+/* نص مهند يهتز (Glitch Effect) */
+.glitch-title {
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: #fff;
+    margin-top: 40px;
+    z-index: 10;
+    text-shadow: 0 0 10px #00d2ff, 0 0 20px #00d2ff;
+    position: relative;
+    animation: glitchAnim 2s infinite;
+}
+
+@keyframes glitchAnim {
+    0%, 100% { transform: translate(0); text-shadow: 0 0 10px #00d2ff; }
+    10% { transform: translate(-3px, 2px); text-shadow: -3px 0 #ff0055, 3px 0 #00d2ff; }
+    20% { transform: translate(3px, -2px); text-shadow: 3px 0 #ff0055, -3px 0 #00ffaa; }
+    30% { transform: translate(0); text-shadow: 0 0 10px #00d2ff; }
+}
+
+/* شريط التحميل */
+.loader-box { width: 300px; height: 6px; background: #111; margin-top: 20px; z-index: 10; position: relative; overflow: hidden; border-radius: 10px; border: 1px solid #333; }
+.loader-fill { height: 100%; background: linear-gradient(90deg, #00d2ff, #00ffaa); box-shadow: 0 0 15px #00d2ff; animation: fillUp 4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+
+@keyframes fillUp { 0% { width: 0%; } 100% { width: 100%; } }
+
+/* نصوص الهاكر في الزوايا (لزيادة الهوسة) */
+.sys-log { position: absolute; font-family: monospace; font-size: 11px; color: #00ffaa; z-index: 5; opacity: 0.8; text-shadow: 0 0 5px #00ffaa; }
+.sys-tl { top: 20px; left: 20px; text-align: left; }
+.sys-br { bottom: 20px; right: 20px; text-align: right; }
     </style>
 </head>
 <body class="text-slate-800">
 
-<div id="authScreen" class="fixed inset-0 bg-slate-900/95 backdrop-blur-sm flex items-center justify-center z-[200] p-4">
-    <div class="glass-card p-8 md:p-10 rounded-3xl w-full max-w-[400px] border-t-4 border-blue-600">
-        <div class="text-center mb-8">
-            <img src="logo.png" alt="شعار معرض مهند" class="w-24 h-24 rounded-full mx-auto mb-4 border-2 border-blue-500 shadow-[0_0_15px_rgba(0,210,255,0.5)] object-cover bg-slate-800" onerror="this.style.display='none'">
-            <h2 class="text-2xl md:text-3xl font-extrabold text-slate-800">معرض مهند</h2>
-            <p class="text-slate-500 mt-2 text-sm">للإلكترونيات والأجهزة المنزلية</p>
-        </div>
-      <input type="password" id="authPassword" placeholder="أدخل رمز الدخول السري" class="w-full p-4 mb-6 border rounded-xl bg-slate-50/50 text-center font-bold text-2xl text-slate-800 tracking-widest" dir="ltr">
-<button onclick="window.checkPin()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 rounded-xl font-bold hover:shadow-lg hover:shadow-blue-500/30 transition-all transform hover:-translate-y-1">دخول</button>
+<div id="splash-vip">
+    <div class="cyber-grid"></div>
+
+    <div class="sys-log sys-tl" id="hacker-text">
+        SYSTEM BOOT SEQ: INITIATED<br>
+        LOADING KERNEL... OK<br>
+    </div>
+
+    <div class="rings-wrapper">
+        <div class="ring-1"></div>
+        <div class="ring-2"></div>
+        <div class="ring-3"></div>
+        <img src="logo.png" alt="شعار" class="chaos-logo" onerror="this.style.display='none'">
+    </div>
+
+    <h1 class="glitch-title">مـعـرض مـهـنـد</h1>
+   
+    <div class="loader-box">
+        <div class="loader-fill"></div>
+    </div>
+
+    <div class="sys-log sys-br">
+        SECURITY: ENCRYPTED 256-BIT<br>
+        ACCESS LEVEL: MASTER ADMIN
     </div>
 </div>
 
@@ -248,7 +359,7 @@
     
     <div class="md:hidden absolute top-0 w-full flex justify-between items-center bg-slate-900/95 backdrop-blur-md p-4 border-b border-slate-700 z-30 h-16 shadow-lg">
         <div class="flex items-center gap-3">
-            <img src="logo.png" alt="شعار" class="w-10 h-10 rounded-full object-cover border border-blue-500" onerror="this.style.display='none'">
+            <img src="lofo.png" alt="شعار" class="w-10 h-10 rounded-full object-cover border border-blue-500" onerror="this.style.display='none'">
             <h1 class="text-xl font-extrabold text-white text-shadow-sm">معرض مهند</h1>
         </div>
         <button onclick="toggleSidebar()" class="text-white text-2xl p-2 focus:outline-none hover:text-blue-400 transition"><i class="fas fa-bars"></i></button>
@@ -260,10 +371,9 @@
         <div class="p-8 text-center border-b border-slate-700/50 bg-slate-900/50 relative">
             <button onclick="toggleSidebar()" class="md:hidden absolute top-4 left-4 text-slate-400 hover:text-white text-2xl"><i class="fas fa-times"></i></button>
             
-            <img src="logo.png" alt="شعار معرض مهند" class="w-20 h-20 rounded-2xl mx-auto mb-4 border border-blue-500 shadow-lg shadow-blue-500/30 object-cover bg-slate-800" onerror="this.style.display='none'">
+            <img src="logo.png" alt="شعار معرض مهند" class="w-20 h-20 rounded-full mx-auto mb-4 border border-blue-500 shadow-lg shadow-blue-500/30 object-cover bg-slate-800" onerror="this.style.display='none'">
             
             <h1 class="text-2xl font-extrabold text-white tracking-wide drop-shadow-[0_0_8px_rgba(0,210,255,0.5)]">معرض مهند</h1>
-            <p class="text-xs text-blue-400 mt-1">نظام الإدارة الشامل</p>
         </div>
         <nav class="flex-1 p-4 space-y-2 overflow-y-auto text-right mt-4 custom-scrollbar">
             <button onclick="switchTab('customers')" class="sidebar-btn active w-full p-4 rounded-xl flex items-center gap-3 font-medium"><i class="fas fa-users w-5 text-center"></i> سجل الزبائن</button>
@@ -274,7 +384,6 @@
             <button onclick="switchTab('pos')" class="sidebar-btn w-full p-4 rounded-xl flex items-center gap-3 font-medium"><i class="fas fa-cash-register w-5 text-center"></i> البيع المباشر</button>
         </nav>
         <div class="p-6 border-t border-slate-700/50 bg-slate-800/30">
-            <button onclick="window.logout()" class="w-full bg-red-500/10 hover:bg-red-500 hover:text-white text-red-400 p-3 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2"><i class="fas fa-power-off"></i> تسجيل الخروج</button>
         </div>
     </aside>
 
@@ -315,8 +424,9 @@
                 <h2 class="text-2xl md:text-3xl font-extrabold text-slate-800 mb-2">إدارة المخزن</h2>
                 <p class="text-slate-500 text-sm mb-6">متابعة البضائع، الأجهزة، والاكسسوارات المتوفرة</p>
                 
-                <div class="flex flex-wrap gap-2 border-b border-slate-700/50 pb-2 mb-6 overflow-x-auto whitespace-nowrap hide-scrollbar">
-                    <button onclick="filterInventory('مبايلات')" class="sub-tab active px-5 py-2.5 rounded-t-lg font-bold flex items-center gap-2" data-cat="مبايلات"><i class="fas fa-mobile-screen"></i> موبايلات</button>
+               <div class="flex flex-wrap gap-2 border-b border-slate-700/50 pb-2 mb-6 overflow-x-auto whitespace-nowrap hide-scrollbar">
+                    <button onclick="filterInventory('الكل')" class="sub-tab active px-5 py-2.5 rounded-t-lg font-bold flex items-center gap-2" data-cat="الكل"><i class="fas fa-layer-group"></i> الكل</button>
+                    <button onclick="filterInventory('مبايلات')" class="sub-tab px-5 py-2.5 rounded-t-lg font-bold flex items-center gap-2" data-cat="مبايلات"><i class="fas fa-mobile-screen"></i> موبايلات</button>
                     <button onclick="filterInventory('اكسسوارات')" class="sub-tab px-5 py-2.5 rounded-t-lg font-bold flex items-center gap-2" data-cat="اكسسوارات"><i class="fas fa-headphones"></i> اكسسوارات</button>
                     <button onclick="filterInventory('أجهزة كهربائية')" class="sub-tab px-5 py-2.5 rounded-t-lg font-bold flex items-center gap-2" data-cat="أجهزة كهربائية"><i class="fas fa-tv"></i> أجهزة كهربائية</button>
                     <button onclick="filterInventory('أجهزة منزلية')" class="sub-tab px-5 py-2.5 rounded-t-lg font-bold flex items-center gap-2" data-cat="أجهزة منزلية"><i class="fas fa-fan"></i> أجهزة منزلية</button>
@@ -374,6 +484,7 @@
                             <th class="p-5">إجمالي الدين</th>
                             <th class="p-5">الواصل لهم</th>
                             <th class="p-5">المتبقي</th>
+                            <th class="p-5 text-center">إجراءات</th>
                         </tr>
                     </thead>
                     <tbody id="companiesTable" class="divide-y divide-slate-100/10"></tbody>
@@ -387,28 +498,58 @@
                 <p class="text-slate-500 text-sm mt-1">نظرة عامة على رأس المال، الديون، والمستحقات</p>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="stat-card-1 p-8 rounded-3xl relative overflow-hidden text-center md:text-right">
-                    <i class="fas fa-boxes-stacked absolute -left-6 -bottom-6 text-9xl text-white opacity-5"></i>
-                    <h3 class="text-blue-100 font-bold mb-3 text-lg relative z-10">إجمالي قيمة المخزن</h3>
-                    <p id="statInvTotal" class="text-3xl md:text-4xl font-extrabold relative z-10 drop-shadow-md">0 د.ع</p>
-                </div>
-                <div class="stat-card-2 p-8 rounded-3xl relative overflow-hidden text-center md:text-right">
-                    <i class="fas fa-hand-holding-dollar absolute -left-6 -bottom-6 text-9xl text-white opacity-5"></i>
-                    <h3 class="text-rose-100 font-bold mb-3 text-lg relative z-10">مطلوبات للشركات (ديون علينا)</h3>
-                    <p id="statCompTotal" class="text-3xl md:text-4xl font-extrabold relative z-10 drop-shadow-md">0 د.ع</p>
-                </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div class="stat-card-3 p-8 rounded-3xl relative overflow-hidden text-center md:text-right">
                     <i class="fas fa-users absolute -left-6 -bottom-6 text-9xl text-white opacity-5"></i>
                     <h3 class="text-emerald-100 font-bold mb-3 text-lg relative z-10">مستحقات عند الزبائن (ديون لنا)</h3>
                     <p id="statCustTotal" class="text-3xl md:text-4xl font-extrabold relative z-10 drop-shadow-md">0 د.ع</p>
                 </div>
+
+                <div class="stat-card-1 p-8 rounded-3xl relative overflow-hidden text-center md:text-right">
+                    <i class="fas fa-boxes-stacked absolute -left-6 -bottom-6 text-9xl text-white opacity-5"></i>
+                    <h3 class="text-blue-100 font-bold mb-3 text-lg relative z-10">إجمالي قيمة المخزن</h3>
+                    <p id="statInvTotal" class="text-3xl md:text-4xl font-extrabold relative z-10 drop-shadow-md">0 د.ع</p>
+                </div>
+
+                <div class="stat-card-2 p-8 rounded-3xl relative overflow-hidden text-center md:text-right">
+                    <i class="fas fa-hand-holding-dollar absolute -left-6 -bottom-6 text-9xl text-white opacity-5"></i>
+                    <h3 class="text-rose-100 font-bold mb-3 text-lg relative z-10">مطلوبات للشركات (ديون علينا)</h3>
+                    <p id="statCompTotal" class="text-3xl md:text-4xl font-extrabold relative z-10 drop-shadow-md">0 د.ع</p>
+                </div>
+
+                <div class="stat-card-3 p-6 rounded-3xl relative overflow-hidden text-center md:text-right" style="border-color: #f59e0b;">
+                    <i class="fas fa-wallet absolute -left-6 -bottom-6 text-9xl text-white opacity-5"></i>
+                    <h3 class="text-amber-100 font-bold mb-3 text-lg relative z-10">أرباح الأقساط (الحالية)</h3>
+                    <p id="statProfitTotal" class="text-3xl md:text-4xl font-extrabold relative z-10 drop-shadow-md">0 د.ع</p>
+                    <div class="flex gap-2 relative z-10 mt-3">
+                        <button onclick="resetProfit()" class="bg-transparent border border-amber-500/30 hover:bg-amber-500/20 text-amber-200 px-3 py-1.5 rounded-lg text-xs w-1/2 font-bold transition shadow-none"><i class="fas fa-rotate-right ml-1"></i> تصفير</button>
+                        <button onclick="showProfitArchive()" class="bg-transparent border border-amber-500/30 hover:bg-amber-500/20 text-amber-200 px-3 py-1.5 rounded-lg text-xs w-1/2 font-bold transition shadow-none"><i class="fas fa-list ml-1"></i> التفاصيل</button>
+                    </div>
+                </div>
+
+                <div class="stat-card-1 p-8 rounded-3xl relative overflow-hidden text-center md:text-right" style="border-color: #10b981;">
+                    <i class="fas fa-calendar-alt absolute -left-6 -bottom-6 text-9xl text-white opacity-5"></i>
+                    <h3 class="text-emerald-100 font-bold mb-3 text-lg relative z-10">الأرباح الشهرية (الكاش)</h3>
+                    <p id="statMonthlyProfit" class="text-3xl md:text-4xl font-extrabold relative z-10 drop-shadow-md text-emerald-400">0 د.ع</p>
+                </div>
+
+                <div class="stat-card-2 p-8 rounded-3xl relative overflow-hidden text-center md:text-right" style="border-color: #3b82f6;">
+                    <i class="fas fa-calendar-check absolute -left-6 -bottom-6 text-9xl text-white opacity-5"></i>
+                    <h3 class="text-blue-100 font-bold mb-3 text-lg relative z-10">الأرباح السنوية (الكاش)</h3>
+                    <p id="statAnnualProfit" class="text-3xl md:text-4xl font-extrabold relative z-10 drop-shadow-md text-blue-400">0 د.ع</p>
+                </div>
             </div>
             
-            <div class="mt-16 text-center">
+            <div class="mt-16 text-center flex flex-col md:flex-row justify-center gap-4">
                 <button onclick="exportBackup()" class="w-full md:w-auto group bg-transparent text-slate-300 px-8 py-4 rounded-2xl border-2 border-dashed border-slate-600 hover:border-blue-400 hover:text-blue-400 font-bold transition-all shadow-sm hover:shadow-lg">
                     <i class="fas fa-cloud-arrow-down ml-2 text-2xl group-hover:animate-bounce"></i> 
-                    <span class="block mt-2">تصدير نسخة احتياطية من البيانات (JSON)</span>
+                    <span class="block mt-2">تصدير نسخة احتياطية </span>
+                </button>
+                
+                <input type="file" id="importBackupFile" accept=".json" class="hidden" onchange="processImport(event)">
+                <button onclick="document.getElementById('importBackupFile').click()" class="w-full md:w-auto group bg-transparent text-slate-300 px-8 py-4 rounded-2xl border-2 border-dashed border-slate-600 hover:border-emerald-400 hover:text-emerald-400 font-bold transition-all shadow-sm hover:shadow-lg">
+                    <i class="fas fa-cloud-arrow-up ml-2 text-2xl group-hover:animate-bounce"></i> 
+                    <span class="block mt-2">استيراد نسخة احتياطية</span>
                 </button>
             </div>
         </section>
@@ -441,7 +582,7 @@
                     <p class="text-slate-500 text-sm mt-1">إضافة مبيعات اليوم الفورية</p>
                 </div>
                 <div class="w-full md:w-auto bg-blue-50/10 text-blue-400 px-6 py-3 rounded-xl font-bold border border-blue-500/30 flex justify-center items-center gap-2">
-                    <i class="far fa-calendar-alt"></i> تاريخ اليوم: <span id="posCurrentDate"></span>
+                    <i class="far fa-calendar-alt"></i> تاريخ اليوم: <span id="posCurrentDate" style="font-family: Arial, sans-serif;"></span>
                 </div>
             </div>
 
@@ -453,15 +594,24 @@
                         <div class="space-y-5 relative z-10">
                             <div>
                                 <label class="text-sm font-bold text-slate-400 block mb-2">اسم المادة</label>
-                                <input type="text" id="posItemName" list="posItemsList" placeholder="ابحث في المخزن أو اكتب يدوياً..." class="w-full p-4 border rounded-xl text-lg">
+                                <input type="text" id="posItemName" list="posItemsList" placeholder="ابحث في المخزن أو اكتب يدوياً..." class="w-full p-4 border rounded-xl text-lg" oninput="autoFillWholesale()">
                                 <datalist id="posItemsList"></datalist>
                             </div>
                             
-                            <div>
-                                <label class="text-sm font-bold text-slate-400 block mb-2">سعر البيع المباشر</label>
-                                <div class="relative">
-                                    <input type="number" id="posSalePrice" placeholder="0" class="w-full p-4 pr-12 border rounded-xl text-xl font-bold text-blue-400">
-                                    <span class="absolute right-4 top-4 font-bold text-slate-500">د.ع</span>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="text-sm font-bold text-slate-400 block mb-2">الجملة (تلقائي)</label>
+                                    <div class="relative">
+                                        <input type="text" inputmode="numeric" id="posWholesalePrice" placeholder="0" class="w-full p-4 pr-12 border rounded-xl text-xl font-bold text-rose-400">
+                                        <span class="absolute right-4 top-4 font-bold text-slate-500">د.ع</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="text-sm font-bold text-slate-400 block mb-2">سعر البيع (الكاش)</label>
+                                    <div class="relative">
+                                        <input type="text" inputmode="numeric" id="posSalePrice" placeholder="0" class="w-full p-4 pr-12 border rounded-xl text-xl font-bold text-blue-400">
+                                        <span class="absolute right-4 top-4 font-bold text-slate-500">د.ع</span>
+                                    </div>
                                 </div>
                             </div>
                             
@@ -562,15 +712,26 @@
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 sm:p-5 bg-blue-900/20 rounded-2xl border border-blue-500/20">
                     <div>
                         <label class="text-xs font-bold text-slate-400 block mb-1">المبلغ الكلي</label>
-                        <input type="number" id="cTotal" class="w-full p-3 border rounded-xl" onkeyup="calcRemaining()" onchange="calcRemaining()">
+                        <input type="text" inputmode="numeric" id="cTotal" class="w-full p-3 border rounded-xl" onkeyup="calcRemaining()" onchange="calcRemaining()">
                     </div>
                     <div>
                         <label class="text-xs font-bold text-slate-400 block mb-1">المقدمة (واصل)</label>
-                        <input type="number" id="cPaid" class="w-full p-3 border rounded-xl" onkeyup="calcRemaining()" onchange="calcRemaining()">
+                        <input type="text" inputmode="numeric" id="cPaid" class="w-full p-3 border rounded-xl" onkeyup="calcRemaining()" onchange="calcRemaining()">
                     </div>
                     <div>
                         <label class="text-xs font-bold text-red-400 block mb-1">المتبقي</label>
-                        <input type="number" id="cRem" class="w-full p-3 border-2 border-red-500/30 rounded-xl bg-red-900/10 font-bold text-red-400 text-lg" readonly>
+                        <input type="text" inputmode="numeric" id="cRem" class="w-full p-3 border-2 border-red-500/30 rounded-xl bg-red-900/10 font-bold text-red-400 text-lg" readonly>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-sm font-bold text-slate-400 block mb-2">كل شهر</label>
+                        <input type="text" id="cPerMonth" class="w-full p-3 border rounded-xl">
+                    </div>
+                    <div>
+                        <label class="text-sm font-bold text-slate-400 block mb-2">خلال</label>
+                        <input type="text" id="cDuration" class="w-full p-3 border rounded-xl">
                     </div>
                 </div>
 
@@ -586,6 +747,10 @@
                 </div>
                 
                 <div>
+                    <label class="text-sm font-bold text-slate-400 block mb-2">تاريخ الشراء</label>
+                    <input type="date" id="cBuyDate" class="w-full p-3 border rounded-xl">
+                </div>
+                <div>
                     <label class="text-sm font-bold text-slate-400 block mb-2">ملاحظات إضافية</label>
                     <textarea id="cNotes" class="w-full p-3 border rounded-xl h-24 resize-none"></textarea>
                 </div>
@@ -595,10 +760,10 @@
                 <div class="p-4 sm:p-6 bg-slate-900/50 rounded-2xl border border-slate-700/50 shadow-inner">
                     <div class="flex justify-between items-center mb-4 border-b border-slate-700 pb-3">
                         <h4 class="font-extrabold text-blue-400 text-lg"><i class="fas fa-list-check ml-2"></i> سجل تسديد الأقساط</h4>
-                        <button onclick="addMonthRow()" id="addMonthBtn" class="bg-blue-600 hover:bg-blue-500 text-white text-sm px-4 py-2 rounded-lg shadow-md transition transform hover:scale-105"><i class="fas fa-plus ml-1"></i> قسط جديد</button>
+                        <button onclick="addMonthRow()" id="addMonthBtn" class="bg-blue-600 hover:bg-blue-500 text-white text-sm px-4 py-2 rounded-lg shadow-md transition transform hover:scale-105"><i class="fas fa-plus ml-1"></i>واصل جديد</button>
                     </div>
                     <div class="flex gap-2 mb-2 text-xs text-slate-400 font-bold px-2">
-                        <div class="w-1/3">المبلغ</div>
+                        <div class="w-1/3">المبلغ الواصل</div>
                         <div class="w-1/3 text-center">التاريخ</div>
                         <div class="w-1/3 text-center">المستلم</div>
                         <div class="w-8"></div>
@@ -670,16 +835,16 @@
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="text-sm font-bold text-slate-400 block mb-2">العدد</label>
-                    <input type="number" id="iQty" class="w-full p-3 border rounded-xl text-center font-bold text-lg">
+                    <input type="text" inputmode="numeric" id="iQty" class="w-full p-3 border rounded-xl text-center font-bold text-lg">
                 </div>
                 <div>
                     <label class="text-sm font-bold text-slate-400 block mb-2">سعر الجملة</label>
-                    <input type="number" id="iWholesale" class="w-full p-3 border rounded-xl">
+                    <input type="text" inputmode="numeric" id="iWholesale" class="w-full p-3 border rounded-xl">
                 </div>
             </div>
             <div>
                 <label class="text-sm font-bold text-slate-400 block mb-2">سعر البيع</label>
-                <input type="number" id="iSell" class="w-full p-3 border border-emerald-500/50 rounded-xl bg-emerald-900/10 text-emerald-400 font-bold text-lg">
+                <input type="text" inputmode="numeric" id="iSell" class="w-full p-3 border border-emerald-500/50 rounded-xl bg-emerald-900/10 text-emerald-400 font-bold text-lg">
             </div>
             <div>
                 <label class="text-sm font-bold text-slate-400 block mb-2">ملاحظات</label>
@@ -708,11 +873,11 @@
             <div class="p-4 bg-rose-900/10 rounded-xl border border-rose-500/20 space-y-4">
                 <div>
                     <label class="text-sm font-bold text-rose-400 block mb-2">المبلغ الكلي للوصل (الدين)</label>
-                    <input type="number" id="coPrev" class="w-full p-3 border border-rose-500/30 rounded-xl bg-black/50 text-lg font-bold text-rose-400">
+                    <input type="text" inputmode="numeric" id="coPrev" class="w-full p-3 border border-rose-500/30 rounded-xl bg-black/50 text-lg font-bold text-rose-400">
                 </div>
                 <div>
                     <label class="text-sm font-bold text-emerald-400 block mb-2">المبلغ الواصل منا لهم (التسديد)</label>
-                    <input type="number" id="coPaid" class="w-full p-3 border border-emerald-500/30 rounded-xl bg-black/50 text-lg font-bold text-emerald-400">
+                    <input type="text" inputmode="numeric" id="coPaid" class="w-full p-3 border border-emerald-500/30 rounded-xl bg-black/50 text-lg font-bold text-emerald-400">
                 </div>
             </div>
         </div>
@@ -723,31 +888,138 @@
     </div>
 </div>
 
+<div id="profitArchiveModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md hidden flex items-center justify-center z-[200] p-4 transition-opacity duration-300">
+    <div class="glass-card p-6 md:p-8 rounded-[2rem] w-full max-w-lg shadow-2xl border-t-8 border-amber-500">
+        <div class="flex justify-between items-center border-b border-slate-700 pb-4 mb-4">
+            <h3 class="text-xl md:text-2xl font-extrabold text-slate-100 flex items-center gap-2">
+                <i class="fas fa-history text-amber-500"></i> أرشيف الأرباح (12 شهر)
+            </h3>
+            <button onclick="closeModal('profitArchiveModal')" class="text-slate-400 hover:text-red-500 text-2xl transition"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="max-h-[60vh] overflow-y-auto custom-scrollbar pr-2">
+            <table class="w-full text-right text-sm">
+                <thead class="bg-slate-800 text-slate-300 sticky top-0">
+                    <tr>
+                        <th class="p-3">تاريخ التصفير</th>
+                        <th class="p-3 text-center">المبلغ (د.ع)</th>
+                        <th class="p-3 text-center">حذف</th>
+                    </tr>
+                </thead>
+                <tbody id="profitArchiveTable" class="divide-y divide-slate-700">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script src="./api-config.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getFirestore, collection, onSnapshot, addDoc, doc, updateDoc, deleteDoc, writeBatch, serverTimestamp, query, where } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-   
-    const firebaseConfig = {
-      apiKey: "AIzaSyB1e-lTs-hXrKq7uAkhTj_azp8CdmrwO8w",
-      authDomain: "gggg-44b14.firebaseapp.com",
-      projectId: "gggg-44b14",
-      storageBucket: "gggg-44b14.firebasestorage.app",
-      messagingSenderId: "674591791834",
-      appId: "1:674591791834:web:a37a39d5b133a227f5a3e3"
+    // بديل الفايربيس: محرك حفظ محلي مساحته مفتوحة (IndexedDB)
+    const db = 'local_db';
+    let memDB = { inventory: [], customers: [], companies: [], pos: [], profitData: { current: 0, archive: [] } };
+    let listeners = { inventory: [], customers: [], companies: [], pos: [] };
+
+    // رابط جوجل شيتس الخاص بيك
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHZwu1-JdHhT6n_C8ICjUqF_1DNH92RjWa6-PXDCL-JTYgu7DF8QxKyrOxdEBhGAe8Ng/exec";
+
+    // وظيفة لتحديث الشاشة
+    function triggerListeners() {
+        Object.keys(listeners).forEach(col => {
+            listeners[col].forEach(cb => cb({ docs: memDB[col].map(item => ({ id: item.id, data: () => item })) }));
+        });
+    }
+
+    // 1. تشغيل البرنامج سريعاً من الحاسبة، ثم المزامنة بالخلفية
+    localforage.getItem('mohannad_db').then(async (data) => {
+        if(data) {
+            memDB = data;
+            if(!memDB.profitData) memDB.profitData = { current: 0, archive: [] };
+            triggerListeners(); // يفتح البرنامج فوراً بدون أي تأخير
+        }
+
+        try {
+            let res = await fetch(SCRIPT_URL);
+            let cloudData = await res.json();
+            if (cloudData && Object.keys(cloudData).length > 0) {
+                memDB = cloudData;
+                localforage.setItem('mohannad_db', memDB);
+                triggerListeners(); // يحدّث الشاشة بصمت إذا اكو بيانات جديدة بالنت
+            }
+        } catch (e) {
+            console.log("يعمل أوفلاين حالياً");
+        }
+    });
+
+    // 2. الحفظ السريع بالحاسبة، والرفع الصامت بالخلفية
+    function saveDB() {
+        localforage.setItem('mohannad_db', memDB);
+        triggerListeners(); // يحدّث الشاشة فوراً للزبون
+        
+        // يشمر البيانات لجوجل بدون ما ينتظر رد (حتى ما يصير تأخير)
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify(memDB)
+        }).catch(err => console.log("في انتظار الإنترنت للرفع..."));
+    }
+
+    // --- محاكاة أوامر الفايربيس حتى يشتغل باقي الكود بدون أي تعديل ---
+    const collection = (db, name) => ({ type: 'col', name });
+    const doc = (dbOrCol, colName, idParam) => {
+        if (dbOrCol && dbOrCol.type === 'col') return { col: dbOrCol.name, id: Math.random().toString(36).substr(2, 9) };
+        return { col: colName, id: idParam || Math.random().toString(36).substr(2, 9) };
+    };
+    const serverTimestamp = () => new Date().toISOString();
+
+    const onSnapshot = (colRef, callback) => {
+        const col = colRef.name;
+        listeners[col].push(callback);
+        callback({ docs: memDB[col].map(item => ({ id: item.id, data: () => item })) });
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    const addDoc = async (colRef, data) => {
+        const col = colRef.name;
+        const newItem = { id: Math.random().toString(36).substr(2, 9), ...data };
+        memDB[col].push(newItem);
+        saveDB();
+        return { id: newItem.id };
+    };
+
+    const updateDoc = async (docRef, data) => {
+        const index = memDB[docRef.col].findIndex(x => x.id === docRef.id);
+        if(index > -1) {
+            memDB[docRef.col][index] = { ...memDB[docRef.col][index], ...data };
+            saveDB();
+        }
+    };
+
+    const deleteDoc = async (docRef) => {
+        memDB[docRef.col] = memDB[docRef.col].filter(x => x.id !== docRef.id);
+        saveDB();
+    };
+
+    const writeBatch = () => {
+        let ops = [];
+        return {
+            set: (docRef, data) => ops.push(() => { memDB[docRef.col].push({ id: docRef.id, ...data }); }),
+            update: (docRef, data) => ops.push(() => {
+                const idx = memDB[docRef.col].findIndex(x => x.id === docRef.id);
+                if(idx > -1) memDB[docRef.col][idx] = { ...memDB[docRef.col][idx], ...data };
+            }),
+            commit: async () => { ops.forEach(op => op()); saveDB(); }
+        };
+    };
     
     let products = [];
     let customers = [];
     let companies = [];
     let posSales = [];
-    let currentCategory = 'مبايلات';
-    let tempScannedItems = []; // أضف هذا السطر هنا
+    let currentCategory = 'الكل';
+    let tempScannedItems = [];
     
     let editCustId = null;
     let editInvId = null; 
+    let editCompId = null; 
     let currentCustomerImage = "";
     let currentGuarantorImage = "";
 
@@ -757,33 +1029,40 @@
         sidebar.classList.toggle('translate-x-full');
         overlay.classList.toggle('active');
     };
+    // تشغيل الهوسة وإضافة سطور كتابة مثل الهاكرز
+    window.onload = () => {
+        let hackerText = document.getElementById('hacker-text');
+        let logs = [
+            "CONNECTING TO FIREBASE...", 
+            "SYNCING INVENTORY [OK]", 
+            "DECRYPTING DEBTS DATA...", 
+            "WELCOME BACK, MOHANNAD."
+        ];
+        
+        // يطبع النصوص سطر ورا سطر كل ثانية تقريباً
+        let i = 0;
+        let logInterval = setInterval(() => {
+            if(logs[i]) hackerText.innerHTML += logs[i] + "<br>";
+            i++;
+        }, 800);
 
-    const SYSTEM_PIN = "@11@22@34";
-
-    if(sessionStorage.getItem("isLoggedIn") === "true") {
-        document.getElementById('authScreen').classList.add('hidden');
-        document.getElementById('mainApp').classList.remove('hidden');
-        startListeners(); 
-    }
-
-    window.checkPin = () => {
-        const enteredPin = document.getElementById('authPassword').value;
-        if (enteredPin === SYSTEM_PIN) {
-            sessionStorage.setItem("isLoggedIn", "true"); 
-            document.getElementById('authScreen').classList.add('hidden');
-            document.getElementById('mainApp').classList.remove('hidden');
-            startListeners();
-        } else {
-            alert("الرمز السري غير صحيح! يرجى المحاولة مرة أخرى.");
-            document.getElementById('authPassword').value = '';
-        }
-    };
-
-    window.logout = () => {
-        sessionStorage.removeItem("isLoggedIn");
-        document.getElementById('mainApp').classList.add('hidden');
-        document.getElementById('authScreen').classList.remove('hidden');
-        document.getElementById('authPassword').value = ''; 
+        // بعد 4 ثواني، الشاشة تقترب وتختفي (تأثير Zoom-in) ويفتح النظام
+        setTimeout(() => {
+            clearInterval(logInterval);
+            const splash = document.getElementById('splash-vip');
+            
+            // حركة الاختفاء الخرافية (تكبير واختفاء)
+            splash.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+            splash.style.opacity = '0';
+            splash.style.transform = 'scale(1.5)';
+            
+            setTimeout(() => {
+                splash.style.display = 'none'; // نخفيها نهائياً
+                document.getElementById('mainApp').classList.remove('hidden'); // نظهر البرنامج
+                startListeners(); // نشغل قواعد البيانات
+            }, 800);
+            
+        }, 3000);
     };
 
     window.switchTab = (id) => {
@@ -819,8 +1098,9 @@
         });
         
         onSnapshot(collection(db, 'pos'), snap => {
-            posSales = snap.docs.map(d => d.data());
+            posSales = snap.docs.map(d => ({id: d.id, ...d.data()}));
             renderPos();
+            updateFinancials(); 
         });
     }
 
@@ -902,107 +1182,153 @@
         }
     };
 
-    function renderInventory() {
-        const search = document.getElementById('invSearch').value.toLowerCase();
-        const tbody = document.getElementById('inventoryTable');
-        const filtered = products.filter(p => p.category === currentCategory && p.name.toLowerCase().includes(search));
-        
-        tbody.innerHTML = filtered.map(p => `
-            <tr class="transition duration-200 hover:bg-white/5">
-                <td class="p-5 font-bold text-slate-200">${p.name}</td>
-                <td class="p-5 text-center">
-                    <span class="${p.qty <= 0 ? 'text-red-500' : 'text-emerald-400'} font-bold text-lg">
-                        ${p.qty}
-                    </span>
-                </td>
-                <td class="p-5 text-slate-400">${(p.wholesale || 0).toLocaleString()}</td>
-                <td class="p-5 text-blue-400 font-bold">${((p.qty || 0) * (p.wholesale || 0)).toLocaleString()}</td>
-                <td class="p-5 text-emerald-400 font-bold">${(p.sell || 0).toLocaleString()}</td>
-                <td class="p-5 text-sm text-slate-500 max-w-[150px] truncate" title="${p.notes || ''}">${p.notes || ''}</td>
-                <td class="p-5 flex gap-2 justify-center">
-                    <button onclick="openInventoryModal('${p.id}')" class="text-blue-400 hover:bg-blue-900/50 w-8 h-8 rounded-full transition" title="تعديل"><i class="fas fa-edit"></i></button>
-                    <button onclick="deleteInventory('${p.id}')" class="text-red-400 hover:bg-red-900/50 w-8 h-8 rounded-full transition" title="حذف"><i class="fas fa-trash"></i></button>
-                </td>
-            </tr>
-        `).join('');
-    }
+    let invSearchTimeout = null;
+    window.renderInventory = () => {
+        clearTimeout(invSearchTimeout);
+        invSearchTimeout = setTimeout(() => {
+            const searchInput = document.getElementById('invSearch');
+            const search = searchInput ? searchInput.value.toLowerCase() : '';
+            
+            // التحويل التلقائي لـ "الكل" عند كتابة أي حرف
+            if(search.length > 0 && currentCategory !== 'الكل') {
+                currentCategory = 'الكل';
+                document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+                const allTab = document.querySelector('[data-cat="الكل"]');
+                if(allTab) allTab.classList.add('active');
+            }
 
-    // ==========================================
-// نسخة مطورة ومضمونة 100% من نظام المسح الضوئي عبر Gemini
-// ==========================================
-// ==========================================
-// الدالة الأولى: معالجة الصورة وإرسالها للذكاء الاصطناعي
-// ==========================================
-// ==========================================
-// الدالة الأولى: معالجة الصورة وإرسالها للذكاء الاصطناعي (المُحدثة)
-// ==========================================
+            const tbody = document.getElementById('inventoryTable');
+            const filtered = products.filter(p => 
+                (currentCategory === 'الكل' || p.category === currentCategory) && 
+                (p.name || '').toLowerCase().includes(search)
+            );
+            
+            tbody.innerHTML = filtered.map(p => `
+                <tr class="transition duration-200 hover:bg-white/5">
+                    <td class="p-5 font-bold text-slate-200">${p.name}</td>
+                    <td class="p-5 text-center">
+                        <span class="${p.qty <= 0 ? 'text-red-500' : 'text-emerald-400'} font-bold text-lg">
+                            ${p.qty}
+                        </span>
+                    </td>
+                    <td class="p-5 text-slate-400">${(p.wholesale || 0).toLocaleString('en-US')}</td>
+                    <td class="p-5 text-blue-400 font-bold">${((p.qty || 0) * (p.wholesale || 0)).toLocaleString('en-US')}</td>
+                    <td class="p-5 text-emerald-400 font-bold">${(p.sell || 0).toLocaleString('en-US')}</td>
+                    <td class="p-5 text-sm text-slate-500 max-w-[150px] truncate" title="${p.notes || ''}">${p.notes || ''}</td>
+                    <td class="p-5 flex gap-2 justify-center">
+                        <button onclick="openInventoryModal('${p.id}')" class="text-blue-400 hover:bg-blue-900/50 w-8 h-8 rounded-full transition" title="تعديل"><i class="fas fa-edit"></i></button>
+                        <button onclick="deleteInventory('${p.id}')" class="text-red-400 hover:bg-red-900/50 w-8 h-8 rounded-full transition" title="حذف"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }, 150); // تأخير ذكي لمدة 150 ملي ثانية
+    };
+
 window.processInvoiceScan = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
 
-    // تصفير حقل الإدخال حتى يشتغل إذا اختاريت نفس الصورة مرة ثانية
+    // تصفير الحقل للسماح بإعادة اختيار نفس الصورة إذا لزم الأمر
     event.target.value = '';
 
-    document.getElementById('scanReviewModal').classList.remove('hidden');
+    const modal = document.getElementById('scanReviewModal');
     const tbody = document.getElementById('scannedItemsTable');
-    document.getElementById('confirmScanBtn').classList.add('hidden');
+    const confirmBtn = document.getElementById('confirmScanBtn');
+
+    // إظهار النافذة المنبثقة وإخفاء زر التأكيد مؤقتاً
+    modal.classList.remove('hidden');
+    confirmBtn.classList.add('hidden');
     
+    // 1. تحديث واجهة المستخدم (رسالة التحميل)
     tbody.innerHTML = `
         <tr>
             <td colspan="5" class="text-center p-10">
-                <i class="fas fa-spinner fa-spin text-4xl text-blue-500 mb-4"></i>
-                <p class="text-lg font-bold text-white">جاري معالجة الصورة بذكاء...</p>
-                <p class="text-sm text-slate-400">يتم الآن استخراج البيانات، يرجى الانتظار</p>
+                <i class="fas fa-spinner fa-spin text-4xl mb-4" style="color: var(--neon-blue);"></i>
+                <p class="text-lg font-bold text-white">جاري معالجة صورة الوصل...</p>
+                <p class="text-sm text-slate-400 mt-2">يتم الآن ضغط الصورة واستخراج البيانات بدقة...</p>
             </td>
         </tr>
     `;
     
     try {
-       const resizeImage = (file) => {
+        let imageToProcess = file;
+
+        // 2. معالجة صور الآيفون (HEIC)
+        if (file.name.toLowerCase().endsWith('.heic') || file.type === 'image/heic') {
+            try {
+                if (typeof heic2any === 'undefined') {
+                    throw new Error("heic2any is not defined");
+                }
+                const convertedBlob = await heic2any({
+                    blob: file,
+                    toType: "image/jpeg",
+                    quality: 0.8
+                });
+                // في بعض الأحيان heic2any ترجع مصفوفة إذا كانت الصورة تحتوي على إطارات متعددة
+                imageToProcess = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob;
+            } catch (heicError) {
+                console.error("HEIC Conversion failed:", heicError);
+                throw new Error("فشل تحويل صيغة الصورة. يرجى التأكد من أن الصورة سليمة والمحاولة مجدداً.");
+            }
+        }
+
+        // 3. دالة لتصغير أبعاد الصورة وضغطها (Optimization)
+        const resizeImage = (blob) => {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = (event) => {
+                reader.onload = (e) => {
                     const img = new Image();
-                    img.src = event.target.result;
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
-                        // التعديل الأول: رفع الدقة للضعف للحفاظ على ملامح الحروف
-                        const MAX_WIDTH = 1600; 
-                        let scaleSize = 1;
-                        if (img.width > MAX_WIDTH) {
-                            scaleSize = MAX_WIDTH / img.width;
+                        const MAX_DIMENSION = 1200; // حجم ممتاز لقراءة النصوص بدون إرهاق الشبكة
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > height) {
+                            if (width > MAX_DIMENSION) {
+                                height *= MAX_DIMENSION / width;
+                                width = MAX_DIMENSION;
+                            }
+                        } else {
+                            if (height > MAX_DIMENSION) {
+                                width *= MAX_DIMENSION / height;
+                                height = MAX_DIMENSION;
+                            }
                         }
-                        canvas.width = img.width * scaleSize;
-                        canvas.height = img.height * scaleSize;
+
+                        canvas.width = width;
+                        canvas.height = height;
                         const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
                         
-                        // التعديل الثاني: زيادة التباين قليلاً لتوضيح حبر القلم على الورقة
-                        ctx.filter = 'contrast(1.1) brightness(1.05)';
-                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        
-                        // التعديل الثالث: رفع جودة حفظ الصورة إلى 95% بدلاً من 60%
-                        resolve(canvas.toDataURL('image/jpeg', 0.95).split(',')[1]);
+                        // استخراج الصورة بصيغة JPEG بجودة 0.7
+                        const base64String = canvas.toDataURL('image/jpeg', 0.7).split(',')[1];
+                        resolve(base64String);
                     };
-                    img.onerror = () => reject(new Error("فشلت قراءة الصورة."));
+                    img.onerror = () => reject(new Error("حدث خطأ أثناء رسم الصورة في المتصفح."));
+                    img.src = e.target.result;
                 };
-                reader.onerror = () => reject(new Error("لا يمكن قراءة الملف المرفق."));
+                reader.onerror = () => reject(new Error("حدث خطأ أثناء قراءة ملف الصورة."));
+                reader.readAsDataURL(blob);
             });
         };
 
-        const base64Image = await resizeImage(file);
+        const base64Image = await resizeImage(imageToProcess);
         
-        // 🛑 أضف مفتاحك الجديد هنا 🛑
-        const GEMINI_API_KEY = 'YOUR_NEW_API_KEY_HERE'; 
+      const GEMINI_API_KEY = typeof CONFIG !== 'undefined' ? CONFIG.GEMINI_API_KEY : '';
+const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
         
-        // استخدام v1beta لضمان استقرار قراءة الصور
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
-        
+        // 5. بناء الـ Payload مع حصر التصنيفات (Enums)
         const payload = {
             contents: [{
                 parts: [
-                   // التعديل الرابع: توجيه الذكاء الاصطناعي بشكل صارم لعدم اختصار الحروف العربية
-                   { text: "أنت محاسب ذكي لمعرض تجاري. استخرج المواد من هذا الوصل بدقة متناهية. ركز جداً على الحروف العربية والنقاط ولا تحذف أي حرف من الكلمة (مثلاً 'بلك' يجب أن تبقى 'بلك' ولا تصبح 'بك'). اقرأ الخط اليدوي بعناية فائقة وتجنب الأخطاء الإملائية. صنف كل مادة إلى أحد هذه الأقسام الأربعة حصراً: (مبايلات، اكسسوارات، أجهزة كهربائية، أجهزة منزلية). الرد يجب أن يكون مصفوفة مخرجات فقط." },
+                    { 
+                        text: `أنت محاسب ومدخل بيانات محترف. قم باستخراج جميع المواد الموجودة في صورة الوصل المرفقة.
+                        التزم التزاماً تاماً بإرجاع البيانات بصيغة JSON فقط بدون أي نصوص إضافية أو شروحات.
+                        صنف كل مادة إلى واحدة من هذه الفئات حصراً: "مبايلات"، "اكسسوارات"، "أجهزة كهربائية"، "أجهزة منزلية". والمقصود (بالاكسسوارات) اكسسوارات الموبايل قد يكون سماعه او لاصق حماية او كفر ...
+                        إذا لم تكن متأكداً من التصنيف، اختر الأقرب. تأكد من أن الكمية والسعر أرقام صحيحة. واذا رايت في صورة الوصل كلمة (تعبئة) فقم بكتابة الرقم الموجود داخل حقل التعبئة في الكمية 
+                        وتاكد من كتابة الاسم بشكل صحيح وبدقة` 
+                    },
                     { 
                         inlineData: { 
                             mimeType: "image/jpeg", 
@@ -1011,9 +1337,8 @@ window.processInvoiceScan = async (event) => {
                     }
                 ]
             }],
-            
-            // هذه الإضافة السحرية تجبر الذكاء الاصطناعي يرجع JSON نظيف بدون أي كلام إضافي
             generationConfig: {
+                temperature: 0.1,
                 responseMimeType: "application/json",
                 responseSchema: {
                     type: "ARRAY",
@@ -1021,7 +1346,10 @@ window.processInvoiceScan = async (event) => {
                         type: "OBJECT",
                         properties: {
                             name: { type: "STRING" },
-                            category: { type: "STRING" },
+                            category: { 
+                                type: "STRING",
+                                enum: ["مبايلات", "اكسسوارات", "أجهزة كهربائية", "أجهزة منزلية"]
+                            },
                             qty: { type: "NUMBER" },
                             price: { type: "NUMBER" }
                         },
@@ -1037,34 +1365,37 @@ window.processInvoiceScan = async (event) => {
             body: JSON.stringify(payload)
         });
         
+        if (!response.ok) {
+            throw new Error(`خطأ في الاتصال بالسيرفر: ${response.status}`);
+        }
+
         const data = await response.json();
         
-        if (!response.ok) {
-            console.error("API Error Response:", data);
-            throw new Error(data.error?.message || "تأكد من صلاحية مفتاح الـ API والاتصال بالإنترنت (جرب تشغل VPN).");
-        }
-
         if (!data.candidates || !data.candidates[0].content) {
-            throw new Error("لم يتمكن الذكاء الاصطناعي من قراءة الوصل (قد يكون غير واضح).");
+            throw new Error("لم يتمكن الذكاء الاصطناعي من قراءة الوصل. يرجى تصوير الوصل بشكل عمودي وإضاءة واضحة.");
         }
 
-        // بما أننا طلبنا JSON صافي، نقدر نحوله مباشرة بدون قص النصوص
         const rawJsonText = data.candidates[0].content.parts[0].text;
         tempScannedItems = JSON.parse(rawJsonText);
         
         if (tempScannedItems.length > 0) {
             renderScannedItems();
-            document.getElementById('confirmScanBtn').classList.remove('hidden');
+            confirmBtn.classList.remove('hidden');
         } else {
-            throw new Error("لم يتم العثور على أية مواد صالحة في هذه الصورة.");
+            throw new Error("لم يتم العثور على أية مواد في الصورة.");
         }
 
     } catch (error) {
-        console.error("Scanner Error:", error); // حتى تشوف المشكلة بالـ Console
-        tbody.innerHTML = `<tr><td colspan="5" class="text-center p-10 text-red-500">
-            <i class="fas fa-exclamation-triangle text-3xl mb-2 block"></i> 
-            ${error.message}
-        </td></tr>`;
+        console.error("Scan Error:", error);
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="5" class="text-center p-10 text-red-500">
+                    <i class="fas fa-exclamation-triangle text-4xl mb-3"></i>
+                    <p class="font-bold text-lg">حدث خطأ أثناء المعالجة</p>
+                    <p class="text-sm text-slate-300 mt-2">${error.message === "heic2any is not defined" ? "جاري تحميل مكتبة الصور، انتظر ثانية وحاول مجدداً." : error.message}</p>
+                </td>
+            </tr>
+        `;
     }
 };
 
@@ -1106,10 +1437,10 @@ window.renderScannedItems = () => {
                 <input type="text" id="scan_name_${i}" value="${item.name || ''}" class="w-full p-2 bg-slate-900 border border-slate-700 rounded-lg text-slate-200 font-bold focus:border-blue-500">
             </td>
             <td class="p-3">
-                <input type="number" id="scan_qty_${i}" value="${item.qty || 1}" class="w-full p-2 bg-slate-900 border border-slate-700 rounded-lg text-center text-slate-200 font-bold focus:border-blue-500">
+                <input type="text" inputmode="numeric" id="scan_qty_${i}" value="${item.qty || 1}" class="w-full p-2 bg-slate-900 border border-slate-700 rounded-lg text-center text-slate-200 font-bold focus:border-blue-500">
             </td>
             <td class="p-3">
-                <input type="number" id="scan_price_${i}" value="${item.price || 0}" class="w-full p-2 bg-slate-900 border border-slate-700 rounded-lg text-center text-slate-200 font-bold focus:border-blue-500">
+                <input type="text" inputmode="numeric" id="scan_price_${i}" value="${item.price || 0}" class="w-full p-2 bg-slate-900 border border-slate-700 rounded-lg text-center text-slate-200 font-bold focus:border-blue-500">
             </td>
             <td class="p-3 text-center">
                 <button onclick="removeScannedItem(${i})" class="text-red-500 hover:text-white hover:bg-red-500 w-8 h-8 rounded-full transition-all" title="حذف المادة">
@@ -1140,24 +1471,51 @@ window.renderScannedItems = () => {
             const priceEl = document.getElementById(`scan_price_${i}`);
             
             if (nameEl && nameEl.value.trim() !== '' && nameEl.value.trim() !== 'عذراً، لم أتمكن من قراءة الخط بوضوح، أضف يدوياً') {
-                const newRef = doc(collection(db, 'inventory'));
-                batch.set(newRef, {
-                    category: catEl.value || 'مبايلات', // هنا تم التعديل الجذري
-                    name: nameEl.value.trim(),
-                    qty: parseInt(qtyEl.value) || 1,
-                    wholesale: parseFloat(priceEl.value) || 0,
-                    sell: 0,
-                    notes: 'تمت الإضافة عبر المسح الضوئي'
-                });
+                const itemName = nameEl.value.trim();
+                const itemQty = parseInt(qtyEl.value) || 1;
+                const itemPrice = parseFloat(priceEl.value) || 0;
+                const itemCat = catEl.value || 'مبايلات';
+
+                // البحث عن المادة إذا كانت موجودة مسبقاً في المخزن
+                const existingProduct = products.find(p => p.name === itemName);
+
+                if (existingProduct) {
+                    let updatedNotes = existingProduct.notes || '';
+                    
+                    if (existingProduct.wholesale !== itemPrice) {
+                        const noteStr = `(السعر الجديد في الوصل هو: ${itemPrice})`;
+                        if (!updatedNotes.includes(noteStr)) {
+                            updatedNotes = updatedNotes ? updatedNotes + ' | ' + noteStr : noteStr;
+                        }
+                    }
+                    
+                    const pRef = doc(db, 'inventory', existingProduct.id);
+                    batch.update(pRef, {
+                        qty: (existingProduct.qty || 0) + itemQty,
+                        notes: updatedNotes
+                    });
+                } else {
+                    // المادة غير موجودة: نضيفها كمادة جديدة
+                    const newRef = doc(collection(db, 'inventory'));
+                    batch.set(newRef, {
+                        category: itemCat,
+                        name: itemName,
+                        qty: itemQty,
+                        wholesale: itemPrice,
+                        sell: 0,
+                        notes: 'تمت الإضافة عبر المسح الضوئي'
+                    });
+                }
+                
                 addedCount++;
             }
         }
 
         if (addedCount > 0) {
             await batch.commit();
-            alert(`تمت إضافة ${addedCount} مواد إلى المخزن بنجاح!`);
+            alert(`تمت إضافة/تحديث ${addedCount} مواد في المخزن بنجاح!`);
         } else {
-            alert('لم يتم إضافة أي مواد!');
+            alert('لم يتم إضافة أو تحديث أي مواد!');
         }
 
         closeModal('scanReviewModal');
@@ -1208,9 +1566,12 @@ window.renderScannedItems = () => {
             document.getElementById('cTotal').value = c.total || '';
             document.getElementById('cPaid').value = c.paid || '';
             document.getElementById('cRem').value = c.remaining || '';
+            document.getElementById('cPerMonth').value = c.perMonth || '';
+            document.getElementById('cDuration').value = c.duration || '';
             document.getElementById('cAddress').value = c.address || '';
             document.getElementById('cPhone').value = c.phone || '';
             document.getElementById('cNotes').value = c.notes || '';
+            document.getElementById('cBuyDate').value = c.buyDate || '';
             
             if(c.guarantor) {
                 document.getElementById('gkName').value = c.guarantor.name || '';
@@ -1244,6 +1605,7 @@ window.renderScannedItems = () => {
             }
         } else {
             title.innerHTML = '<i class="fas fa-user-plus text-blue-500 text-2xl sm:text-3xl"></i> إضافة زبون جديد';
+            document.getElementById('cBuyDate').value = new Date().toISOString().split('T')[0];
             archiveBtn.classList.add('hidden');
             deleteBtn.classList.add('hidden');
         }
@@ -1251,6 +1613,7 @@ window.renderScannedItems = () => {
     };
 
     window.addMonthRow = (val = '', date = '', rec = '', isReadOnly = false) => {
+        if (!date) date = new Date().toISOString().split('T')[0];
         const container = document.getElementById('monthsContainer');
         const div = document.createElement('div');
         div.className = "flex gap-2 mb-2 items-center p-2 border rounded-lg shadow-sm transition"; 
@@ -1261,7 +1624,7 @@ window.renderScannedItems = () => {
         const hideBtn = isReadOnly ? "hidden" : "";
 
         div.innerHTML = `
-            <input type="number" placeholder="المبلغ" value="${val}" class="w-1/3 p-2 text-sm border-none rounded ins-val font-bold text-blue-400" onkeyup="calcRemaining()" onchange="calcRemaining()" ${disabledAttr}>
+            <input type="text" inputmode="numeric" placeholder="المبلغ" value="${val}" class="w-1/3 p-2 text-sm border-none rounded ins-val font-bold text-blue-400" onkeyup="calcRemaining()" onchange="calcRemaining()" ${disabledAttr}>
             <input type="date" value="${date}" class="w-1/3 p-2 text-sm border-none rounded ins-date text-slate-300" ${disabledAttr}>
             <input type="text" placeholder="المستلم" value="${rec}" class="w-1/3 p-2 text-sm border-none rounded ins-rec" ${disabledAttr}>
             <button onclick="this.parentElement.remove(); calcRemaining();" class="text-red-400 hover:text-red-500 hover:bg-red-900/30 w-8 h-8 flex items-center justify-center rounded transition ${hideBtn}"><i class="fas fa-trash-alt text-sm"></i></button>
@@ -1289,11 +1652,33 @@ window.renderScannedItems = () => {
         const productId = matchedProduct ? matchedProduct.id : null;
 
         const instRows = document.querySelectorAll('#monthsContainer > div');
+        const todayString = new Date().toLocaleDateString('en-US', { numberingSystem: 'latn' });
+
         const installments = Array.from(instRows).map(row => ({
             amount: row.querySelector('.ins-val').value,
-            date: row.querySelector('.ins-date').value,
+            date: row.querySelector('.ins-date').value || todayString,
             receiver: row.querySelector('.ins-rec').value
         }));
+
+        const currentPaidInput = parseFloat(document.getElementById('cPaid').value) || 0;
+        const currentInstTotal = installments.reduce((sum, ins) => sum + (parseFloat(ins.amount) || 0), 0);
+        const totalPaidNow = currentPaidInput + currentInstTotal;
+
+        let profitToAdd = 0;
+        if (editCustId) {
+            const oldData = customers.find(c => c.id === editCustId);
+            if (oldData) {
+                const oldPaid = parseFloat(oldData.paid) || 0;
+                const oldInstTotal = (oldData.installments || []).reduce((sum, ins) => sum + (parseFloat(ins.amount) || 0), 0);
+                const totalPaidBefore = oldPaid + oldInstTotal;
+                
+                if (totalPaidNow > totalPaidBefore) {
+                    profitToAdd = totalPaidNow - totalPaidBefore;
+                }
+            }
+        } else {
+            profitToAdd = totalPaidNow;
+        }
 
         const data = {
             bookId: document.getElementById('cID').value,
@@ -1301,11 +1686,14 @@ window.renderScannedItems = () => {
             productId: productId,
             itemName: itemNameInput || 'غير محدد',
             total: parseFloat(document.getElementById('cTotal').value) || 0,
-            paid: parseFloat(document.getElementById('cPaid').value) || 0,
+            paid: currentPaidInput,
             remaining: parseFloat(document.getElementById('cRem').value) || 0,
+            perMonth: document.getElementById('cPerMonth').value,
+            duration: document.getElementById('cDuration').value,
             address: document.getElementById('cAddress').value,
             phone: document.getElementById('cPhone').value,
             notes: document.getElementById('cNotes').value,
+            buyDate: document.getElementById('cBuyDate').value || new Date().toISOString().split('T')[0],
             archived: false,
             customerImage: currentCustomerImage, 
             guarantorImage: currentGuarantorImage, 
@@ -1334,6 +1722,13 @@ window.renderScannedItems = () => {
             batch.set(newCustRef, data);
             await batch.commit();
         }
+
+        if (profitToAdd > 0) {
+            memDB.profitData.current += profitToAdd;
+            saveDB();
+            updateFinancials();
+        }
+
         closeModal('custModal');
     };
 
@@ -1357,46 +1752,67 @@ window.renderScannedItems = () => {
         }
     };
 
-    function renderCustomers() {
-        const search = document.getElementById('custSearch').value.toLowerCase();
-        const tbody = document.getElementById('customersTable');
-        const filtered = customers.filter(c => !c.archived && c.name.toLowerCase().includes(search));
-        
-        tbody.innerHTML = filtered.map(c => `
-            <tr class="transition duration-200 hover:bg-white/5">
-                <td class="p-5">
-                    <span class="text-slate-400 font-bold text-sm">#${c.bookId || '-'}</span>
-                </td>
-                <td class="p-5 font-bold text-lg text-white">${c.name}</td>
-                <td class="p-5 text-slate-400"><i class="fas fa-tag text-slate-500 ml-1"></i> ${c.itemName}</td>
-                <td class="p-5">
-                    <span class="font-extrabold text-red-400 text-lg">${(c.remaining || 0).toLocaleString()}</span>
-                </td>
-                <td class="p-5 text-center">
-                    <button onclick="openCustomerModal('${c.id}')" class="text-blue-400 px-5 py-2 rounded-xl text-sm font-bold shadow-sm transition-all hover:bg-blue-500 hover:text-white" style="border:1px solid var(--neon-blue);">إدارة وعرض</button>
-                </td>
-            </tr>
-        `).join('');
-    }
+    let custSearchTimeout = null;
+    window.renderCustomers = () => {
+        clearTimeout(custSearchTimeout);
+        custSearchTimeout = setTimeout(() => {
+            const search = document.getElementById('custSearch').value.toLowerCase();
+            const tbody = document.getElementById('customersTable');
+            const filtered = customers.filter(c => !c.archived && (c.name || '').toLowerCase().includes(search));
+            
+            tbody.innerHTML = filtered.map(c => `
+                <tr class="transition duration-200 hover:bg-white/5">
+                    <td class="p-5">
+                        <span class="text-slate-400 font-bold text-sm">#${c.bookId || '-'}</span>
+                    </td>
+                    <td class="p-5 font-bold text-lg text-white">${c.name}</td>
+                    <td class="p-5 text-slate-400"><i class="fas fa-tag text-slate-500 ml-1"></i> ${c.itemName}</td>
+                    <td class="p-5">
+                        <span class="font-extrabold text-red-400 text-lg">${(c.remaining || 0).toLocaleString('en-US')}</span>
+                    </td>
+                    <td class="p-5 text-center flex gap-2 justify-center items-center">
+                        <button onclick="openCustomerModal('${c.id}')" class="text-blue-400 px-5 py-2 rounded-xl text-sm font-bold shadow-sm transition-all hover:bg-blue-500 hover:text-white" style="border:1px solid var(--neon-blue);">إدارة وعرض</button>
+                         ${c.phone && c.remaining > 0 ? `<a href="https://wa.me/${c.phone.replace(/^0/, '964')}?text=مرحباً اخي العزيز (${c.name})، نود تذكيركم بوجود قسط مستحق الدفع في هذا الشهر. المبلغ : ${c.perMonth || 'غير محدد'} دينار. في معرض مهند طالب (تازة). ارجو عدم تاخير القسط, وشكرا ." target="_blank" class="bg-emerald-500 text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-emerald-600 transition"><i class="fab fa-whatsapp"></i> تذكير</a>` : ''}
+                    </td>
+                </tr>
+            `).join('');
+        }, 150);
+    };
 
     function renderArchive() {
-        const tbody = document.getElementById('archiveTable');
-        const archived = customers.filter(c => c.archived);
-        tbody.innerHTML = archived.map(c => `
-            <tr class="transition duration-200 hover:bg-white/5">
-                <td class="p-5 text-slate-500 font-bold">#${c.bookId || '-'}</td>
-                <td class="p-5 font-bold text-slate-300">${c.name}</td>
-                <td class="p-5 text-slate-500">${c.itemName}</td>
-                <td class="p-5 text-emerald-500 font-bold">${(c.total || 0).toLocaleString()}</td>
-                <td class="p-5 flex gap-2 justify-center">
-                    <button onclick="openCustomerModal('${c.id}', true)" class="text-slate-300 px-4 py-2 rounded-xl font-bold text-sm transition hover:bg-slate-700" style="border:1px solid #555">التفاصيل</button>
-                    <button onclick="deleteFromArchive('${c.id}')" class="text-red-500 w-9 h-9 flex justify-center items-center rounded-xl transition hover:bg-red-900/50"><i class="fas fa-trash"></i></button>
-                </td>
-            </tr>
-        `).join('');
-    }
+    const tbody = document.getElementById('archiveTable');
+    const archived = customers.filter(c => c.archived);
+    tbody.innerHTML = archived.map(c => `
+        <tr class="transition duration-200 hover:bg-white/5">
+            <td class="p-5 text-slate-500 font-bold">#${c.bookId || '-'}</td>
+            <td class="p-5 font-bold text-slate-300">${c.name}</td>
+            <td class="p-5 text-slate-500">${c.itemName}</td>
+            <td class="p-5 text-emerald-500 font-bold">${(c.total || 0).toLocaleString('en-US')}</td>
+            <td class="p-5 flex gap-2 justify-center">
+                <button onclick="openCustomerModal('${c.id}', true)" class="text-slate-300 px-4 py-2 rounded-xl font-bold text-sm transition hover:bg-slate-700" style="border:1px solid #555">التفاصيل</button>
+                <button onclick="deleteFromArchive('${c.id}')" class="text-red-500 w-9 h-9 flex justify-center items-center rounded-xl transition hover:bg-red-900/50"><i class="fas fa-trash"></i></button>
+            </td>
+        </tr>
+    `).join('');
+}
 
-    window.openCompanyModal = () => document.getElementById('compModal').classList.remove('hidden');
+    window.openCompanyModal = (id = null) => {
+        editCompId = id;
+        const modal = document.getElementById('compModal');
+        if(id) {
+            const c = companies.find(x => x.id === id);
+            document.getElementById('coName').value = c.name || '';
+            document.getElementById('coDate').value = c.date || '';
+            document.getElementById('coPrev').value = c.prev || '';
+            document.getElementById('coPaid').value = c.paid || '';
+        } else {
+            document.getElementById('coName').value = '';
+            document.getElementById('coDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('coPrev').value = '';
+            document.getElementById('coPaid').value = '';
+        }
+        modal.classList.remove('hidden');
+    };
     
     window.saveCompany = async () => {
         const prev = parseFloat(document.getElementById('coPrev').value) || 0;
@@ -1408,25 +1824,61 @@ window.renderScannedItems = () => {
             paid: paid,
             remaining: prev - paid
         };
-        await addDoc(collection(db, 'companies'), data);
+        if (editCompId) {
+            await updateDoc(doc(db, 'companies', editCompId), data);
+        } else {
+            await addDoc(collection(db, 'companies'), data);
+        }
         closeModal('compModal');
+    };
+
+    window.deleteCompany = async (id) => {
+        if(confirm('هل أنت متأكد من حذف هذا السجل الخاص بالشركة؟')) {
+            await deleteDoc(doc(db, 'companies', id));
+        }
     };
     
     function renderCompanies() {
-        document.getElementById('companiesTable').innerHTML = companies.map(c => `
-            <tr class="transition duration-200 hover:bg-white/5">
-                <td class="p-5 font-bold text-slate-200 text-lg"><i class="fas fa-building text-slate-500 ml-2"></i> ${c.name}</td>
-                <td class="p-5 text-slate-400">${c.date}</td>
-                <td class="p-5 font-bold text-slate-300">${(c.prev || 0).toLocaleString()}</td>
-                <td class="p-5 font-bold text-emerald-400">${(c.paid || 0).toLocaleString()}</td>
-                <td class="p-5 font-extrabold text-rose-500 text-lg">${(c.remaining || 0).toLocaleString()}</td>
-            </tr>
-        `).join('');
-    }
+    document.getElementById('companiesTable').innerHTML = companies.map(c => `
+        <tr class="transition duration-200 hover:bg-white/5">
+            <td class="p-5 font-bold text-slate-200 text-lg"><i class="fas fa-building text-slate-500 ml-2"></i> ${c.name}</td>
+            <td class="p-5 text-slate-400" style="font-family: Arial, sans-serif;">${c.date}</td>
+            <td class="p-5 font-bold text-slate-300">${(c.prev || 0).toLocaleString('en-US')}</td>
+            <td class="p-5 font-bold text-emerald-400">${(c.paid || 0).toLocaleString('en-US')}</td>
+            <td class="p-5 font-extrabold text-rose-500 text-lg">${(c.remaining || 0).toLocaleString('en-US')}</td>
+            <td class="p-5 flex gap-2 justify-center">
+                <button onclick="openCompanyModal('${c.id}')" class="text-blue-400 hover:bg-blue-900/50 w-8 h-8 rounded-full transition" title="تعديل"><i class="fas fa-edit"></i></button>
+                <button onclick="deleteCompany('${c.id}')" class="text-red-400 hover:bg-red-900/50 w-8 h-8 rounded-full transition" title="حذف"><i class="fas fa-trash"></i></button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+window.deletePosSale = async (id, itemName) => {
+        if(confirm('هل أنت متأكد من حذف عملية البيع هذه؟ (سيتم إرجاع المادة للمخزن وخصم المبلغ من الأرباح)')) {
+            const matchedProduct = products.find(x => x.name === itemName);
+            if (matchedProduct) {
+                await updateDoc(doc(db, 'inventory', matchedProduct.id), { qty: matchedProduct.qty + 1 });
+            }
+            await deleteDoc(doc(db, 'pos', id));
+        }
+    };
+
+    window.autoFillWholesale = () => {
+        const itemNameInput = document.getElementById('posItemName').value;
+        const matchedProduct = products.find(x => x.name === itemNameInput);
+        if (matchedProduct && matchedProduct.wholesale) {
+            document.getElementById('posWholesalePrice').value = matchedProduct.wholesale;
+        } else {
+            document.getElementById('posWholesalePrice').value = '';
+        }
+    };
 
     window.addPosSale = async () => {
         const itemNameInput = document.getElementById('posItemName').value;
         const price = parseFloat(document.getElementById('posSalePrice').value);
+        const wholesale = parseFloat(document.getElementById('posWholesalePrice').value) || 0;
+        const profit = price - wholesale; 
         const matchedProduct = products.find(x => x.name === itemNameInput);
 
         if (!itemNameInput || !price) {
@@ -1446,48 +1898,58 @@ window.renderScannedItems = () => {
         }
 
         const today = new Date();
-        const dateStr = today.toLocaleDateString('en-GB'); 
+        const dateStr = today.toLocaleDateString('en-US', { numberingSystem: 'latn' }); 
         const monthStr = `${today.getMonth() + 1}-${today.getFullYear()}`; 
+        const yearStr = `${today.getFullYear()}`;
 
         batch.set(doc(collection(db, 'pos')), {
             name: itemNameInput,
             price: price,
+            wholesale: wholesale,
+            profit: profit,
             date: dateStr,
             month: monthStr,
+            year: yearStr,
             timestamp: serverTimestamp()
         });
 
         await batch.commit();
         document.getElementById('posItemName').value = '';
         document.getElementById('posSalePrice').value = '';
+        document.getElementById('posWholesalePrice').value = '';
     };
 
     function renderPos() {
-        const list = document.getElementById('posDailyList');
-        const dailyTotalElem = document.getElementById('posDailyTotal');
-        const monthlyTotalElem = document.getElementById('posMonthlyTotal');
-        
-        const today = new Date();
-        const todayStr = today.toLocaleDateString('en-GB');
-        const currentMonthStr = `${today.getMonth() + 1}-${today.getFullYear()}`;
-        
-        document.getElementById('posCurrentDate').innerText = todayStr;
+    const list = document.getElementById('posDailyList');
+    const dailyTotalElem = document.getElementById('posDailyTotal');
+    const monthlyTotalElem = document.getElementById('posMonthlyTotal');
+    
+    const today = new Date();
+    const todayStr = today.toLocaleDateString('en-US', { numberingSystem: 'latn' });
+    const currentMonthStr = `${today.getMonth() + 1}-${today.getFullYear()}`;
+    
+    document.getElementById('posCurrentDate').innerText = todayStr;
 
-        const dailySales = posSales.filter(s => s.date === todayStr);
-        list.innerHTML = dailySales.map(s => `
-            <li class="flex justify-between items-center p-4 rounded-xl border border-slate-700 shadow-sm hover:shadow-md transition hover:bg-slate-800/50" style="background:rgba(0,0,0,0.3);">
-                <span class="font-bold text-white flex items-center gap-2"><i class="fas fa-tag text-slate-500"></i> ${s.name}</span>
-                <span class="font-extrabold text-blue-400 px-3 py-1 rounded-lg">${s.price.toLocaleString()} د.ع</span>
-            </li>
-        `).join('');
-        
-        const dailyTotal = dailySales.reduce((sum, s) => sum + s.price, 0);
-        dailyTotalElem.innerText = dailyTotal.toLocaleString();
+    const dailySales = posSales.filter(s => s.date === todayStr);
+    list.innerHTML = dailySales.map(s => `
+        <li class="flex justify-between items-center p-4 rounded-xl border border-slate-700 shadow-sm hover:shadow-md transition hover:bg-slate-800/50" style="background:rgba(0,0,0,0.3);">
+            <span class="font-bold text-white flex items-center gap-2"><i class="fas fa-tag text-slate-500"></i> ${s.name}</span>
+            <div class="flex items-center gap-3">
+                <span class="font-extrabold text-blue-400 px-3 py-1 rounded-lg">${s.price.toLocaleString('en-US')} د.ع</span>
+                <button onclick="deletePosSale('${s.id}', '${s.name}')" class="text-red-500 hover:text-white hover:bg-red-500 w-8 h-8 rounded-full transition-all flex justify-center items-center" title="حذف وإرجاع للمخزن">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </li>
+    `).join('');
+    
+    const dailyTotal = dailySales.reduce((sum, s) => sum + s.price, 0);
+    dailyTotalElem.innerText = dailyTotal.toLocaleString('en-US');
 
-        const monthlySales = posSales.filter(s => s.month === currentMonthStr);
-        const monthlyTotal = monthlySales.reduce((sum, s) => sum + s.price, 0);
-        monthlyTotalElem.innerText = monthlyTotal.toLocaleString();
-    }
+    const monthlySales = posSales.filter(s => s.month === currentMonthStr);
+    const monthlyTotal = monthlySales.reduce((sum, s) => sum + s.price, 0);
+    monthlyTotalElem.innerText = monthlyTotal.toLocaleString('en-US');
+}
 
     function updateDropdowns() {
         const invOptions = products.filter(p => p.qty > 0).map(p => `<option value="${p.name}">`).join('');
@@ -1500,10 +1962,89 @@ window.renderScannedItems = () => {
         const compSum = companies.reduce((sum, c) => sum + (c.remaining || 0), 0);
         const custSum = customers.filter(c => !c.archived).reduce((sum, c) => sum + (c.remaining || 0), 0);
 
-        document.getElementById('statInvTotal').innerText = invSum.toLocaleString() + ' د.ع';
-        document.getElementById('statCompTotal').innerText = compSum.toLocaleString() + ' د.ع';
-        document.getElementById('statCustTotal').innerText = custSum.toLocaleString() + ' د.ع';
+        document.getElementById('statInvTotal').innerText = invSum.toLocaleString('en-US') + ' د.ع';
+        document.getElementById('statCompTotal').innerText = compSum.toLocaleString('en-US') + ' د.ع';
+        document.getElementById('statCustTotal').innerText = custSum.toLocaleString('en-US') + ' د.ع';
+        
+        if(memDB && memDB.profitData) {
+            document.getElementById('statProfitTotal').innerText = memDB.profitData.current.toLocaleString('en-US') + ' د.ع';
+        }
+
+        const today = new Date();
+        const currentMonthStr = `${today.getMonth() + 1}-${today.getFullYear()}`;
+        const currentYearStr = `${today.getFullYear()}`;
+        
+        let monthlyProfit = 0;
+        let annualProfit = 0;
+        
+        if (posSales && posSales.length > 0) {
+            posSales.forEach(sale => {
+                if (sale.month === currentMonthStr) {
+                    monthlyProfit += (sale.profit || 0);
+                }
+                let saleYear = sale.year || (sale.month ? sale.month.split('-')[1] : null);
+                if (saleYear === currentYearStr) {
+                    annualProfit += (sale.profit || 0);
+                }
+            });
+        }
+        
+        if(document.getElementById('statMonthlyProfit')) {
+            document.getElementById('statMonthlyProfit').innerText = monthlyProfit.toLocaleString('en-US') + ' د.ع';
+        }
+        if(document.getElementById('statAnnualProfit')) {
+            document.getElementById('statAnnualProfit').innerText = annualProfit.toLocaleString('en-US') + ' د.ع';
+        }
     }
+
+    window.resetProfit = () => {
+        if(memDB.profitData.current <= 0) {
+            alert("مبلغ الأرباح الحالي صفر!");
+            return;
+        }
+        if(confirm('هل أنت متأكد من تصفير الأرباح؟ سيتم حفظ المبلغ في الأرشيف.')) {
+            const today = new Date().toLocaleDateString('en-US', { numberingSystem: 'latn' });
+            memDB.profitData.archive.unshift({
+                date: today,
+                amount: memDB.profitData.current
+            });
+            if(memDB.profitData.archive.length > 12) {
+                memDB.profitData.archive.pop();
+            }
+
+            memDB.profitData.current = 0;
+            saveDB();
+            updateFinancials();
+        }
+    };
+
+    window.showProfitArchive = () => {
+        const tbody = document.getElementById('profitArchiveTable');
+        const archive = memDB.profitData.archive || [];
+        
+        if(archive.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="3" class="p-5 text-center text-slate-400">لا يوجد أرشيف حالياً</td></tr>';
+        } else {
+            tbody.innerHTML = archive.map((item, index) => `
+                <tr class="hover:bg-slate-800 transition">
+                    <td class="p-3 font-bold" style="font-family: Arial;">${item.date}</td>
+                    <td class="p-3 text-center text-emerald-400 font-bold" style="font-family: Arial;">${item.amount.toLocaleString('en-US')}</td>
+                    <td class="p-3 text-center">
+                        <button onclick="deleteProfitArchive(${index})" class="text-red-500 hover:text-white hover:bg-red-500 w-8 h-8 rounded-full transition-all" title="حذف السجل"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        document.getElementById('profitArchiveModal').classList.remove('hidden');
+    };
+
+    window.deleteProfitArchive = (index) => {
+        if(confirm('متأكد تريد تحذف هذا السجل من أرشيف الأرباح؟')) {
+            memDB.profitData.archive.splice(index, 1);
+            saveDB();
+            showProfitArchive();
+        }
+    };
 
     window.closeModal = (id) => document.getElementById(id).classList.add('hidden');
 
@@ -1522,6 +2063,33 @@ window.renderScannedItems = () => {
         a.href = url;
         a.download = `mohannad_backup_${new Date().toLocaleDateString()}.json`;
         a.click();
+    };
+
+    window.processImport = (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            try {
+                const data = JSON.parse(e.target.result);
+                
+                if(confirm('تحذير: هذا الإجراء راح يمسح البيانات الحالية ويستبدلها بالنسخة الاحتياطية. متأكد تريد تكمل؟')) {
+                    memDB.customers = data.customers || [];
+                    memDB.inventory = data.products || []; 
+                    memDB.companies = data.companies || [];
+                    memDB.pos = data.posSales || [];
+
+                    await localforage.setItem('mohannad_db', memDB);
+                    alert('تم استرجاع البيانات بنجاح! راح يتم تحديث الصفحة.');
+                    window.location.reload();
+                }
+            } catch (error) {
+                alert('عذراً، الملف غير صالح أو تالف!');
+            }
+        };
+        reader.readAsText(file);
+        event.target.value = '';
     };
 
     window.printCustomerReceipt = () => {
@@ -1546,24 +2114,28 @@ window.renderScannedItems = () => {
 
         const totalAmount = remAmount + latestPaid;
         const now = new Date();
-        const date = now.toLocaleDateString('ar-IQ');
-        const time = now.toLocaleTimeString('ar-IQ', { hour: '2-digit', minute: '2-digit', hour12: true });
+        const date = now.toLocaleDateString('en-US', { numberingSystem: 'latn' });
+        const time = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true, numberingSystem: 'latn' });
 
         const printWindow = window.open('', '', 'width=400,height=600');
         printWindow.document.write(`
-            <html dir="rtl" lang="ar">
+            <html dir="rtl" lang="en">
             <head>
                 <title>وصل قبض - ${name}</title>
                 <style>
                     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&display=swap');
                     @page { margin: 0; size: 80mm auto; }
-                    body { 
-                        font-family: 'Cairo', sans-serif; 
-                        width: 74mm; 
-                        margin: 0 auto; 
-                        padding: 5mm; 
-                        color: #000;
-                    }
+                    @font-face {
+            font-family: 'ForceEngNum';
+            src: local('Arial'), local('Helvetica');
+            unicode-range: U+0030-0039; /* هذا السطر يجبر الأرقام فقط تصير بالخط الإنجليزي */
+        }
+        body { 
+            font-family: 'ForceEngNum', 'Cairo', sans-serif !important; 
+            background: radial-gradient(circle at top center, #0a1118 0%, var(--main-bg) 100%) !important; 
+            color: var(--text-main) !important; 
+            min-height: 100vh;
+        }
                     .text-center { text-align: center; }
                     .dashed-line { border-top: 1px dashed #000; margin: 10px 0; }
                     .solid-line { border-top: 2px solid #000; margin: 5px 0 15px 0; }
@@ -1617,23 +2189,23 @@ window.renderScannedItems = () => {
                     <span class="value">${item}</span>
                 </div>
                 <div class="info-row">
-                    <span class="label">المبلغ :</span>
-                    <span class="value">${totalAmount.toLocaleString()} د.ع</span>
-                </div>
-                <div class="info-row">
-                    <span class="label">مبلغ الواصل :</span>
-                    <span class="value">${latestPaid.toLocaleString()} د.ع</span>
-                </div>
-                <div class="info-row">
-                    <span class="label">المتبقي :</span>
-                    <span class="value">${remAmount.toLocaleString()} د.ع</span>
-                </div>
+    <span class="label">مبلغ السابق :</span>
+    <span class="value">${totalAmount.toLocaleString('en-US')} د.ع</span>
+</div>
+<div class="info-row">
+    <span class="label">مبلغ الواصل :</span>
+    <span class="value">${latestPaid.toLocaleString('en-US')} د.ع</span>
+</div>
+<div class="info-row">
+    <span class="label">المتبقي الحالي :</span>
+    <span class="value">${remAmount.toLocaleString('en-US')} د.ع</span>
+</div>
                 
                 <div id="wordText" class="tafqeet"></div>
 
                 <div class="dashed-line" style="margin-top: 20px;"></div>
                 
-                <div style="display: flex; justify-content: space-between; font-size: 11px;">
+                <div style="display: flex; justify-content: space-between; font-size: 11px; font-family: Arial, sans-serif;">
                     <span>التاريخ: ${date}</span>
                     <span>الوقت: ${time}</span>
                 </div>
@@ -1698,6 +2270,20 @@ window.renderScannedItems = () => {
         `);
         printWindow.document.close();
     };
+
+document.addEventListener('input', function(e) {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+        const map = {'٠':'0','١':'1','٢':'2','٣':'3','٤':'4','٥':'5','٦':'6','٧':'7','٨':'8','٩':'9',
+                     '۰':'0','۱':'1','۲':'2','۳':'3','۴':'4','۵':'5','۶':'6','۷':'7','۸':'8','۹':'9'};
+        let value = e.target.value;
+        let newValue = value.replace(/[٠-٩۰-۹]/g, function(d) { return map[d]; });
+        
+        if (value !== newValue) {
+            e.target.value = newValue;
+            e.target.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+    }
+});
 </script>
 </body>
 </html>
